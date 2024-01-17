@@ -64,12 +64,13 @@ printStep "Verify instalation"
 printenv | grep -i ROS
 
 printStep "Set source in .bashrc"
-echo -e "source /opt/ros/${ROS_DISTRO}/setup.bash\n" >> ~/.bashrc
-cat ~/.bashrc | grep "source /opt/ros/${ROS_DISTRO}/setup.bash" 
+echo -e "source /opt/ros/${distro}/setup.bash\n" >> ~/.bashrc
+cat ~/.bashrc | grep "source /opt/ros/${distro}/setup.bash" 
+
 if [ $? -gt 0 ]; then
     printError "Missing source command"
 fi
-
+source /opt/ros/${distro}/setup.bash
 printStep "Init rosdep"
 sudo rosdep init
 rosdep update
@@ -79,9 +80,9 @@ sudo apt update && sudo apt install python3-colcon-common-extensions -y
 
 printStep "Install basic packages"
 sudo apt update && sudo apt install \
-    ros-${ROS_DISTRO}-joint-state-publisher \
-    ros-${ROS_DISTRO}-joint-state-publisher-gui \
-    ros-${ROS_DISTRO}-xacro \
-    ros-${ROS_DISTRO}-ros-gazebo-ros-pkgs
+    ros-${distro}-joint-state-publisher \
+    ros-${distro}-joint-state-publisher-gui \
+    ros-${distro}-xacro \
+    ros-${distro}-ros-gazebo-ros-pkgs
 
 sudo apt autoremove && sudo apt clean
