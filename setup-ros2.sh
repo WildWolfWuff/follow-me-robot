@@ -38,6 +38,9 @@ locale  # verify settings
 printStep "Setup repositories"
 
 apt install software-properties-common -y
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
 add-apt-repository universe
 
 curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
@@ -49,18 +52,22 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-
     |  tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 
 printStep "Install ros dev tools"
-apt update &&  apt install -y ros-dev-tools
-
+apt update && apt install -y ros-dev-tools
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
 printStep "Install ros ${distor} Desktop"
-apt update -y ros-${distro}-desktop-full
-
+apt update && apt install -y ros-${distro}-desktop-full
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
 printStep "Verify instalation"
 printenv | grep -i ROS
 
 printStep "Set source in .bashrc"
 echo -e "source /opt/ros/${ROS_DISTRO}/setup.bash\n" >> ~/.bashrc
 cat ~/.bashrc | grep "source /opt/ros/${ROS_DISTRO}/setup.bash" 
-if [ $? -eq 1 ]; then
+if [ $? -gt 0 ]; then
     printError "Missing source command"
 fi
 
@@ -68,8 +75,7 @@ printStep "Init rosdep"
 rosdep init
 
 printStep "Install colcon"
-apt update
-apt install python3-colcon-common-extensions -y
+apt update && apt install python3-colcon-common-extensions -y
 
 printStep "Install basic packages"
 apt udpate &&  apt install \
