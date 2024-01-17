@@ -83,6 +83,6 @@ sudo apt update && sudo apt install \
     ros-${distro}-joint-state-publisher \
     ros-${distro}-joint-state-publisher-gui \
     ros-${distro}-xacro \
-    ros-${distro}-ros-gazebo-ros-pkgs
+    ros-${distro}-gazebo-ros-pkgs
 
 sudo apt autoremove && sudo apt clean
