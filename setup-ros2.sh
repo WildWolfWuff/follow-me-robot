@@ -79,7 +79,7 @@ printStep "Install colcon"
 sudo apt update && sudo apt install python3-colcon-common-extensions -y
 
 printStep "Install basic packages"
-sudo apt update && sudo apt install \
+sudo apt update && sudo apt install -y \
     ros-${distro}-joint-state-publisher \
     ros-${distro}-joint-state-publisher-gui \
     ros-${distro}-xacro \
