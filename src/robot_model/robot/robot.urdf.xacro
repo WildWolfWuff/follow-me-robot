@@ -5,7 +5,7 @@
 	<xacro:include filename="$(find robot_model)/urdf/wheel/omni_wheel.urdf.xacro" />
 	<xacro:include filename="$(find robot_model)/urdf/body/robot_body.urdf.xacro" />
 	<xacro:include filename="$(find robot_model)/urdf/robot_model.gazebo.xacro" />
-	<xacro:include filename="$(find robot_model)/urdf/lidar.xacro" />
+	<xacro:include filename="$(find robot_model)/urdf/sensor/lidar.xacro" />
 	<!-- Wheel parameters -->
 	<xacro:property name="wheel_offset_x" value="0.2225" />    <!-- x,y,z in translation from base_link to the center of the wheel -->
 	<xacro:property name="wheel_offset_y" value="0.2045" />
