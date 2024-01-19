@@ -51,7 +51,7 @@
 			<joint_name>front_left_wheel_joint</joint_name>
 			<joint_name>back_left_wheel_joint</joint_name>
 			<joint_name>back_right_wheel_joint</joint_name>
-			<joint_name>1_laser_joint</joint_name>
+			<!-- <joint_name>1_laser_joint</joint_name> -->
 			<!-- <joint_name>ultrasonic</joint_name> -->
 		</plugin>
 	</gazebo>
