@@ -5,7 +5,7 @@
 	<xacro:include filename="$(find robot_model)/urdf/wheel/omni_wheel.urdf.xacro" />
 	<xacro:include filename="$(find robot_model)/urdf/body/robot_body.urdf.xacro" />
 	<xacro:include filename="$(find robot_model)/urdf/robot_model.gazebo.xacro" />
-	<xacro:include filename="$(find robot_model)/urdf/sensors/lidar.xacro" />
+	<xacro:include filename="$(find robot_model)/urdf/sensors/sensors.xacro" />
 	<!-- Wheel parameters -->
 	<xacro:property name="wheel_offset_x" value="0.2225" />    <!-- x,y,z in translation from base_link to the center of the wheel -->
 	<xacro:property name="wheel_offset_y" value="0.2045" />
@@ -35,6 +35,9 @@
 		<xacro:lidar parent="robot_body_link" laser_name="1">
 			<origin xyz="0 0 0.3" rpy="0 0 0" />
 		</xacro:lidar>
+		<!-- <xacro:ultrasonic parent="robot_body_link" sensor_name="1">
+			<origin xyz="0.1 0 0.3" rpy="0 0 0" />
+		</xacro:ultrasonic> -->
 	</xacro:macro>
 	<xacro:robot />
 	<xacro:omni_steering />
@@ -48,6 +51,8 @@
 			<joint_name>front_left_wheel_joint</joint_name>
 			<joint_name>back_left_wheel_joint</joint_name>
 			<joint_name>back_right_wheel_joint</joint_name>
+			<joint_name>1_laser_joint</joint_name>
+			<!-- <joint_name>ultrasonic</joint_name> -->
 		</plugin>
 	</gazebo>
 </robot>
