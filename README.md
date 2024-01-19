@@ -13,6 +13,7 @@ Afert that run `ros2 launch robot_model robot.launch.`
 - [URDF example](https://github.com/joshnewans/urdf_example)
   - launch files
 - zip from mecanum bot
+- [lidar-xacro](https://github.com/joshnewans/articubot_one/blob/545acac87ae215d80ef6b28abe6097eb7281d9ff/description/lidar.xacro)
 
 # TODOs
 
