@@ -102,7 +102,7 @@
                     <min_range>0.3</min_range>
                     <max_range>12</max_range>
                 </sonar>
-                <plugin name="ultrasonic_controller" filename="libgazebo_ros_range.so">
+                <plugin name="ultrasonic_controller" filename="libgazebo_ros_sonar_plugin.so">
                     <ros>
                         <argument>~/out:=range</argument>
                     </ros>
