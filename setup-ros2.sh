@@ -6,6 +6,10 @@ printStep() {
     echo -e "STEP: \e[32m${1}\e[0m"
 }
 
+printInput(){
+    echo -e "INPUT: \e[32m${1}\e[0m"
+}
+
 distro=iron
 while getopts ":d:e" opt; do
     case $opt in
@@ -14,7 +18,7 @@ while getopts ":d:e" opt; do
         ;;
         e)
             printStep "Install extra software"
-            sudo snap install --classic code
+            
             sudo apt update \
             && sudo apt install \
                 micro \
@@ -25,6 +29,16 @@ while getopts ":d:e" opt; do
     esac
 done
 
+printStep "Setup git config"
+printInput "Git user name"
+read userName
+printInput "Git email"
+read email
+
+git config --global user.name "$userName"
+git config --global user.email "$email"
+
+printStep "Install basic"
 sudo apt update && sudo apt install curl gnupg2 lsb-release -y
 
 printStep "Setup language"
@@ -86,3 +100,6 @@ sudo apt update && sudo apt install -y \
     ros-${distro}-gazebo-ros-pkgs
 
 sudo apt autoremove && sudo apt clean
+
+sudo snap install --classic code
+code --install-extension .vscode/extensions.json
