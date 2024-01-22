@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "ms-iot.vscode-ros",
+        "ms-python.python",
+        "smilerobotics.urdf",
+        "sweilz.ros-snippets"
+    ]
+}
