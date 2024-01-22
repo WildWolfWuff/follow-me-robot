@@ -29,7 +29,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY launch meshes robot urdf
+  DIRECTORY launch meshes robot urdf rviz
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()
