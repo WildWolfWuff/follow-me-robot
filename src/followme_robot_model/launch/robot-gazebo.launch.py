@@ -10,7 +10,7 @@ import xacro
 
 def generate_launch_description():
     # define package name
-    pkg_name = 'robot_model'
+    pkg_name = 'followme_robot_model'
     
     # define and set path to xacro model filerobot_body_footprint
     model_file_path = 'robot/robot.urdf.xacro'
@@ -39,10 +39,13 @@ def generate_launch_description():
                     arguments=['-topic', 'robot_description',
                                 '-entity', 'mecanum-bot'],
                     output='screen')
-    
+    node_user_control = Node(package='teleop_twist_keyboard',
+                             executable='teleop_twist_keyboard',
+                             output='screen')
     # retuns the defined launch scripts
     return  LaunchDescription([
         node_robot_state_publisher,
         gazebo,
-        node_spawn_entity
+        node_spawn_entity,
+        node_user_control
     ])

@@ -6,7 +6,7 @@ A rebot that follows a point
 ## Robot simulation
 
 run `colcon build` in root director then run `source install/setup.bash`.  
-Afert that run `ros2 launch robot_model robot.launch.`
+Afert that run `ros2 launch followme_robot_model robot.launch.`
 
 # Refs
 

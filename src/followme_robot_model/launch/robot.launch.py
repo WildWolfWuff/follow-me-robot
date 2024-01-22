@@ -12,7 +12,7 @@ import xacro
 
 def generate_launch_description():
     # define package name
-    pkg_name = 'robot_model'
+    pkg_name = 'followme_robot_model'
     pkg_path = get_package_share_directory(pkg_name)
     
     # define and set path to xacro model file

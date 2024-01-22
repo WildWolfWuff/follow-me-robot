@@ -2,7 +2,7 @@
 <robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:macro name="robot_body" params="wheel_radius">
-      <xacro:include filename="$(find robot_model)/urdf/robot_model.gazebo.xacro" />
+      <xacro:include filename="$(find followme_robot_model)/urdf/followme_robot_model.gazebo.xacro" />
 	  <!-- Robot mechanical and motor parameters -->
 	  <xacro:property name="PI" value="3.1415926535897931"/>
 	  
@@ -34,7 +34,7 @@
     <visual>
        <origin xyz="0 0 0" rpy="0 0 0" />
        <geometry>
-	       <mesh filename="file://$(find robot_model)/meshes/body/robot_body.dae"/>
+	       <mesh filename="file://$(find followme_robot_model)/meshes/body/robot_body.dae"/>
        </geometry>
        <material name="darkgrey">
          <color rgba="0.1 0.1 0.1 1"/>
@@ -44,7 +44,7 @@
     <collision>
        <origin xyz="0 0 0" rpy="0 0 0 " />
        <geometry>
-         <mesh filename="file://$(find robot_model)/meshes/body/robot_body.dae"/>
+         <mesh filename="file://$(find followme_robot_model)/meshes/body/robot_body.dae"/>
        </geometry>
     </collision>
 

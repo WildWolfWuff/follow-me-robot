@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(robot_model)
+project(followme_robot_model)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
