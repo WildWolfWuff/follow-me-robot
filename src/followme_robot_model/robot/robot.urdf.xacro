@@ -37,9 +37,9 @@
 			<origin xyz="0 0 0.3" rpy="0 0 0" />
 		</xacro:lidar>
 		
-		<xacro:ultrasonic parent="robot_body_link" sensor_name="1">
-			<origin xyz="0.32 0 0.2" rpy="0 -77 0" />
-		</xacro:ultrasonic>
+		<xacro:camera parent="robot_body_link" sensor_name="1" range="8">
+			<origin xyz="0.32 0 0.42" rpy="0 0 0" />
+		</xacro:camera>
 	</xacro:macro>
 	<xacro:robot />
 	<xacro:omni_steering />
