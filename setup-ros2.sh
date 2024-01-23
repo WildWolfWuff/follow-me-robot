@@ -10,33 +10,37 @@ printInput(){
     echo -e "INPUT: \e[32m${1}\e[0m"
 }
 
+setupGit(){
+    printStep "Setup git config"
+    printInput "Git user name"
+    read userName
+    git config --global user.name "$userName"
+    printInput "Git email"
+    read email
+    git config --global user.email "$email"
+}
+
 distro=iron
-while getopts ":d:e" opt; do
+while getopts ":d:esg" opt; do
     case $opt in
         d) 
            distro="${OPTARG}"
         ;;
         e)
-            printStep "Install extra software"
-            
-            sudo apt update \
-            && sudo apt install \
-                micro \
-                git \
-                openssh-server \
-            && sudo ufw allow ssh
+            printStep "Install vscode extensions"
+            code --help
+            [ $? -ne 0 ] sudo snap install --classic code > /dev/null
+            code --install-extension .vscode/extensions.json
+            exit $?  
+        ;;
+        s) 
+            sudo apt update && sudo apt install openssh-server && sudo ufw allow ssh
+            exit $?
         ;;
     esac
 done
 
-printStep "Setup git config"
-printInput "Git user name"
-read userName
-printInput "Git email"
-read email
 
-git config --global user.name "$userName"
-git config --global user.email "$email"
 
 printStep "Install basic"
 sudo apt update && sudo apt install curl gnupg2 lsb-release -y

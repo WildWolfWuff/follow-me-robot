@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:include filename="$(find followme_robot_model)/urdf/physics/inertial.urdf.xacro" />
     <xacro:include filename="$(find followme_robot_model)/urdf/material.xacro" />
-    <xacro:macro name="lidar" params="parent *origin laser_name">
+    <xacro:macro name="lidar" params="parent *origin laser_name range:=12">
 
         <joint name="${laser_name}_laser_joint" type="fixed">
             <parent link="${parent}" />
@@ -47,7 +47,7 @@
                     </scan>
                     <range>
                         <min>0.3</min>
-                        <max>12</max>
+                        <max>${range}</max>
                     </range>
                 </ray>
                 <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
@@ -62,7 +62,7 @@
 
     </xacro:macro>
 
-    <xacro:macro name="ultrasonic" params="parent *origin sensor_name">
+    <xacro:macro name="ultrasonic" params="parent *origin sensor_name range:=12">
 
         <joint name="${sensor_name}_ultrasonic_joint" type="fixed">
             <parent link="${parent}" />
@@ -100,7 +100,7 @@
                 <sonar>
                     <radiation>ultrasonic</radiation>
                     <min_range>0.3</min_range>
-                    <max_range>12</max_range>
+                    <max_range>${range}</max_range>
                 </sonar>
                 <plugin name="ultrasonic_controller" filename="libgazebo_ros_sonar_plugin.so">
                     <ros>

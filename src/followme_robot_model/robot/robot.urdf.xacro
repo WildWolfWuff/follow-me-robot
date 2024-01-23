@@ -32,9 +32,11 @@
 		<xacro:omni_wheel prefix="back_right" parent="robot_body_link" reflect="2" wheel_radius="${wheel_radius}">
 			<origin xyz="-${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
 		</xacro:omni_wheel>
-		<xacro:lidar parent="robot_body_link" laser_name="1">
+		
+		<xacro:lidar parent="robot_body_link" laser_name="1" range="10">
 			<origin xyz="0 0 0.3" rpy="0 0 0" />
 		</xacro:lidar>
+		
 		<xacro:ultrasonic parent="robot_body_link" sensor_name="1">
 			<origin xyz="0.32 0 0.2" rpy="0 -77 0" />
 		</xacro:ultrasonic>
