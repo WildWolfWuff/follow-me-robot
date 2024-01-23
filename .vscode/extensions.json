@@ -3,6 +3,8 @@
         "ms-iot.vscode-ros",
         "ms-python.python",
         "smilerobotics.urdf",
-        "sweilz.ros-snippets"
+        "sweilz.ros-snippets",
+        "mhutchie.git-graph",
+        "waderyan.gitblame"
     ]
 }

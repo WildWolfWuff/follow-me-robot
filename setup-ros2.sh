@@ -28,10 +28,10 @@ while getopts ":d:esg" opt; do
         ;;
         e)
             printStep "Install vscode extensions"
-            code --help
-            [ $? -ne 0 ] sudo snap install --classic code > /dev/null
+            code --help > /dev/null
+            [ $? -ne 0 ] sudo snap install --classic code 
             code --install-extension .vscode/extensions.json
-            exit $?  
+            exit $?
         ;;
         s) 
             sudo apt update && sudo apt install openssh-server && sudo ufw allow ssh
@@ -40,7 +40,7 @@ while getopts ":d:esg" opt; do
     esac
 done
 
-
+setupGit
 
 printStep "Install basic"
 sudo apt update && sudo apt install curl gnupg2 lsb-release -y
@@ -105,5 +105,6 @@ sudo apt update && sudo apt install -y \
 
 sudo apt autoremove && sudo apt clean
 
-sudo snap install --classic code
+code --help > /dev/null
+[ $? -ne 0 ] sudo snap install --classic code 
 code --install-extension .vscode/extensions.json
