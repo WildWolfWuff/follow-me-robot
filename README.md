@@ -17,5 +17,7 @@ Afert that run `ros2 launch followme_robot_model robot.launch.`
 
 # TODOs
 
-- add rviz config file
+- [x] add rviz config file
   - [examle](https://github.com/turtlebot/turtlebot4_desktop/blob/humble/turtlebot4_viz/rviz/robot.rviz)
+
+- [ ] Add controller for driving robot, see: [example](https://github.com/DeborggraeveR/ros2-mecanum-bot)
