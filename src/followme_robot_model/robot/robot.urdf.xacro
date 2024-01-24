@@ -6,7 +6,7 @@
 	<xacro:include filename="$(find followme_robot_model)/urdf/body/robot_body.urdf.xacro" />
 	<xacro:include filename="$(find followme_robot_model)/urdf/followme_robot_model.gazebo.xacro" />
 	<xacro:include filename="$(find followme_robot_model)/urdf/sensors/lidar.xacro" />
-	<xacro:include filename="$(find followme_robot_model)/urdf/sensors/camera_depth.xacro" />
+	<!-- <xacro:include filename="$(find followme_robot_model)/urdf/sensors/camera_depth.xacro" /> -->
 	<!-- Wheel parameters -->
 	<xacro:property name="wheel_offset_x" value="0.2225" />    <!-- x,y,z in translation from base_link to the center of the wheel -->
 	<xacro:property name="wheel_offset_y" value="0.2045" />
@@ -37,10 +37,9 @@
 		<!-- <xacro:lidar parent="robot_body_link" laser_name="1" range="10">
 			<origin xyz="0 0 0.3" rpy="0 0 0" />
 		</xacro:lidar> -->
-		
-		<xacro:camera parent="robot_body_link" camera_name="1" range="8">
-			<origin xyz="0.32 0 0.42" rpy="0 0 0" />
-		</xacro:camera>
+
+		<xacro:include filename="$(find followme_robot_model)/urdf/sensors/camera.xacro" />
+
 	</xacro:macro>
 	<xacro:robot />
 	<xacro:omni_steering />

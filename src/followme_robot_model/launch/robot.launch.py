@@ -48,7 +48,7 @@ def generate_launch_description():
                                 '-entity', 'mecanum-bot'],
                     output='screen'),
         ]),
-        TimerAction(period=5.0,actions=[
+        TimerAction(period=10.0,actions=[
             Node(package='rviz2',
             executable='rviz2',
             arguments=['-d', os.path.join(pkg_path,'rviz','model.rviz')],

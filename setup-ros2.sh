@@ -29,8 +29,10 @@ while getopts ":d:esg" opt; do
         e)
             printStep "Install vscode extensions"
             code --help > /dev/null
-            [ $? -ne 0 ] sudo snap install --classic code 
-            code --install-extension .vscode/extensions.json
+            if [ $? -ne 0 ]; then
+            	 sudo snap install --classic code 
+			fi
+           	code --install-extension .vscode/extensions.json
             exit $?
         ;;
         s) 
@@ -106,5 +108,8 @@ sudo apt update && sudo apt install -y \
 sudo apt autoremove && sudo apt clean
 
 code --help > /dev/null
-[ $? -ne 0 ] sudo snap install --classic code 
+
+if [ $? -ne 0 ] then;
+	sudo snap install --classic code
+fi
 code --install-extension .vscode/extensions.json
