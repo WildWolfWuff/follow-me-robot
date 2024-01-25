@@ -14,7 +14,7 @@ Afert that run `ros2 launch followme_robot_model robot.launch.`
   - launch files
 - zip from mecanum bot
 - [lidar-xacro](https://github.com/joshnewans/articubot_one/blob/545acac87ae215d80ef6b28abe6097eb7281d9ff/description/lidar.xacro)
-
+- [VS-code intelisens support](https://www.youtube.com/watch?v=hf76VY0a5Fk)
 # TODOs
 
 - [x] add rviz config file
