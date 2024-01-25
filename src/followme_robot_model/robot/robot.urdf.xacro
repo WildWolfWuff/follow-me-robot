@@ -34,9 +34,9 @@
 			<origin xyz="-${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
 		</xacro:omni_wheel>
 		
-		<!-- <xacro:lidar parent="robot_body_link" laser_name="1" range="10">
+		<xacro:lidar parent="robot_body_link" laser_name="1" range="10">
 			<origin xyz="0 0 0.3" rpy="0 0 0" />
-		</xacro:lidar> -->
+		</xacro:lidar>
 
 		<xacro:include filename="$(find followme_robot_model)/urdf/sensors/camera.xacro" />
 
