@@ -11,6 +11,9 @@ printInput(){
 }
 
 setupGit(){
+    if [ $(git config --global user.name) != "" ]; then
+        exit 0
+    fi
     printStep "Setup git config"
     printInput "Git user name"
     read userName
@@ -40,7 +43,7 @@ while getopts ":d:esg" opt; do
     esac
 done
 
-setupGit
+# setupGit
 
 printStep "Install basic"
 sudo apt update && sudo apt install curl gnupg2 lsb-release -y
@@ -92,6 +95,7 @@ source /opt/ros/${distro}/setup.bash
 printStep "Init rosdep"
 sudo rosdep init
 rosdep update
+rosdep install --from-paths src --ignore-src --rosdistro ${iron} -r -y
 
 printStep "Install colcon"
 sudo apt update && sudo apt install python3-colcon-common-extensions -y
