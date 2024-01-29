@@ -6,6 +6,8 @@
         "sweilz.ros-snippets",
         "mhutchie.git-graph",
         "waderyan.gitblame",
-        "twxs.cmake"
+        "twxs.cmake",
+        "wayou.vscode-todo-highlight",
+        "dotjoshjohnson.xml"
     ]
 }

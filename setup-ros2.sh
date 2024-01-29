@@ -33,9 +33,9 @@ while getopts ":d:esg" opt; do
             printStep "Install vscode extensions"
             code --help > /dev/null
             if [ $? -ne 0 ]; then
-            	 sudo snap install --classic code 
-			fi
-           	code --install-extension .vscode/extensions.json
+            	sudo snap install --classic code
+            fi
+            code --install-extension .vscode/extensions.json
             exit $?
         ;;
         s) 
@@ -88,7 +88,7 @@ printenv | grep -i ROS
 
 printStep "Set source in .bashrc"
 echo -e "source /opt/ros/${distro}/setup.bash\n" >> ~/.bashrc
-cat ~/.bashrc | grep "source /opt/ros/${distro}/setup.bash" 
+cat ~/.bashrc | grep "source /opt/ros/${distro}/setup.bash"
 
 if [ $? -gt 0 ]; then
     printError "Missing source command"
@@ -111,9 +111,12 @@ sudo apt update && sudo apt install -y \
 
 sudo apt autoremove && sudo apt clean
 
-code --help > /dev/null
-
-if [ $? -ne 0 ] then;
+printStep "Build project"
+colcon build
+printStep "Install vs code extensions"
+code .
+if [ $? -ne 0 ]; then
 	sudo snap install --classic code
+    code .
 fi
 code --install-extension .vscode/extensions.json
