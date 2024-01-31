@@ -11,7 +11,8 @@ import xacro
 def generate_launch_description():
     pkg_name = 'followme_robot_model'
     model_file_path = 'robot/robot.urdf.xacro'
-    xacro_file = os.path.join(get_package_share_directory(pkg_name),model_file_path)
+    pkg_path = get_package_share_directory(pkg_name)
+    xacro_file = os.path.join(pkg_path,model_file_path)
     bot_description_compiled = xacro.process_file(xacro_file).toxml()
     
     node_joint_state_publisher = Node(
@@ -33,11 +34,10 @@ def generate_launch_description():
         'use_sim_time': True}] # add other parameters here if required
     )
     
-    node_rviz2 = Node(
-        package='rviz2',
-        executable='rviz2',
-        output='screen'
-    )
+    node_rviz2 = Node(package='rviz2',
+            executable='rviz2',
+            arguments=['-d', os.path.join(pkg_path,'rviz','model.rviz')],
+            output='screen')
 
     return  LaunchDescription([
         node_joint_state_publisher,

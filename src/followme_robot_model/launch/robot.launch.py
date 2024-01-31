@@ -37,7 +37,7 @@ def generate_launch_description():
             parameters=[{'robot_description': bot_description_compiled,
             'use_sim_time': True}] # add other parameters here if required
         ),
-        TimerAction(period=0.5,actions=[
+        TimerAction(period=0.1,actions=[
             IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [os.path.join(get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']
@@ -48,7 +48,7 @@ def generate_launch_description():
                                 '-entity', 'mecanum-bot'],
                     output='screen'),
         ]),
-        TimerAction(period=5.0,actions=[
+        TimerAction(period=10.0,actions=[
             Node(package='rviz2',
             executable='rviz2',
             arguments=['-d', os.path.join(pkg_path,'rviz','model.rviz')],
