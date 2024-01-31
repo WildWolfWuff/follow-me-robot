@@ -7,6 +7,7 @@ lib/
 install/
 msg_gen/
 srv_gen/
+firmware/
 msg/*Action.msg
 msg/*ActionFeedback.msg
 msg/*ActionGoal.msg

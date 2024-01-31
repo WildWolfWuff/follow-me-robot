@@ -5,6 +5,9 @@
         "smilerobotics.urdf",
         "sweilz.ros-snippets",
         "mhutchie.git-graph",
-        "waderyan.gitblame"
+        "waderyan.gitblame",
+        "twxs.cmake",
+        "wayou.vscode-todo-highlight",
+        "dotjoshjohnson.xml"
     ]
 }
