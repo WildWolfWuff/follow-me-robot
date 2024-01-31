@@ -109,7 +109,7 @@ sudo apt autoremove && sudo apt clean
 
 code --help > /dev/null
 
-if [ $? -ne 0 ] then;
+if [ $? -ne 0 ]; then
 	sudo snap install --classic code
 fi
 code --install-extension .vscode/extensions.json
