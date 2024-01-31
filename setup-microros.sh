@@ -1,4 +1,5 @@
 #!/bin/bash
+workspace=$(pwd)
 source /opt/ros/$ROS_DISTRO/setup.bash
 
 mkdir ~/uros_ws
@@ -12,3 +13,7 @@ colcon build
 
 echo "source ~/uros_ws/install/local_setup.bash" >> ~/.bashrc
 source ~/uros_ws/install/local_setup.bash
+
+cd $workspace
+
+[ ! -d firmware ] && ros2 run micro_ros_setup create_firmware_ws.sh zephyr discovery_l475_iot1
