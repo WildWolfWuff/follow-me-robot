@@ -3,13 +3,11 @@
 <package format="3">
   <name>followme_robot_model</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>The followme_robot_model package. See https://github.com/WildWolfWuff/follow-me-robot for more information.</description>
   <maintainer email="dev@todo.todo">dev</maintainer>
   <license>TODO: License declaration</license>
   <author email="hummelm.tin21@student.dhbw-heidenheim.de">Marc Hummel</author>
   <author email="seiffertt.tin21@student.dhbw-heidenheim.de">Tobias Seiffert</author>
-  <url type="website">https://github.com/WildWolfWuff/follow-me-robot</url>
-  <url type="repository">https://github.com/WildWolfWuff/follow-me-robot</url>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
