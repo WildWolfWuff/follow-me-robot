@@ -47,17 +47,17 @@ double wheel_separation_width = wheel_distance_width/2;
 double wheel_separation_length = wheel_distance_length/2;
 double wheel_radius=7.5;
 
-void setMovement(int linearX, int linearY, int angularZ)
+void setMovement(float linearX, float linearY, float angularZ)
 {
-  double lf_wheel_speed = (1/wheel_radius) * (linearX - linearY - (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
-  double rf_wheel_speed = (1/wheel_radius) * (linearX + linearY + (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
-  double lb_wheel_speed = (1/wheel_radius) * (linearX + linearY - (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
-  double rb_wheel_speed = (1/wheel_radius) * (linearX - linearY + (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
-  LeftFrontWheel.setSpeed(lf_wheel_speed);
-  LeftBackWheel.setSpeed(lb_wheel_speed);
+  double lf_wheel_speed = (1/wheel_radius) * (linearX - linearY - angularZ) * wheelSpeed;
+  double rf_wheel_speed = (1/wheel_radius) * (linearX + linearY + angularZ) * wheelSpeed;
+  double lb_wheel_speed = (1/wheel_radius) * (linearX + linearY - angularZ) * wheelSpeed;
+  double rb_wheel_speed = (1/wheel_radius) * (linearX - linearY + angularZ) * wheelSpeed;
+  LeftFrontWheel.setSpeed(-lf_wheel_speed);
   RightFrontWheel.setSpeed(rf_wheel_speed);
+  LeftBackWheel.setSpeed(-lb_wheel_speed);
   RightBackWheel.setSpeed(rb_wheel_speed);
-  log("lf="+String(lf_wheel_speed)+" rf="+String(rf_wheel_speed)+" lb="+String(lb_wheel_speed)+" rb="+String(rb_wheel_speed));
+  log("x="+String(linearX)+" y="+String(linearY)+" z="+String(angularZ)+" lf="+String(lf_wheel_speed)+" rf="+String(rf_wheel_speed)+" lb="+String(lb_wheel_speed)+" rb="+String(rb_wheel_speed));
 }
 
 void stopMovement(){
@@ -122,9 +122,9 @@ String y="0.0";
 String z="0.0";
 
 void log(String text){
-  if(Serial1.available() > 0){
-    Serial1.println(text);
-  }
+  // if(Serial.available() > 0){
+  Serial.println(text);
+  // }
 }
 
 void loop(){
@@ -140,37 +140,17 @@ void loop(){
     RightFrontWheel.runSpeed();
     LeftBackWheel.runSpeed();
     LeftFrontWheel.runSpeed();
-    /*
-    * generalTime is a timer we use in the situation we want to use the test code. The test code are controlled by timers,
-    * to make it work we need to send the correct commands via a BLE device could be a cellphone or computer. 
-    */
-    // generalTime = millis();
-    // if (speedRamp.update() == 100) {
-    //     rampSpeed = 0;
-    //     if (inside) {
-    //     ramainMovement = '0';
-    //     inside = false;
-    //     }
-    // } else {
-    //     rampSpeed = speedRamp.update();
-    //     inside = true;
-    // }
-
     if(Serial.available() > 0){
       String vector = Serial.readStringUntil('\n');
       x = getValue(vector,';',0, "0.0");
       y = getValue(vector,';',1, "0.0");
       z = getValue(vector,';',2, "0.0");
-      setMovement(x.toDouble(),y.toDouble(),z.toDouble());
+      log("x:"+x+";y:"+y+";z"+z);
+      setMovement(x.toFloat(),y.toFloat(),z.toFloat());
     }
-    
-//     if (commands > 1 && control) {
-//         secondRampChangeDir();
-//     }
-
-//     if (commands == 1 && !alreadyStarted) {
-//         Serial1.println("Start Ramp");
-//         speedRamp.go(wheelSpeed, rampTime);
-//         alreadyStarted = true;
-//     }
+    if(Serial1.available())
+    {
+      String speed= Serial1.readStringUntil('\n');
+      wheelSpeed=speed.toInt();
+    }
 }
