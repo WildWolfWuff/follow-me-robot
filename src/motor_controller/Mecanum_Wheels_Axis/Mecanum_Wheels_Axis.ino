@@ -41,32 +41,35 @@ unsigned long myTime;
 unsigned long newTimer;
 unsigned long generalTime;
 
-double wheel_distance_width;
-double wheel_distance_length;
-double wheel_separation_width=wheel_distance_width/2;
-double wheel_separation_length=wheel_distance_length/2;
-double wheel_radius;
+double wheel_distance_width=20;
+double wheel_distance_length=21;
+double wheel_separation_width = wheel_distance_width/2;
+double wheel_separation_length = wheel_distance_length/2;
+double wheel_radius=7.5;
 
 void setMovement(int linearX, int linearY, int angularZ)
 {
-  double lf_wheel_speed = (1/wheel_radius) * (linearX - linearY - (wheel_separation_width+wheel_separation_length) * angularZ) * wheelSpeed; // * rampSpeed
-  double rf_wheel_speed = (1/wheel_radius) * (linearX - linearY - (wheel_separation_width+wheel_separation_length) * angularZ) * wheelSpeed; // * rampSpeed
-  double lb_wheel_speed = (1/wheel_radius) * (linearX - linearY - (wheel_separation_width+wheel_separation_length) * angularZ) * wheelSpeed; // * rampSpeed
-  double rb_wheel_speed = (1/wheel_radius) * (linearX - linearY - (wheel_separation_width+wheel_separation_length) * angularZ) * wheelSpeed; // * rampSpeed
+  double lf_wheel_speed = (1/wheel_radius) * (linearX - linearY - (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
+  double rf_wheel_speed = (1/wheel_radius) * (linearX + linearY + (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
+  double lb_wheel_speed = (1/wheel_radius) * (linearX + linearY - (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
+  double rb_wheel_speed = (1/wheel_radius) * (linearX - linearY + (wheel_separation_width + wheel_separation_length) * angularZ) * wheelSpeed;
   LeftFrontWheel.setSpeed(lf_wheel_speed);
   LeftBackWheel.setSpeed(lb_wheel_speed);
   RightFrontWheel.setSpeed(rf_wheel_speed);
   RightBackWheel.setSpeed(rb_wheel_speed);
+  log("lf="+String(lf_wheel_speed)+" rf="+String(rf_wheel_speed)+" lb="+String(lb_wheel_speed)+" rb="+String(rb_wheel_speed));
 }
+
 void stopMovement(){
     LeftFrontWheel.setSpeed(0);
     LeftBackWheel.setSpeed(0);
     RightFrontWheel.setSpeed(0);
     RightBackWheel.setSpeed(0);
 }
+
 void secondRampChangeDir() {
   if (speedRamp.update() > 0 && steps == 0) {
-    Serial.println("Ramp change dir step 1");
+    // Serial.println("Ramp change dir step 1");
     speedRamp.go(minRampVal, 500);
     steps = 1;
   }
@@ -114,6 +117,15 @@ String getValue(String data, char separator, int index,String defaultValue)
   }
   return found>index ? data.substring(strIndex[0], strIndex[1]) : defaultValue;
 }
+String x="0.0";
+String y="0.0";
+String z="0.0";
+
+void log(String text){
+  if(Serial1.available() > 0){
+    Serial1.println(text);
+  }
+}
 
 void loop(){
     //Main code:
@@ -132,36 +144,33 @@ void loop(){
     * generalTime is a timer we use in the situation we want to use the test code. The test code are controlled by timers,
     * to make it work we need to send the correct commands via a BLE device could be a cellphone or computer. 
     */
-    generalTime = millis();
-    if (speedRamp.update() == 100) {
-        rampSpeed = 0;
-        if (inside) {
-        ramainMovement = '0';
-        inside = false;
-        }
-    } else {
-        rampSpeed = speedRamp.update();
-        inside = true;
-    }
-    String x="0.0";
-    String y="0.0";
-    String z="0.0";
-    if(Serial1.available() > 0){
-        String vector = Serial1.readStringUntil('\n');
-        x = getValue(vector,';',0, "0.0");
-        y = getValue(vector,';',1, "0.0");
-        z = getValue(vector,';',2, "0.0");
-        // Serial.println("x="+x+" y="+y+" z="+z);
+    // generalTime = millis();
+    // if (speedRamp.update() == 100) {
+    //     rampSpeed = 0;
+    //     if (inside) {
+    //     ramainMovement = '0';
+    //     inside = false;
+    //     }
+    // } else {
+    //     rampSpeed = speedRamp.update();
+    //     inside = true;
+    // }
+
+    if(Serial.available() > 0){
+      String vector = Serial.readStringUntil('\n');
+      x = getValue(vector,';',0, "0.0");
+      y = getValue(vector,';',1, "0.0");
+      z = getValue(vector,';',2, "0.0");
+      setMovement(x.toDouble(),y.toDouble(),z.toDouble());
     }
     
-    if (commands > 1 && control) {
-        secondRampChangeDir();
-    }
+//     if (commands > 1 && control) {
+//         secondRampChangeDir();
+//     }
 
-    if (commands == 1 && !alreadyStarted) {
-        Serial.println("Start Ramp");
-        speedRamp.go(wheelSpeed, rampTime);
-        alreadyStarted = true;
-    }
-    setMovement(x.toDouble(),y.toDouble(),z.toDouble());
+//     if (commands == 1 && !alreadyStarted) {
+//         Serial1.println("Start Ramp");
+//         speedRamp.go(wheelSpeed, rampTime);
+//         alreadyStarted = true;
+//     }
 }

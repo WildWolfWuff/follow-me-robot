@@ -103,20 +103,30 @@ class XboxController(object):
                     self.DownDPad = event.state
 
 if __name__ == '__main__':
-    dec=5
+    dec=1
     sep=';'
     ser = serial.Serial('COM4',9600)
     speed=100
     try:
         joy = XboxController()
+        px=float(0.0)
+        py=float(0.0)
+        pz=float(0.0)
         while True:
             values=joy.read()
-            print(values)
-            s=str(round(values[0][0]*3.5, dec))+";"+str(round(values[0][1]*3.5, dec))+";"+str(round(values[0][2]*3.5, dec))+"\n"
-            ser.write(s.encode())
-            ser.flush()
-            result = ser.read_until()
-            print(result.decode("ASCII"))
+            x=float(values[0][2])
+            y=float(values[0][0])
+            z=float(values[0][1])
+            if( x!=px or y!=py or z != pz):
+                print(values)
+                s=str(round(x*2.0, dec))+";"+str(round(y*3, dec))+";"+str(round(z*3, dec))+"\n"
+                ser.write(s.encode())
+                ser.flush()
+                # result = ser.read_until()
+                # print(result.decode("ASCII"))
+            px=x
+            py=y
+            pz=z
     except Exception as e:
         print(e)
     finally:
