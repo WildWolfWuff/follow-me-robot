@@ -81,7 +81,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /scan
+        Value: /laser_controller/out
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -98,11 +98,6 @@ Visualization Manager:
         Value: /robot_description
       Enabled: true
       Links:
-        1_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         1_laser_frame:
           Alpha: 1
           Show Axes: false
@@ -119,6 +114,11 @@ Visualization Manager:
           Show Trail: false
           Value: true
         back_right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -249,25 +249,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 5.277319431304932
+      Distance: 4.661614894866943
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.09296555072069168
-        Y: -0.7438727021217346
-        Z: 0.460260808467865
+        X: 1.4013938903808594
+        Y: -0.8201432228088379
+        Z: -0.15527892112731934
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6653980016708374
+      Pitch: 0.3303981125354767
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.378583908081055
+      Yaw: 2.578585147857666
     Saved: ~
 Window Geometry:
   Displays:

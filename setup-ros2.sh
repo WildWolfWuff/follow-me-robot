@@ -11,6 +11,9 @@ printInput(){
 }
 
 setupGit(){
+    if [ $(git config --global user.name) != "" ]; then
+        exit 0
+    fi
     printStep "Setup git config"
     printInput "Git user name"
     read userName
@@ -30,9 +33,9 @@ while getopts ":d:esg" opt; do
             printStep "Install vscode extensions"
             code --help > /dev/null
             if [ $? -ne 0 ]; then
-            	 sudo snap install --classic code 
-			fi
-           	code --install-extension .vscode/extensions.json
+            	sudo snap install --classic code
+            fi
+            code --install-extension .vscode/extensions.json
             exit $?
         ;;
         s) 
@@ -42,7 +45,7 @@ while getopts ":d:esg" opt; do
     esac
 done
 
-setupGit
+# setupGit
 
 printStep "Install basic"
 sudo apt update && sudo apt install curl gnupg2 lsb-release -y
@@ -85,7 +88,7 @@ printenv | grep -i ROS
 
 printStep "Set source in .bashrc"
 echo -e "source /opt/ros/${distro}/setup.bash\n" >> ~/.bashrc
-cat ~/.bashrc | grep "source /opt/ros/${distro}/setup.bash" 
+cat ~/.bashrc | grep "source /opt/ros/${distro}/setup.bash"
 
 if [ $? -gt 0 ]; then
     printError "Missing source command"
@@ -94,6 +97,7 @@ source /opt/ros/${distro}/setup.bash
 printStep "Init rosdep"
 sudo rosdep init
 rosdep update
+rosdep install --from-paths src --ignore-src --rosdistro ${iron} -r -y
 
 printStep "Install colcon"
 sudo apt update && sudo apt install python3-colcon-common-extensions -y
@@ -107,9 +111,12 @@ sudo apt update && sudo apt install -y \
 
 sudo apt autoremove && sudo apt clean
 
-code --help > /dev/null
-
-if [ $? -ne 0 ] then;
+printStep "Build project"
+colcon build
+printStep "Install vs code extensions"
+code .
+if [ $? -ne 0 ]; then
 	sudo snap install --classic code
+    code .
 fi
 code --install-extension .vscode/extensions.json

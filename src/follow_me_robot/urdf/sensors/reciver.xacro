@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+    <xacro:include filename="$(find follow_me_robot)/urdf/physics/inertial.urdf.xacro" />
+    <xacro:include filename="$(find follow_me_robot)/urdf/material.xacro" />
+    <xacro:macro name="reciver" params="parent *origin">
+        <xacro:property name="recreciver_h" value="0.1" />
+        <xacro:property name="recreciver_w" value="0.1" />
+        <xacro:property name="recreciver_d" value="0.1" />
+        <xacro:property name="recreciver_m" value="0.1" />
+        <joint name="recover_joint">
+            <parent link="${parent}" />
+            <child link="reciver_link" />
+            <xacro:insert_block name="origin" />
+        </joint>
+        <link name="reciver_link">
+            <inertial>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <mass value="${recreciver_m}"/>
+                <xacro:solid_cuboid_inertia 
+                    m="${recreciver_m}"
+                    h="${recreciver_m}"
+                    d="${recreciver_d}"
+                    w="${recreciver_w}" />
+            </inertial>
+            <visual name="">
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <geometry>
+                    <box size="${recreciver_w} ${recreciver_d} ${recreciver_h}"/>
+                </geometry>
+                <material name="black" />
+            </visual>
+            <collision>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <geometry>
+                    <box size="${recreciver_w} ${recreciver_d} ${recreciver_h}"/>
+                </geometry>
+            </collision>
+        </link>
+        <gazebo reference="reciver_link">
+            <material>Gazebo/Black</material>
+            <sensor name="reciver" type=""></sensor>
+        </gazebo>
+    </xacro:macro>
+</robot>
