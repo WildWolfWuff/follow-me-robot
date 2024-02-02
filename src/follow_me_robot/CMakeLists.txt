@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(followme_robot_model)
+project(follow_me_robot)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -29,7 +29,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY launch meshes robot urdf rviz
+  DIRECTORY launch meshes rviz urdf
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

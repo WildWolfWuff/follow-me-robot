@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:include filename="$(find followme_robot_model)/urdf/physics/inertial.urdf.xacro" />
-    <xacro:macro name="camera" params="parent *origin camera_name range:=8">
+    <xacro:include filename="$(find follow_me_robot)/urdf/core/inertial.urdf.xacro" />
+    <xacro:macro name="camera" params="parent *origin camera_name">
         <joint name="${camera_name}_camera_joint" type="fixed">
             <parent link="${parent}" />
             <child link="${camera_name}_camera_link" />

@@ -2,11 +2,11 @@
 <robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 	<!-- Import summit XL wheels -->
-	<xacro:include filename="$(find followme_robot_model)/urdf/wheel/omni_wheel.urdf.xacro" />
-	<xacro:include filename="$(find followme_robot_model)/urdf/body/robot_body.urdf.xacro" />
-	<xacro:include filename="$(find followme_robot_model)/urdf/followme_robot_model.gazebo.xacro" />
-	<xacro:include filename="$(find followme_robot_model)/urdf/sensors/lidar.xacro" />
-	<!-- <xacro:include filename="$(find followme_robot_model)/urdf/sensors/camera_depth.xacro" /> -->
+	<xacro:include filename="$(find follow_me_robot)/urdf/core/omni_wheel.urdf.xacro" />
+	<xacro:include filename="$(find follow_me_robot)/urdf/core/robot_body.urdf.xacro" />
+	<xacro:include filename="$(find follow_me_robot)/urdf/core/follow_me_robot.gazebo.xacro" />
+	<xacro:include filename="$(find follow_me_robot)/urdf/sensors/lidar.xacro" />
+	<!-- <xacro:include filename="$(find follow_me_robot)/urdf/sensors/camera_depth.xacro" /> -->
 	<!-- Wheel parameters -->
 	<xacro:property name="wheel_offset_x" value="0.2225" />    <!-- x,y,z in translation from base_link to the center of the wheel -->
 	<xacro:property name="wheel_offset_y" value="0.2045" />
@@ -38,7 +38,7 @@
 			<origin xyz="0 0 0.3" rpy="0 0 0" />
 		</xacro:lidar>
 
-		<xacro:include filename="$(find followme_robot_model)/urdf/sensors/camera.xacro" />
+		<xacro:include filename="$(find follow_me_robot)/urdf/sensors/camera.xacro" />
 
 	</xacro:macro>
 	<xacro:robot />

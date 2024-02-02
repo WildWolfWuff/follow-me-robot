@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:include filename="$(find followme_robot_model)/urdf/physics/inertial.urdf.xacro"/>
+  <xacro:include filename="$(find follow_me_robot)/urdf/core/inertial.urdf.xacro"/>
   <xacro:property name="PI" value="3.1415926535897931" />
 
   <!-- Wheels -->
@@ -28,7 +28,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="file://$(find followme_robot_model)/meshes/wheels/omni_wheel_${reflect}.dae" />
+          <mesh filename="file://$(find follow_me_robot)/meshes/omni_wheel_${reflect}.dae" />
         </geometry>
       </visual>
 

@@ -9,8 +9,8 @@ from launch_ros.actions import Node
 import xacro
 
 def generate_launch_description():
-    pkg_name = 'followme_robot_model'
-    model_file_path = 'robot/robot.urdf.xacro'
+    pkg_name = 'follow_me_robot'
+    model_file_path = 'urdf/robot.urdf.xacro'
     xacro_file = os.path.join(get_package_share_directory(pkg_name),model_file_path)
     bot_description_compiled = xacro.process_file(xacro_file).toxml()
     

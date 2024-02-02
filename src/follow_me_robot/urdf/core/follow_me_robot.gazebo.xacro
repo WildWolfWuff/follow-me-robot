@@ -12,7 +12,7 @@
 			</plugin>
 		</gazebo>
 	</xacro:macro>
-	<xacro:macro name="loop" param="joints:=^ *element">
+	<xacro:macro name="loop" params="joints:=^ *element">
 		<xacro:if value="${joints}">
 			<xacro:property name="joint" value="${joints.pop(0)}"/>
 			<joint_name>$(joint)</joint_name>

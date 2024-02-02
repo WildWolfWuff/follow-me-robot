@@ -15,12 +15,12 @@ import xacro
 
 def generate_launch_description():
     # define package name
-    pkg_name = 'followme_robot_model'
+    pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
     namespace = 'Follow-Me-Robot'
     
     # define and set path to xacro model filerobot_body_footprint
-    model_file_path = 'robot/robot.urdf.xacro'
+    model_file_path = 'urdf/robot.urdf.xacro'
     xacro_file = os.path.join(get_package_share_directory(pkg_name),model_file_path)
     
     # compile model

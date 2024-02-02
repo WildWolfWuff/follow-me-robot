@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>followme_robot_model</name>
+  <name>follow_me_robot</name>
   <version>0.0.0</version>
-  <description>The followme_robot_model package. See https://github.com/WildWolfWuff/follow-me-robot for more information.</description>
+  <description>The follow_me_robot package. See https://github.com/WildWolfWuff/follow-me-robot for more information.</description>
   <maintainer email="dev@todo.todo">dev</maintainer>
   <license>TODO: License declaration</license>
   <author email="hummelm.tin21@student.dhbw-heidenheim.de">Marc Hummel</author>
