@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<xacro:macro name="omni_steering" params="">
+		<gazebo>
+			<plugin name="psuedo_mecanum" filename="libgazebo_ros_planar_move.so">
+				<commandTopic>cmd_vel</commandTopic>
+				<odometryTopic>odom</odometryTopic>
+				<odometryFrame>odom</odometryFrame>
+				<odometryRate>50.0</odometryRate>
+				<robotBaseFrame>base_footprint</robotBaseFrame>
+				<publishTF>true</publishTF>
+			</plugin>
+		</gazebo>
+	</xacro:macro>
+	<xacro:macro name="loop" params="joints:=^ *element">
+		<xacro:if value="${joints}">
+			<xacro:property name="joint" value="${joints.pop(0)}"/>
+			<joint_name>$(joint)</joint_name>
+			<xacro:loop />
+		</xacro:if>
+	</xacro:macro>
+	<xacro:macro name="ros_joints_state_publisher" params="joints update_rate:=20">
+		<gazebo>
+			<plugin name="gazebo_ros_joint_state_publisher"
+				filename="libgazebo_ros_joint_state_publisher.so">
+				<update_rate>${update_rate}</update_rate>
+				<xacro:loop joints="${joints}" />				
+			</plugin>
+		</gazebo>
+	</xacro:macro>
+	<xacro:macro name="ros_joint_state_publisher" params="joint update_rate:=20">
+		<gazebo>
+			<plugin name="gazebo_ros_joint_state_publisher"
+				filename="libgazebo_ros_joint_state_publisher.so">
+				<update_rate>${update_rate}</update_rate>
+				<joint_name>${joint}</joint_name>
+			</plugin>
+		</gazebo>
+	</xacro:macro>
+	<xacro:macro name="ros_joint_pose_trajectory">
+		<gazebo>
+			<plugin name="gazebo_ros_joint_pose_trajectory"
+				filename="libgazebo_ros_joint_pose_trajectory.so">
+				<update_rate>2</update_rate>
+			</plugin>
+		</gazebo>
+	</xacro:macro>
+</robot>

@@ -1,4 +1,4 @@
 #!/bin/bash
-colcon build
+colcon build --symlink-install --event-handlers log_command+
 source install/setup.bash
-ros2 launch followme_robot_model robot.launch.py
+ros2 launch follow_me_robot robot.launch.py

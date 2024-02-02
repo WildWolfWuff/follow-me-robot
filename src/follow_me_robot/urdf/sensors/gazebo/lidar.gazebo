@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/wiki/xacro">
+  <!-- hokuyo -->
+  <xacro:macro name="lidar_gazebo" params="reference update:=20">
+    <gazebo reference="${reference}">
+      <sensor type="ray" name="head_hokuyo_sensor">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>false</visualize>
+        <always_on>true</always_on>
+        <update_rate>${update}</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>360</samples>
+              <resolution>10</resolution>
+              <min_angle>-3.14</min_angle>
+              <max_angle>3.14</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.3</min>
+            <max>30</max>
+            <resolution>10</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </ray>
+        <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_ray_sensor.so">
+          <ros>
+            <!-- <argument>~/out:=scan</argument> -->
+            <remapping>~/out:=scan</remapping>
+          </ros>
+          <topicName>/laser/scan</topicName>
+          <output_type>sensor_msgs/LaserScan</output_type>
+          <frame_name>${reference}</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

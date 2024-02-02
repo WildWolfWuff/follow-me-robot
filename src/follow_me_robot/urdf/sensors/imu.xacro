@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot name="follow_me_robot"
+  xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+  <xacro:include filename="$(find follow_me_robot)/urdf/physics/inertial.urdf.xacro" />
+  <xacro:macro name="imu_sensor" params="parent *origin">
+    <joint name="imu_joint" type="fixed">
+      <parent link="${parent}" />
+      <child link="imu_link" />
+      <xacro:insert_block name="origin" />
+    </joint>
+    <link name="imu_link">
+      <visual>
+        <geometry>
+          <box size="0.05 0.05 0.05"/>
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.05 0.05 0.05"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <!-- <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" /> -->
+        <xacro:solid_cuboid_inertia w="0.05" h="0.05" d="0.5" m="1e-5" />
+      </inertial>
+    </link>
+    <xacro:include filename="$(find follow_me_robot)/urdf/sensors/gazebo/imu.gazebo"/>
+  </xacro:macro>
+</robot>
