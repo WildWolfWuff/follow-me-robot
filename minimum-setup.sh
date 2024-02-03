@@ -16,4 +16,3 @@ sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro ${iron} -r -y
 sudo apt update && sudo apt install python3-colcon-common-extensions -y
-colcon build
