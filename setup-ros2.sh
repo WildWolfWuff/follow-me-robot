@@ -1,7 +1,10 @@
-#!/bin/bash
+used_shell=${SHELL##*/}
+echo "Use shell: ${used_shell}"
+
 printError(){
     echo -e "ERROR: \e[31m${1}\e[0m"
 }
+
 printStep() {
     echo -e "STEP: \e[32m${1}\e[0m"
 }
@@ -86,14 +89,14 @@ fi
 printStep "Verify instalation"
 printenv | grep -i ROS
 
-printStep "Set source in .bashrc"
-echo -e "source /opt/ros/${distro}/setup.bash\n" >> ~/.bashrc
-cat ~/.bashrc | grep "source /opt/ros/${distro}/setup.bash"
+printStep "Set source in .${used_shell}rc"
+echo "source /opt/ros/${distro}/setup.${used_shell}\n" >> ~/.${used_shell}rc
+cat ~/.${used_shell}rc | grep -x "source /opt/ros/${distro}/setup.${used_shell}"
 
 if [ $? -gt 0 ]; then
     printError "Missing source command"
 fi
-source /opt/ros/${distro}/setup.bash
+source /opt/ros/${distro}/setup.${used_shell}
 printStep "Init rosdep"
 sudo rosdep init
 rosdep update

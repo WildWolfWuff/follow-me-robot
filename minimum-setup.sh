@@ -1,4 +1,5 @@
 distro=iron
+used_shell=${SHELL##*/}
 sudo apt update && sudo apt install curl gnupg2 lsb-release -y
 sudo add-apt-repository universe
 
@@ -11,7 +12,7 @@ sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/
     | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 printStep "Install ros ${distor} Desktop"
 sudo apt update && sudo  apt install -y ros-${distro}-desktop-full
-source /opt/ros/${distro}/setup.bash
+source /opt/ros/${distro}/setup.${used_shell}
 sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro ${iron} -r -y
