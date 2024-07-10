@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="robot"
+	xmlns:xacro="http://www.ros.org/wiki/xacro">
 	<!-- Robot Size -->
 	<xacro:property name="body_length" value="0.80" />
 	<xacro:property name="body_with" value="0.5"/>
 	<xacro:property name="body_heigth" value="0.20"/>
 	<xacro:property name="wheel_height" value="0.087" />
-	
+
 	<!-- Import summit XL wheels -->
 	<xacro:include filename="core/omni_wheel.urdf.xacro" />
 	<xacro:include filename="core/robot_body.urdf.xacro" />
@@ -14,53 +15,55 @@
 	<xacro:include filename="world_base.urdf.xacro" />
 	<xacro:include filename="sensors/camera.xacro" />
 	<xacro:include filename="sensors/gps.xacro" />
-	
+	<xacro:include filename="sensors/imu.xacro" />
+
 	<!-- <xacro:include filename="$(find follow_me_robot)/urdf/sensors/camera_depth.xacro" /> -->
 	<!-- Additional params -->
 	<!-- Wheel parameters -->
-	<xacro:property name="wheel_offset_x" value="0.25" />    <!-- x,y,z in translation from base_link to the center of the wheel -->
+	<xacro:property name="wheel_offset_x" value="0.25" />
+	<!-- x,y,z in translation from base_link to the center of the wheel -->
 	<xacro:property name="wheel_offset_y" value="${(body_with/2)+(wheel_height/2)+0.005}" />
 	<xacro:property name="wheel_offset_z" value="0.0" />
 	<xacro:property name="wheel_radius" value="0.127" />
 	<xacro:property name="update_rate" value="20" />
-	<xacro:macro name="robot">
-		<xacro:robot_body wheel_radius="${wheel_radius}" 
-		body_length="${body_length}"
-		body_with="${body_with}"
-		body_heigth="${body_heigth}"
-		/>
+	<!-- <xacro:macro name="robot"> -->
+	<xacro:robot_body wheel_radius="${wheel_radius}" body_length="${body_length}" body_with="${body_with}" body_heigth="${body_heigth}" />
 
-		<xacro:omni_wheel prefix="front_right" parent="robot_body_link" reflect="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" >
-			<origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
-		</xacro:omni_wheel>
+	<xacro:omni_wheel prefix="front_right" parent="robot_body_link" reflect="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
+	</xacro:omni_wheel>
 
-		<xacro:omni_wheel prefix="front_left" parent="robot_body_link" reflect="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
-			<origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
-		</xacro:omni_wheel>
+	<xacro:omni_wheel prefix="front_left" parent="robot_body_link" reflect="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
+	</xacro:omni_wheel>
 
-		<xacro:omni_wheel prefix="back_left" parent="robot_body_link" reflect="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
-			<origin xyz="-${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
-		</xacro:omni_wheel>
+	<xacro:omni_wheel prefix="back_left" parent="robot_body_link" reflect="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="-${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
+	</xacro:omni_wheel>
 
-		<xacro:omni_wheel prefix="back_right" parent="robot_body_link" reflect="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
-			<origin xyz="-${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
-		</xacro:omni_wheel>
-		
-		<xacro:lidar parent="robot_body_link" laser_name="1">
-			<origin xyz="0 0 ${body_heigth/2+0.03}" rpy="0 0 0" />
-		</xacro:lidar>
+	<xacro:omni_wheel prefix="back_right" parent="robot_body_link" reflect="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="-${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="${pi/2} 0 0" />
+	</xacro:omni_wheel>
 
-		<xacro:camera camname="front" parent="robot_body_link">
-			<origin xyz="${body_length/2} 0 0.0"/>
-		</xacro:camera>
+	<xacro:lidar parent="robot_body_link" laser_name="1">
+		<origin xyz="0 0 ${body_heigth/2+0.03}" rpy="0 0 0" />
+	</xacro:lidar>
 
-	</xacro:macro>
-	<xacro:robot />
+	<xacro:camera camname="front" parent="robot_body_link">
+		<origin xyz="${body_length/2} 0 0.0"/>
+	</xacro:camera>
+	<xacro:gps parent="robot_body_link">
+		<origin xyz="0 0 0.0"/>
+	</xacro:gps>
+	<xacro:imu parent="robot_body_link">
+		<origin xyz="0 0 0.0"/>
+	</xacro:imu>
+	<!-- </xacro:macro>
+	<xacro:robot /> -->
 	<xacro:omni_steering />
 	<xacro:ros_joint_pose_trajectory />
 	<gazebo>
-		<plugin name="gazebo_ros_joint_state_publisher"
-			filename="libgazebo_ros_joint_state_publisher.so">
+		<plugin name="gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
 			<update_rate>${update_rate}</update_rate>
 			<joint_name>robot_footprint_joint</joint_name>
 			<joint_name>front_right_wheel_joint</joint_name>

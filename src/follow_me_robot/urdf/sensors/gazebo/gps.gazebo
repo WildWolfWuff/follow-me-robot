@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <robot name="sensor" xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-  <xacro:include filename="$(find follow_me_robot)/urdf/gps.xml"/>
-
-  <gazebo>
+<xacro:macro name="gazebogps" params="gps_name">
+  
+  <gazebo reference="${gps_name}_gps_link">
     <plugin name="gazebo_ros_gps" filename="libhector_gazebo_ros_gps.so">
       <updateRate>4.0</updateRate>
-      <bodyName>gps_link</bodyName>
-      <frameId>gps_link</frameId>
+      <bodyName>${gps_name}_gps_link</bodyName>
+      <frameId>${gps_name}_gps_link</frameId>
       <topicName>/gps/fix</topicName>
       <velocityTopicName>/gps/fix_velocity</velocityTopicName>
       <referenceLatitude>-30.06022459407145675</referenceLatitude>
@@ -20,4 +20,5 @@
       <velocityGaussianNoise>0.5 0.5 0.5</velocityGaussianNoise>
     </plugin>
   </gazebo>
+</xacro:macro>
 </robot>

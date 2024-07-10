@@ -13,7 +13,7 @@
     <link name="${side}_${direction}_sonar_link">
       <visual>
         <geometry>
-          <mesh filename="package://follow_me_robot/meshes/max_sonar_ez4.dae"/>
+          <mesh filename="package://follow_me_robot/urdf/meshes/max_sonar_ez4.dae"/>
         </geometry>
       </visual>
       <collision>

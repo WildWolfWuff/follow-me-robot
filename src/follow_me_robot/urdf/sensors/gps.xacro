@@ -4,7 +4,8 @@
   xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
   <xacro:macro name="gps" params="parent *origin gps_name=main">
     <xacro:include filename="core/material.xacro"/>
-
+    <xacro:include filename="sensors/gazebo/gps.gazebo"/>
+    
     <joint name="${gps_name}_gps_joint" type="fixed">
       <parent link="${parent}"/>
       <child link="${gps_name}_gps_link"/>
@@ -32,10 +33,10 @@
         <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
       </inertial>
     </link>
-
-
-    <gazebo reference="${gps_name}_gps_link">
+    <xacro:gazebogps gps_name="${gps_name}">
+    </xacro:gazebogps>
+    <!-- <gazebo >
       <material>Gazebo/Orange</material>
-    </gazebo>
+    </gazebo> -->
   </xacro:macro>
 </robot>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-    <xacro:include filename="$(find follow_me_robot)/urdf/physics/inertial.urdf.xacro" />
+    <xacro:include filename="$(find follow_me_robot)/urdf/core/inertial.urdf.xacro" />
     <xacro:include filename="$(find follow_me_robot)/urdf/material.xacro" />
     <xacro:macro name="reciver" params="parent *origin">
         <xacro:property name="recreciver_h" value="0.1" />
