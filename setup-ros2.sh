@@ -90,7 +90,11 @@ printStep "Verify instalation"
 printenv | grep -i ROS
 
 printStep "Set source in .${used_shell}rc"
+if [ "${used_shell}" = "zsh" ]; then
 echo "source /opt/ros/${distro}/setup.${used_shell}\n" >> ~/.${used_shell}rc
+else 
+echo -e "source /opt/ros/${distro}/setup.${used_shell}\n" >> ~/.${used_shell}rc
+fi
 cat ~/.${used_shell}rc | grep -x "source /opt/ros/${distro}/setup.${used_shell}"
 
 if [ $? -gt 0 ]; then
