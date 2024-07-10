@@ -1,22 +1,15 @@
 <?xml version="1.0"?>
 <robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="robot_body_geometry" >
 
-  <xacro:macro name="robot_body" params="wheel_radius">
-      <xacro:include filename="$(find follow_me_robot)/urdf/core/follow_me_robot.gazebo.xacro" />
+    </xacro:macro>
+  <xacro:macro name="robot_body" params="wheel_radius body_length body_with body_heigth">
+      <xacro:include filename="core/follow_me_robot.gazebo.xacro" />
 	  <!-- Robot mechanical and motor parameters -->	  
 
 	<!-- BASE FOOTPRINT -->
-		<link name="robot_footprint">
-		  <visual>
-			  <origin xyz="0 0 0" rpy="0 0 0" />
-			  <geometry>
-				 <box size="0.001 0.001 0.001" />
-			  </geometry>
-		  </visual>
-		</link>
-
 		<joint name="robot_footprint_joint" type="fixed">
-		  <parent link="robot_footprint"/>
+		  <parent link="base_footprint"/>
 		  <child link="robot_body_link" />
       <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
 		</joint>
@@ -31,9 +24,9 @@
 
     <visual>
        <origin xyz="0 0 0" rpy="0 0 0" />
-       <geometry>
-	       <mesh filename="file://$(find follow_me_robot)/meshes/robot_body.dae"/>
-       </geometry>
+        <geometry>
+            <box size="${body_length} ${body_with} ${body_heigth}"/>
+        </geometry>
        <material name="darkgrey">
          <color rgba="0.1 0.1 0.1 1"/>
        </material>
@@ -41,13 +34,8 @@
 
     <collision>
        <origin xyz="0 0 0" rpy="0 0 0 " />
-       <geometry>
-         <mesh filename="file://$(find follow_me_robot)/meshes/robot_body.dae"/>
-       </geometry>
+       <xacro:robot_body_geometry />
     </collision>
-
   </link>
-  
   </xacro:macro>
-
 </robot>

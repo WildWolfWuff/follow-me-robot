@@ -1,5 +1,7 @@
-used_shell=${SHELL##*/}
-echo "Used shell: $used_shell"
+#!/bin/bash
+used_shell="bash" # ${SHELL##*/}
 colcon build --symlink-install --event-handlers log_command+
-source ./install/setup.${used_shell}
-ros2 launch follow_me_robot robot.launch.py
+setup_path="$PWD/install/setup.$used_shell"
+echo "impport: $setup_path"
+. $setup_path
+ros2 launch follow_me_robot robot-foxglove.launch.py

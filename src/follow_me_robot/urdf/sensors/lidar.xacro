@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:include filename="$(find follow_me_robot)/urdf/core/inertial.urdf.xacro" />
-    <xacro:include filename="$(find follow_me_robot)/urdf/core/material.xacro" />
+    <xacro:include filename="../core/inertial.urdf.xacro" />
+    <xacro:include filename="../core/material.xacro" />
     <xacro:macro name="lidar" params="parent *origin laser_name">
 
         <joint name="${laser_name}_laser_joint" type="fixed">
@@ -25,7 +25,7 @@
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <mass value="0.1" />
-                <xacro:cylinder_inertia m="0.1" h="0.04" r="0.05" />    
+                <xacro:solid_cylinder_inertia m="0.1" h="0.04" r="0.05" />
             </inertial>
             
         </link>

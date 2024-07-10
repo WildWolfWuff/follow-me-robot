@@ -8,6 +8,8 @@
         "waderyan.gitblame",
         "twxs.cmake",
         "wayou.vscode-todo-highlight",
-        "dotjoshjohnson.xml"
+        "dotjoshjohnson.xml",
+        "wayou.vscode-todo-highlight",
+        "formulahendry.auto-close-tag"
     ]
 }
