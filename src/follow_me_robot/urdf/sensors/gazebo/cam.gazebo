@@ -1,23 +1,24 @@
 <?xml version="1.0"?>
 <robot name="sensor" xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-  <xacro:macro name="camgazebo" params="cam_name parent *origin">
+  <xacro:macro name="camgazebo" params="cam_name *origin">
     <!-- camera -->
-    <joint name="${camname}_camera_optical_joint" type="fixed">
-      <parent link="${parent}"/>
-      <child link="${camname}_camera_link_optical"/>
+    <joint name="${cam_name}_camera_optical_joint" type="fixed">
+      <parent link="${cam_name}_camera_link"/>
+      <child link="${cam_name}_camera_link_optical"/>
       <xacro:insert_block name="origin" />
     </joint>
-    <link name="${camname}_camera_link_optical"></link>
-    <gazebo reference="${parent}">
-      <sensor type="${cam_name}_camera" name="${cam_name}_cam">
+    <link name="${cam_name}_camera_link_optical"></link>
+    <gazebo reference="${cam_name}_camera_link">
+      <sensor type="camera" name="${cam_name}_cam">
         <update_rate>30.0</update_rate>
-        <camera name="head">
+
+        <camera name="${cam_name}_head">
           <horizontal_fov>1.3962634</horizontal_fov>
-          <image>
-            <width>800</width>
-            <height>800</height>
-            <format>R8G8B8</format>
-          </image>
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
           <clip>
             <near>0.02</near>
             <far>300</far>
@@ -30,20 +31,30 @@
             <mean>0.0</mean>
             <stddev>0.007</stddev>
           </noise>
+          <!-- <distortion>
+              <k1>0.1</k1>
+              <k2>0.2</k2>
+              <k3>0.3</k3>
+              <p1>0.4</p1>
+              <p2>0.5</p2>
+              <center>0.5 0.5</center>
+            </distortion> -->
         </camera>
-        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-          <alwaysOn>true</alwaysOn>
-          <updateRate>0.0</updateRate>
-          <cameraName>rrbot/${cam_name}_cam</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-          <frameName>${camname}_camera_link_optical</frameName>
-          <hackBaseline>0.07</hackBaseline>
-          <distortionK1>0.0</distortionK1>
-          <distortionK2>0.0</distortionK2>
-          <distortionK3>0.0</distortionK3>
-          <distortionT1>0.0</distortionT1>
-          <distortionT2>0.0</distortionT2>
+        <plugin name="camera_controller_${cam_name}" filename="libgazebo_ros_camera.so">
+          <ros>
+            <namespace>/rrbot/cam/${cam_name}</namespace>
+            <remapping>rrbot/${cam_name}_cam/image_raw:=image_raw</remapping>
+            <remapping>rrbot/${cam_name}_cam/image_depth:=image_depth</remapping>
+            <remapping>rrbot/${cam_name}_cam/camera_info:=camera_info</remapping>
+            <remapping>rrbot/${cam_name}_cam/camera_info_depth:=camera_info_depth</remapping>
+            <remapping>rrbot/${cam_name}_cam/points:=points</remapping>
+          </ros>
+          <always_on>true</always_on>
+          <camera_name>rrbot/${cam_name}_cam</camera_name>
+          <!-- <frameName>${cam_name}_camera_link_optical</frameName> -->
+          <hack_baseline>0.07</hack_baseline>
+          <min_depth>0.001</min_depth>
+          <max_depth>300.0</max_depth>
         </plugin>
       </sensor>
     </gazebo>

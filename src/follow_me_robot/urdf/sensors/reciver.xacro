@@ -1,18 +1,15 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-    <xacro:include filename="$(find follow_me_robot)/urdf/core/inertial.urdf.xacro" />
-    <xacro:include filename="$(find follow_me_robot)/urdf/material.xacro" />
-    <xacro:macro name="reciver" params="parent *origin">
-        <xacro:property name="recreciver_h" value="0.1" />
-        <xacro:property name="recreciver_w" value="0.1" />
-        <xacro:property name="recreciver_d" value="0.1" />
-        <xacro:property name="recreciver_m" value="0.1" />
-        <joint name="recover_joint">
+    <!-- <xacro:include filename="$(find follow_me_robot)/urdf/material.xacro" /> -->
+    <xacro:include filename="../core/inertial.urdf.xacro" />
+    <xacro:include filename="../core/material.xacro"/>
+    <xacro:macro name="reciver" params="reciver_name parent *origin recreciver_h=0.1 recreciver_w=0.1 recreciver_d=0.1 recreciver_m=0.1">
+        <joint name="${reciver_name}_recover_joint">
             <parent link="${parent}" />
-            <child link="reciver_link" />
+            <child link="${reciver_name}_reciver_link" />
             <xacro:insert_block name="origin" />
         </joint>
-        <link name="reciver_link">
+        <link name="${reciver_name}_reciver_link">
             <inertial>
                 <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
                 <mass value="${recreciver_m}"/>
@@ -22,7 +19,7 @@
                     d="${recreciver_d}"
                     w="${recreciver_w}" />
             </inertial>
-            <visual name="">
+            <visual>
                 <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
                 <geometry>
                     <box size="${recreciver_w} ${recreciver_d} ${recreciver_h}"/>
@@ -36,7 +33,7 @@
                 </geometry>
             </collision>
         </link>
-        <gazebo reference="reciver_link">
+        <gazebo reference="${reciver_name}_reciver_link">
             <material>Gazebo/Black</material>
             <sensor name="reciver" type=""></sensor>
         </gazebo>

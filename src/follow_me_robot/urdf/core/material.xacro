@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+<xacro:macro name="materials">
     <material name="white">
         <color rgba="1 1 1 1" />
     </material>
@@ -18,7 +19,8 @@
     <material name="green">
         <color rgba="0 1 0 1"/>
     </material>
-    <!-- <material name="orange">
-        <color rgba="${255/255} ${108/255} ${10/255} 1.0"/>
-    </material> -->
+    <material name="darkgrey">
+         <color rgba="0.1 0.1 0.1 1"/>
+    </material>
+</xacro:macro>
 </robot>

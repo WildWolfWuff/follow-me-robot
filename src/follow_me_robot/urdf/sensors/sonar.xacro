@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot name="follow_me_robot"
   xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-    <xacro:include filename="$(find follow_me_robot)/urdf/sensors/gazebo/sonar.gazebo"/>
+  <xacro:include filename="gazebo/sonar.gazebo"/>
   <xacro:macro name="sonar" params="side direction parent *origin">
     <xacro:property name="sufix" value="${side}_${direction}" />
     <joint name="${side}_${direction}_sonar_joint" type="fixed">

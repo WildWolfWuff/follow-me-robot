@@ -1,20 +1,18 @@
 <?xml version="1.0"?>
 <robot name="wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <xacro:include filename="./inertial.urdf.xacro"/>
-
+  <xacro:include filename="inertial.urdf.xacro"/>
   <!-- Wheels -->
-  <xacro:property name="wheel_mass" value="6.5" /> <!-- in kg-->
-  
+ 
   <xacro:macro name="omni_wheel_geometry" params="wheel_height wheel_radius reflect">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <geometry>
-      <mesh filename="meshes/omni_wheel_${reflect}.dae" />
+      <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${reflect}.dae" />
       <cylinder length="${wheel_height}" radius="${wheel_radius}" />
     </geometry>
   </xacro:macro>
   
   <xacro:macro name="omni_wheel" params="prefix parent *origin reflect wheel_height wheel_radius update_rate:=20">
-
+    <xacro:property name="wheel_mass" value="6.5" /> <!-- in kg-->
     <joint name="${prefix}_wheel_joint" type="continuous">
       <parent link="${parent}"/>
       <child link="${prefix}_wheel_link"/>
@@ -26,25 +24,22 @@
 
     <link name="${prefix}_wheel_link">
       <visual>
-      <xacro:omni_wheel_geometry reflect="${reflect}" 
-        wheel_height="${wheel_height}" 
-        wheel_radius="${wheel_radius}" />
-        <!-- <origin xyz="0 0 0" rpy="0 0 0" />
-        <geometry>
-          <mesh filename="file://$(find follow_me_robot)/meshes/omni_wheel_${reflect}.dae" />
-        </geometry> -->
+        <xacro:omni_wheel_geometry reflect="${reflect}" 
+          wheel_height="${wheel_height}" 
+          wheel_radius="${wheel_radius}" />
       </visual>
 
       <collision>
 				<origin xyz="0 0 0" rpy="${pi/2} 0 0" />
-        <geometry>
-					<cylinder length="${wheel_height}" radius="${wheel_radius}" />
-        </geometry>
+        <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
+      <geometry>
+        <!-- <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${reflect}.dae" /> -->
+        <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+      </geometry>
       </collision>
 
       <inertial>
         <mass value="${wheel_mass}" />
-        <origin xyz="0 0 0" />
         <xacro:solid_cylinder_inertia  m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
       </inertial>
     </link>

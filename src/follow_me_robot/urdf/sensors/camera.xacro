@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
-<xacro:macro name="camera" params="camname parent *origin">
-    <xacro:include filename="sensors/gazebo/cam.gazebo"/>
+<xacro:include filename="gazebo/cam.gazebo"/>
+<xacro:macro name="camera" params="cam_name parent *origin">
     
-    <joint name="${camname}_camera_joint" type="fixed">
+    <joint name="${cam_name}_camera_joint" type="fixed">
         <parent link="${parent}"/>
-        <child link="${camname}_camera_link"/>
+        <child link="${cam_name}_camera_link"/>
         <xacro:insert_block name="origin" />
     </joint>
 
-    <link name="${camname}_camera_link">
+    <link name="${cam_name}_camera_link">
         <visual>
             <geometry>
                 <box size="0.010 0.03 0.03"/>
@@ -25,10 +25,8 @@
         </visual>
     </link>
 
-    <xacro:camgazebo 
-        cam_name="${camname}" 
-        parent="${camname}_camera_link" >
-        <origin xyz="0.01 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+    <xacro:camgazebo cam_name="${cam_name}">
+        <origin xyz="0.01 0 0" rpy="${-pi/2} ${-pi/2} ${-pi/2}"/>
     </xacro:camgazebo>
 </xacro:macro>
 

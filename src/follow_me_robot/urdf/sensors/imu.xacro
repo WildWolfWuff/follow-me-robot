@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <robot name="sensor"
   xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-  <xacro:macro name="imu" params="parent *origin imu_name=main">
-    <xacro:include filename="core/inertial.urdf.xacro" />
-    <xacro:include filename="sensors/gazebo/imu.gazebo"/>
+  <xacro:include filename="../core/inertial.urdf.xacro" />
+  <xacro:include filename="gazebo/imu.gazebo"/>
+  <xacro:macro name="imu" params="parent *origin imu_name:=sensor_0">
     <joint name="${imu_name}_imu_joint" type="fixed">
       <parent link="${parent}" />
       <child link="${imu_name}_imu_link" />
@@ -23,7 +23,6 @@
       <inertial>
         <mass value="1e-5" />
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <!-- <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" /> -->
         <xacro:solid_cuboid_inertia w="0.05" h="0.05" d="0.5" m="1e-5" />
       </inertial>
     </link>

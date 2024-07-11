@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="follow_me_robot" xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-  <xacro:include filename="$(find follow_me_robot)/urdf/kinect.gazebo"/>
+  <xacro:include filename="gazebo/kinect.gazebo"/>
   <link name="camera_frame">
     <visual>
       <geometry>

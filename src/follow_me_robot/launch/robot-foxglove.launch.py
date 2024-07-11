@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch import LaunchDescription, InvalidLaunchFileError
+from launch.actions import IncludeLaunchDescription, GroupAction, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 from launch_xml.launch_description_sources import XMLLaunchDescriptionSource
 
@@ -18,39 +18,38 @@ def generate_launch_description():
     
     # compile model
     bot_description_compiled = xacro.process_file(xacro_file).toxml()
-    # with open("compiled-robot.urdf","w") as f:
-    #     f.write(bot_description_compiled)
-    # define start script for robot state publisher to publish the compiled robto description
-    node_robot_state_publisher = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        output='screen',
-        parameters=[{'robot_description': bot_description_compiled,
-        'use_sim_time': True}] # add other parameters here if required
-    )
-    
-    # # define start script for gazebo ui
-    # gazebo = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([os.path.join(
-    #         get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-    #     )
-    # define start script to spawn the robot from the robot description and name it mecanum-bot
-    # node_spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
-    #                 arguments=['-topic', 'robot_description',
-    #                             '-entity', 'mecanum-bot'],
-    #                 output='screen')
-    
-    path=os.path.join(get_package_share_directory("foxglove_bridge"),'launch',"foxglove_bridge_launch.xml")
-    print(path)
+    if bot_description_compiled is None:
+        raise InvalidLaunchFileError()
+
     foxglove_ws= IncludeLaunchDescription(
-        XMLLaunchDescriptionSource(path),
+        XMLLaunchDescriptionSource(os.path.join(get_package_share_directory("foxglove_bridge"),'launch',"foxglove_bridge_launch.xml")),
         launch_arguments=[("port","8765")])
-    #foxglove_studio=IncludeLaunchDescription(
-    #     AnyLaunchDescriptionSource("foxglove-studio")
-    # )
+   
+    # define start script to spawn the robot from the robot description and name it mecanum-bot
+    gazebo = GroupAction(
+        [
+        Node(
+            package='robot_state_publisher',
+            executable='robot_state_publisher',
+            output='screen',
+            parameters=[{
+                'robot_description': bot_description_compiled,
+            'use_sim_time': True
+            }] # add other parameters here if required
+        ),
+        TimerAction(period=0.5,actions=[
+            IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                [os.path.join(get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']
+                )
+            ),
+            Node(package='gazebo_ros', executable='spawn_entity.py',
+                    arguments=['-topic', 'robot_description',
+                                '-entity', 'mecanum-bot'],
+                    output='screen'),
+        ])])
     # retuns the defined launch scripts
-    return  LaunchDescription([
-        foxglove_ws,
-        node_robot_state_publisher,
-        # node_spawn_entity,
-    ])
+    ld=LaunchDescription([])
+    ld.add_action(foxglove_ws)
+    ld.add_action(gazebo)
+    return ld

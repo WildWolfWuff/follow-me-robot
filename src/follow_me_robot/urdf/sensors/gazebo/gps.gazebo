@@ -1,14 +1,36 @@
 <?xml version="1.0"?>
-<robot name="sensor" xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-<xacro:macro name="gazebogps" params="gps_name">
-  
-  <gazebo reference="${gps_name}_gps_link">
-    <plugin name="gazebo_ros_gps" filename="libhector_gazebo_ros_gps.so">
-      <updateRate>4.0</updateRate>
-      <bodyName>${gps_name}_gps_link</bodyName>
-      <frameId>${gps_name}_gps_link</frameId>
-      <topicName>/gps/fix</topicName>
-      <velocityTopicName>/gps/fix_velocity</velocityTopicName>
+<robot name="sensor"
+  xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+  <xacro:macro name="gazebogps" params="gps_name">
+    <gazebo reference="${gps_name}_gps_link">
+      <sensor name="${gps_name}_gps" type="gps">
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <gps>
+          <position_sensing>
+            <horizontal>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </horizontal>
+            <vertical>
+              <noise type="gaussian">
+                <mean>0.0</mean>
+                <stddev>2e-4</stddev>
+              </noise>
+            </vertical>
+          </position_sensing>
+        </gps>
+        <plugin name="gazebo_ros_gps_${gps_name}" filename="libgazebo_ros_gps_sensor.so">
+          <ros>
+            <namespace>/rrbot/gps/${gps_name}</namespace>
+            <remapping>~/out:=pos</remapping>
+          </ros>
+          <!-- <bodyName>${gps_name}_gps_link</bodyName>
+      <frameId>${gps_name}_gps_link</frameId> -->
+          <!-- <topicName>/gps/fix/${gps_name}</topicName> -->
+          <!-- <velocityTopicName>/gps/fix_velocity</velocityTopicName>
       <referenceLatitude>-30.06022459407145675</referenceLatitude>
       <referenceLongitude>-51.173913575780311191</referenceLongitude>
       <referenceHeading>90</referenceHeading>
@@ -17,8 +39,9 @@
       <drift>0.001 0.001 0.001</drift>
       <gaussianNoise>0.05 0.05 0.05</gaussianNoise>
       <velocityDrift>0.001 0.001 0.001</velocityDrift>
-      <velocityGaussianNoise>0.5 0.5 0.5</velocityGaussianNoise>
-    </plugin>
-  </gazebo>
-</xacro:macro>
+      <velocityGaussianNoise>0.5 0.5 0.5</velocityGaussianNoise> -->
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
 </robot>

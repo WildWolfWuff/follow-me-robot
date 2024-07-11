@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/wiki/xacro">
   <!-- hokuyo -->
-  <xacro:macro name="lidar_gazebo" params="reference update:=20">
-    <gazebo reference="${reference}">
-      <sensor type="ray" name="head_hokuyo_sensor">
+  <xacro:macro name="gazebolidar" params="laser_name update:=30">
+    <gazebo reference="${laser_name}_laser_frame">
+      <material>Gazebo/Red</material>
+      <sensor type="ray" name="${laser_name}_laser_sensor">
         <pose>0 0 0 0 0 0</pose>
         <visualize>false</visualize>
         <always_on>true</always_on>
@@ -28,14 +29,12 @@
             <stddev>0.01</stddev>
           </noise>
         </ray>
-        <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_ray_sensor.so">
+        <plugin name="gazebo_ros_laser_controller_${laser_name}" filename="libgazebo_ros_ray_sensor.so">
           <ros>
-            <!-- <argument>~/out:=scan</argument> -->
+            <namespace>/rrbot/laser/${laser_name}</namespace>
             <remapping>~/out:=scan</remapping>
           </ros>
-          <topicName>/laser/scan</topicName>
-          <output_type>sensor_msgs/LaserScan</output_type>
-          <frame_name>${reference}</frame_name>
+          <!-- <output_type>sensor_msgs/PointCloud2</output_type> -->
         </plugin>
       </sensor>
     </gazebo>

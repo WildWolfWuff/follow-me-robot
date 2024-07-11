@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:include filename="../core/inertial.urdf.xacro" />
-    <xacro:include filename="../core/material.xacro" />
-    <xacro:macro name="lidar" params="parent *origin laser_name">
+    <xacro:include filename="../core/material.xacro"/>
+    <xacro:include filename="gazebo/lidar.gazebo" />
+    <xacro:macro name="lidar" params="parent *origin laser_name:=sensor_0 update:=30">
 
         <joint name="${laser_name}_laser_joint" type="fixed">
             <parent link="${parent}" />
@@ -27,38 +28,7 @@
                 <mass value="0.1" />
                 <xacro:solid_cylinder_inertia m="0.1" h="0.04" r="0.05" />
             </inertial>
-            
         </link>
-
-        <gazebo reference="${laser_name}_laser_frame">
-            <material>Gazebo/Red</material>
-
-            <sensor name="laser" type="ray">
-                <pose> 0 0 0 0 0 0 </pose>
-                <visualize>true</visualize>
-                <update_rate>10</update_rate>
-                <ray>
-                    <scan>
-                        <horizontal>
-                            <samples>360</samples>
-                            <min_angle>-3.14</min_angle>
-                            <max_angle>3.14</max_angle>
-                        </horizontal>
-                    </scan>
-                    <range>
-                        <min>0.3</min>
-                        <max>10.0</max>
-                    </range>
-                </ray>
-                <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
-                    <ros>
-                        <argument>--ros-args --remap ~/out:=scan</argument>
-                    </ros>
-                    <output_type>sensor_msgs/LaserScan</output_type>
-                    <frame_name>${laser_name}_laser_frame</frame_name>
-                </plugin>
-            </sensor>
-        </gazebo>
-
+        <xacro:gazebolidar laser_name="${laser_name}" update="${update}"/>
     </xacro:macro>
 </robot>
