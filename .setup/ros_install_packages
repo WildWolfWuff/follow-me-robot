@@ -1,0 +1,38 @@
+used_shell=${SHELL##*/}
+. ./func/func.$used_shell
+distro=iron
+packages=""
+while getopts ":hd:s:p:" opt; do
+    case $opt in
+        d) 
+           distro="${OPTARG}"
+           printInfo "use distro $distro"
+        ;;
+        p)
+            p=${OPTARG}
+            packages="${packages} ${p}"
+        ;;
+        ?|h)
+            printText "Usage: $(basename $0) [-d ros distro] [-p package_name] [-h]"
+            exit 1
+        ;;
+    esac
+done
+if [ -n "$packages" ]; then
+    installPackages=""
+    printStep "install packages: ${packages}"
+    for package in $packages; do
+        echo $package
+        installPackages="$installPackages ros-$ROS_DISTRO-${package##' '}"
+    done
+    printInfo "$installPackages"
+    sudo apt update && sudo apt install -y $installPackages
+    if [ $? -gt 0 ]; then
+        exit 1;
+    fi
+    printStep "Cleanup installation"
+    sudo apt autoremove && sudo apt clean
+    if [ $? -gt 0 ]; then
+        exit 1;
+    fi
+fi

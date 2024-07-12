@@ -1,0 +1,14 @@
+used_shell=${SHELL##*/}
+. ./func/func.${used_shell}
+
+git config pull.rebase true
+printStep "Setup git config"
+if [ "$(git config --global user.name)" != "" ]; then
+    exit 0
+fi
+printInput "Git user name"
+read userName
+git config --global user.name "$userName"
+printInput "Git email"
+read email
+git config --global user.email "$email"

@@ -1,0 +1,97 @@
+used_shell=${SHELL##*/}
+. ./func/func.${used_shell}
+
+distro=iron
+install_tools=false
+install_full=false
+while getopts ":hd:tf" opt; do
+    case $opt in
+        d) 
+           distro="${OPTARG}"
+           printInfo "use distro $distro"
+        ;;
+        t)
+            install_tools=true
+            printInfo "install tools"
+        ;;
+        f)
+            install_full=true
+            printInfo "install dektop apps"
+        ;;
+        ?|h)
+            printText "Usage: $(basename $0) [-d ros distro] [-s source folder]"
+            exit 1
+        ;;
+    esac
+done
+
+# see https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html for install tutorial
+printStep "Install basic"
+sudo apt update && sudo apt install -y curl gnupg2 lsb-release
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
+
+printStep "Setup language"
+locale  # check for UTF-8
+sudo apt update && sudo apt install locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+# verify settings
+if [ $(locale | grep LANG=en_US.UTF-8) -gt 0 ]; then
+    printError "Failed to configure language"
+    exit 1;
+fi
+printStep "Setup repositories"
+sudo apt install software-properties-common -y
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
+sudo add-apt-repository universe -y
+printStep "Add ros apt keys"
+
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
+    | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
+printStep "Add gazebo apt keys"
+sudo curl -sSL https://packages.osrfoundation.org/gazebo.gpg -o /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
+    | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
+
+if [ "$install_tools" = "true" ]; then
+    printStep "Install ros dev tools"
+    sudo apt update && sudo apt install -y ros-dev-tools
+    if [ $? -gt 0 ]; then
+        exit 1;
+    fi
+fi
+
+printStep "Update system"
+sudo apt update && sudo apt upgrade -y
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
+
+printStep "Install ros base"
+sudo apt update && sudo  apt install -y ros-${distro}-ros-base
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
+
+if [ "$install_full" = "true" ]; then
+    printStep "Install ros ${distor} Desktop"
+    sudo apt update && sudo  apt install -y ros-${distro}-desktop-full
+    if [ $? -gt 0 ]; then
+        exit 1;
+    fi
+fi
+
+printStep "Install colcon"
+sudo apt update && sudo apt install python3-colcon-common-extensions -y
