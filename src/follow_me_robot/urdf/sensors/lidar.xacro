@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
     <xacro:include filename="../core/inertial.urdf.xacro" />
-    <xacro:include filename="../core/material.xacro"/>
     <xacro:include filename="gazebo/lidar.gazebo" />
     <xacro:macro name="lidar" params="parent *origin laser_name:=sensor_0 update:=30">
 

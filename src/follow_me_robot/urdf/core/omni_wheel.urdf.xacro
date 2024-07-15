@@ -1,68 +1,84 @@
 <?xml version="1.0"?>
-<robot name="wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot namee="wheel"  xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:include filename="inertial.urdf.xacro"/>
   <!-- Wheels -->
- 
-  <xacro:macro name="omni_wheel_geometry" params="wheel_height wheel_radius reflect">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <geometry>
-      <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${reflect}.dae" />
-      <cylinder length="${wheel_height}" radius="${wheel_radius}" />
-    </geometry>
-  </xacro:macro>
-  
-  <xacro:macro name="omni_wheel" params="prefix parent *origin reflect wheel_height wheel_radius update_rate:=20">
-    <xacro:property name="wheel_mass" value="6.5" /> <!-- in kg-->
-    <joint name="${prefix}_wheel_joint" type="continuous">
+  <xacro:macro name="omni_wheel" params="parent x y z reflect side position wheel_height wheel_radius update_rate:=20">
+    <xacro:property name="wheel_mass" value="6.5" />
+    <xacro:property name="prefix" value="${position}_${side}" />
+    <xacro:if value="${side == 'left'}">
+      <xacro:property name="origin_factor" value="1"/>
+    </xacro:if>
+    <xacro:if value="${side == 'right'}">
+      <xacro:property name="origin_factor" value="-1"/>
+    </xacro:if>
+    <joint name="${prefix}_wheel_motor_joint" type="fixed">
       <parent link="${parent}"/>
+      <child link="${prefix}_wheel_motor_link"/>
+      <origin xyz="${x} ${y-0.04*origin_factor} ${z}" rpy="0 0 0"/>
+    </joint>
+    <link name="${prefix}_wheel_motor_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.1 0.1 0.1"/>
+        </geometry>
+        <material name="darkgrey" />
+      </visual>
+    </link>
+    <joint name="${prefix}_wheel_joint" type="continuous">
+      <parent link="${prefix}_wheel_motor_link"/>
       <child link="${prefix}_wheel_link"/>
-      <xacro:insert_block name="origin" />
+      <origin xyz="0 ${(wheel_height/2 + 0.05) * origin_factor} 0" rpy="0 0 0" />
       <axis xyz="0 1 0" rpy="0 0 0" />
-      <limit effort="100" velocity="100"/>
-      <joint_properties damping="0.0" friction="0.0"/>
     </joint>
 
     <link name="${prefix}_wheel_link">
       <visual>
-        <xacro:omni_wheel_geometry reflect="${reflect}" 
-          wheel_height="${wheel_height}" 
-          wheel_radius="${wheel_radius}" />
+        <!-- <origin xyz="0 0 0" rpy="${pi/2} 0 0" /> -->
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${reflect}.dae" />
+          <!-- <cylinder length="${wheel_height}" radius="${wheel_radius}" /> -->
+        </geometry>
       </visual>
 
       <collision>
-				<origin xyz="0 0 0" rpy="${pi/2} 0 0" />
-        <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
-      <geometry>
-        <!-- <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${reflect}.dae" /> -->
-        <cylinder length="${wheel_height}" radius="${wheel_radius}" />
-      </geometry>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
+        <geometry>
+          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+        </geometry>
       </collision>
 
       <inertial>
         <mass value="${wheel_mass}" />
-        <xacro:solid_cylinder_inertia  m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
+        <xacro:solid_cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
       </inertial>
     </link>
 
     <!-- Transmission is important to link the joints and the controller (see robot_control/config/robot_control.yaml)-->
     <transmission name="${prefix}_wheel_joint_trans">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}_wheel_joint" >
+      <joint name="${prefix}_wheel_joint">
         <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
       </joint>
-      <actuator name="${prefix}_wheel_joint_motor">
-         <mechanicalReduction>1</mechanicalReduction>
+      <actuator name="${prefix}_wheel_joint_actuator">
+        <mechanicalReduction>50</mechanicalReduction>
       </actuator>
     </transmission>
 
-    <gazebo reference="${prefix}_wheel_link">
-		<mu1 value="1.0"/>
-		<mu2 value="1.0"/>
-		<kp value="10000000.0" />
-		<kd value="1.0" />
-		<fdir1 value="1 0 0"/>
-        <turnGravityOff>false</turnGravityOff>
+    <gazebo reference="${prefix}_wheel_case">
+      <mu1 value="1.0"/>
+      <mu2 value="1.0"/>
+      <kp value="10000000.0" />
+      <kd value="1.0" />
+      <fdir1 value="1 0 0"/>
+      <turnGravityOff>false</turnGravityOff>
     </gazebo>
-  
+    <!-- <gazebo>
+      <plugin name="gazebo_ros_joint_state_publisher_${prefix}" filename="libgazebo_ros_joint_state_publisher.so">
+      <update_rate>100</update_rate>
+      <joint_name>${prefix}_wheel_joint</joint_name>
+      </plugin>
+    </gazebo> -->
   </xacro:macro>
 </robot>

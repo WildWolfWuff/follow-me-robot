@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/wiki/xacro">
-  <!-- hokuyo -->
+  <xacro:include filename="./macros.xacro"/>
   <xacro:macro name="gazebolidar" params="laser_name update:=30">
     <gazebo reference="${laser_name}_laser_frame">
       <material>Gazebo/Red</material>
@@ -23,18 +23,14 @@
             <max>30</max>
             <resolution>10</resolution>
           </range>
-          <noise>
-            <type>gaussian</type>
-            <mean>0.0</mean>
-            <stddev>0.01</stddev>
-          </noise>
+          <xacro:sensor_noise/>
         </ray>
         <plugin name="gazebo_ros_laser_controller_${laser_name}" filename="libgazebo_ros_ray_sensor.so">
           <ros>
             <namespace>/rrbot/laser/${laser_name}</namespace>
             <remapping>~/out:=scan</remapping>
           </ros>
-          <!-- <output_type>sensor_msgs/PointCloud2</output_type> -->
+          <output_type>sensor_msgs/PointCloud2</output_type>
         </plugin>
       </sensor>
     </gazebo>

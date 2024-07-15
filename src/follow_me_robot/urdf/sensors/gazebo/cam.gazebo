@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot name="sensor" xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+  <xacro:include filename="./macros.xacro"/>
   <xacro:macro name="camgazebo" params="cam_name *origin">
     <!-- camera -->
     <joint name="${cam_name}_camera_optical_joint" type="fixed">
@@ -23,14 +24,13 @@
             <near>0.02</near>
             <far>300</far>
           </clip>
-          <noise>
-            <type>gaussian</type>
+          <!-- <noise>
+            <type>gaussian</type> -->
             <!-- Noise is sampled independently per pixel on each frame.
                That pixel's noise value is added to each of its color
                channels, which at that point lie in the range [0,1]. -->
-            <mean>0.0</mean>
-            <stddev>0.007</stddev>
-          </noise>
+          <!-- </noise> -->
+               <xacro:sensor_noise />
           <!-- <distortion>
               <k1>0.1</k1>
               <k2>0.2</k2>

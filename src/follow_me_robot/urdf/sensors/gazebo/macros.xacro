@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<robot name="sensor"
+    xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:macro name="sensor_noise" params="mean:=0.0 stddev:=1e-3">
+        <noise type="gaussian">
+            <type>gaussian</type>
+            <mean>${mean}</mean>
+            <stddev>${stddev}</stddev>
+        </noise>
+    </xacro:macro>
+</robot>

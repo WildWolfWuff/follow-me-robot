@@ -2,14 +2,18 @@
     "recommendations": [
         "ms-iot.vscode-ros",
         "ms-python.python",
+        "donjayamanne.python-extension-pack",
+        "ms-python.vscode-pylance",
+        "ms-python.pylint",
+        "ms-python.mypy-type-checker",
         "smilerobotics.urdf",
         "sweilz.ros-snippets",
-        "mhutchie.git-graph",
-        "waderyan.gitblame",
+        "IOLOII.oh-git",
         "twxs.cmake",
-        "wayou.vscode-todo-highlight",
         "dotjoshjohnson.xml",
         "wayou.vscode-todo-highlight",
-        "formulahendry.auto-close-tag"
+        "formulahendry.auto-close-tag",
+        "batisteo.vscode-django",
+        "redhat.vscode-xml"
     ]
 }
