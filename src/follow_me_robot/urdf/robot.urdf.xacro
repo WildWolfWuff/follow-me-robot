@@ -68,7 +68,7 @@
 		</plugin>
 	</gazebo>
 
-	<!-- <xacro:include filename="sensors/lidar.xacro" />
+	<xacro:include filename="sensors/lidar.xacro" />
 	<xacro:lidar parent="robot_body_link">
 		<origin xyz="0 0 ${body_heigth/2+0.03}" rpy="0 0 0" />
 	</xacro:lidar>
@@ -86,6 +86,6 @@
 	<xacro:include filename="sensors/camera.xacro" />
 	<xacro:camera cam_name="front" parent="robot_body_link">
 		<origin xyz="${body_length/2} 0 0.0"/>
-	</xacro:camera> -->
+	</xacro:camera>
 
 </robot>
