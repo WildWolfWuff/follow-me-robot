@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
-<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot xmlns="http://www.ros.org" name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:include filename="inertial.urdf.xacro"/>
   <xacro:include filename="material.xacro"/>
   <xacro:include filename="follow_me_robot.gazebo.xacro" />
   <xacro:macro name="robot_body" params="wheel_radius body_length body_with body_heigth">
   <!-- Robot mechanical and motor parameters -->
-
+  <joint name="robot_body_joint" type="fixed">
+		<parent link="base_footprint"/>
+		<child link="robot_body_link" />
+		<origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
+	</joint>
   <!-- BASE_LINK -->
   <link name="robot_body_link">
     <inertial>

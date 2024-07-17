@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="robot"
+<robot xmlns="http://www.ros.org" name="robot"
 	xmlns:xacro="http://www.ros.org/wiki/xacro">
 	<!-- Robot Size -->
 	<xacro:property name="body_length" value="0.80" />
@@ -10,7 +10,7 @@
 	<!-- Wheel parameters -->
 	<xacro:property name="wheel_offset_x" value="0.25" />
 	<!-- x,y,z in translation from base_link to the center of the wheel -->
-	<xacro:property name="wheel_offset_y" value="${(body_with/2)}" />
+	<xacro:property name="wheel_offset_y" value="${(body_with/2+0.051)}" />
 	<xacro:property name="wheel_offset_z" value="0.0" />
 	<xacro:property name="wheel_radius" value="0.127" />
 	<xacro:property name="update_rate" value="20" />
@@ -25,12 +25,6 @@
 			</geometry>
 		</visual>
 	</link>
-	<joint name="robot_footprint_joint" type="fixed">
-		<parent link="base_footprint"/>
-		<child link="robot_body_link" />
-		<origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
-	</joint>
-
 	<xacro:include filename="core/material.xacro" />
 	<xacro:materials />
 	<xacro:include filename="core/omni_wheel.urdf.xacro" />
@@ -38,34 +32,39 @@
 	<xacro:include filename="core/follow_me_robot.gazebo.xacro" />
 
 	<!-- Additional params -->
-
 	<xacro:robot_body wheel_radius="${wheel_radius}" body_length="${body_length}" body_with="${body_with}" body_heigth="${body_heigth}" />
 
-	<xacro:omni_wheel position="front" side="right" parent="robot_body_link" reflect="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" x="${wheel_offset_x}" y="-${wheel_offset_y}" z="${wheel_offset_z}" />
-
-	<xacro:omni_wheel position="front" side="left" parent="robot_body_link" reflect="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" x="${wheel_offset_x}" y="${wheel_offset_y}" z="${wheel_offset_z}"/>
-
-	<xacro:omni_wheel position="back" side="left" parent="robot_body_link" reflect="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" x="-${wheel_offset_x}" y="${wheel_offset_y}" z="${wheel_offset_z}" />
-
-	<xacro:omni_wheel position="back" side="right" parent="robot_body_link" reflect="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" x="-${wheel_offset_x}" y="-${wheel_offset_y}" z="${wheel_offset_z}" />
-
+	<xacro:wheel_motor parent="robot_body_link" position="front" side="right" reflect="-1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" >
+		<origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0.0 0.0 0.0"/>
+	</xacro:wheel_motor>
+	<xacro:wheel_motor parent="robot_body_link" position="front" side="left" reflect="1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
+	</xacro:wheel_motor> 
+	<xacro:wheel_motor parent="robot_body_link" position="back" side="left" reflect="1"  wheel_img="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="-${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
+	</xacro:wheel_motor>
+	<xacro:wheel_motor parent="robot_body_link" position="back" side="right" reflect="-1" wheel_img="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="-${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
+	</xacro:wheel_motor>
+	
 	<xacro:omni_steering />
 	<!-- <xacro:ros_joint_pose_trajectory /> -->
 	<gazebo>
+		<plugin name="gazebo_ros_joint_pose_trajectory" filename="libgazebo_ros_joint_pose_trajectory.so">
+			<update_rate>2</update_rate>
+		</plugin>
 		<plugin name="gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
-		<ros>
+		<!-- <ros>
 			<namespace>/</namespace>
 			<remapping>joint_states:=joint_states</remapping>
-		</ros>
+		</ros> -->
 		<update_rate>2</update_rate>
 		<joint_name>front_right_wheel_joint</joint_name>
 		<joint_name>front_left_wheel_joint</joint_name>
 		<joint_name>back_left_wheel_joint</joint_name>
 		<joint_name>back_right_wheel_joint</joint_name>
 		</plugin>
-		<plugin name="gazebo_ros_joint_pose_trajectory" filename="libgazebo_ros_joint_pose_trajectory.so">
-			<update_rate>2</update_rate>
-		</plugin>
+		
 	</gazebo>
 
 	<xacro:include filename="sensors/lidar.xacro" />

@@ -28,13 +28,7 @@ def generate_launch_description():
         parameters=[{'robot_description': bot_description_compiled,
         'use_sim_time': True}] # add other parameters here if required
     )
-    # node_joint_state_publisher_gui = Node(
-    #     package='joint_state_publisher_gui',
-    #     executable='joint_state_publisher_gui',
-    #     output='screen'
-    # )
     ld = LaunchDescription([
         node_robot_state_publisher,
-        # node_joint_state_publisher_gui
     ])
     return ld

@@ -28,6 +28,10 @@
         {
             "systemId": "https://raw.githubusercontent.com/ros/urdfdom/master/xsd/urdf.xsd",
             "pattern": "{*.urdf,*.urdf.xacro}"
+        },
+        {
+            "systemId": "http://sdformat.org/schemas/root.xsd",
+            "pattern": "{*.sdf,*.sdf.xacro}"
         }
     ]
 }
