@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot name="sensor"
   xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+  <xacro:include filename="./macros.xacro"/>
   <xacro:macro name="gazebogps" params="gps_name">
     <gazebo reference="${gps_name}_gps_link">
       <sensor name="${gps_name}_gps" type="gps">
@@ -9,16 +10,10 @@
         <gps>
           <position_sensing>
             <horizontal>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
-              </noise>
+              <xacro:sensor_noise />
             </horizontal>
             <vertical>
-              <noise type="gaussian">
-                <mean>0.0</mean>
-                <stddev>2e-4</stddev>
-              </noise>
+              <xacro:sensor_noise />
             </vertical>
           </position_sensing>
         </gps>

@@ -1,129 +1,45 @@
 used_shell=${SHELL##*/}
 echo "Use shell: ${used_shell}"
-
-printError(){
-    echo -e "ERROR: \e[31m${1}\e[0m"
-}
-
-printStep() {
-    echo -e "STEP: \e[32m${1}\e[0m"
-}
-
-printInput(){
-    echo -e "INPUT: \e[32m${1}\e[0m"
-}
-
-setupGit(){
-    if [ $(git config --global user.name) != "" ]; then
-        exit 0
-    fi
-    printStep "Setup git config"
-    printInput "Git user name"
-    read userName
-    git config --global user.name "$userName"
-    printInput "Git email"
-    read email
-    git config --global user.email "$email"
-}
+. ./.setup/func/func.${used_shell}
 
 distro=iron
-while getopts ":d:esg" opt; do
+while getopts ":d:sh" opt; do
     case $opt in
         d) 
            distro="${OPTARG}"
-        ;;
-        e)
-            printStep "Install vscode extensions"
-            code --help > /dev/null
-            if [ $? -ne 0 ]; then
-            	sudo snap install --classic code
-            fi
-            code --install-extension .vscode/extensions.json
-            exit $?
         ;;
         s) 
             sudo apt update && sudo apt install openssh-server && sudo ufw allow ssh
             exit $?
         ;;
+        ?|h)
+            printText "Usage: $(basename $0) [-d ros distro] [-s] [-h]"
+            exit 1
+        ;;
     esac
 done
 
-# setupGit
+cd .setup
+# setup git
+${used_shell} ./git_config
 
-printStep "Install basic"
-sudo apt update && sudo apt install curl gnupg2 lsb-release -y
-
-printStep "Setup language"
-locale  # check for UTF-8
-sudo apt update && sudo apt install locales
-sudo locale-gen en_US en_US.UTF-8
-sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-export LANG=en_US.UTF-8
-locale  # verify settings
-
-printStep "Setup repositories"
-sudo apt install software-properties-common -y
+# install ros system
+${used_shell} ./ros_install -d $distro -tf
 if [ $? -gt 0 ]; then
     exit 1;
 fi
-sudo add-apt-repository universe -y
 
-sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" \
-    | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-
-sudo curl -sSL https://packages.osrfoundation.org/gazebo.gpg -o /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
-sudo echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
-    | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
-
-printStep "Install ros dev tools"
-sudo apt update && sudo apt install -y ros-dev-tools
+# add ros script to shell configuration
+${used_shell} ./ros_add_source -d $distro
 if [ $? -gt 0 ]; then
     exit 1;
 fi
-printStep "Install ros ${distor} Desktop"
-sudo apt update && sudo  apt install -y ros-${distro}-desktop-full
+
+# intialize ros project
+${used_shell} ./ros_init -d $distro
 if [ $? -gt 0 ]; then
     exit 1;
 fi
-printStep "Verify instalation"
-printenv | grep -i ROS
-
-printStep "Set source in .${used_shell}rc"
-if [ "${used_shell}" = "zsh" ]; then
-echo "source /opt/ros/${distro}/setup.${used_shell}\n" >> ~/.${used_shell}rc
-else 
-echo -e "source /opt/ros/${distro}/setup.${used_shell}\n" >> ~/.${used_shell}rc
-fi
-cat ~/.${used_shell}rc | grep -x "source /opt/ros/${distro}/setup.${used_shell}"
-
-if [ $? -gt 0 ]; then
-    printError "Missing source command"
-fi
-source /opt/ros/${distro}/setup.${used_shell}
-printStep "Init rosdep"
-sudo rosdep init
-rosdep update
-rosdep install --from-paths src --ignore-src --rosdistro ${iron} -r -y
-
-printStep "Install colcon"
-sudo apt update && sudo apt install python3-colcon-common-extensions -y
-
-printStep "Install basic packages"
-sudo apt update && sudo apt install -y \
-    ros-${distro}-joint-state-publisher \
-    ros-${distro}-joint-state-publisher-gui \
-    ros-${distro}-xacro \
-    ros-${distro}-gazebo-ros-pkgs
-
-sudo apt autoremove && sudo apt clean
-
-printStep "Build project"
-colcon build
-printStep "Install vs code extensions"
-code .
-if [ $? -ne 0 ]; then
-	sudo snap install --classic code
-    code .
-fi
-code --install-extension .vscode/extensions.json
+${used_shell} ./ros_install_packages -d $distro -p imu-tools -p gps-tools
+# configure visual studio code
+${used_shell} ./open_vscode

@@ -1,63 +1,34 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 
-from launch import LaunchDescription
-from launch.actions import (DeclareLaunchArgument, GroupAction,
-                            IncludeLaunchDescription, TimerAction)
-from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-
-from launch_ros.actions import Node, PushRosNamespace
-
+from launch import LaunchDescription,InvalidLaunchFileError
 from launch_ros.actions import Node
 import xacro
 
+# launch the robot state publisher
 def generate_launch_description():
     # define package name
     pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
-    namespace = 'Follow-Me-Robot'
+    # namespace = 'Follow-Me-Robot'
     
-    # define and set path to xacro model filerobot_body_footprint
+    # define start script for robot state publisher to publish the compiled robto description
     model_file_path = 'urdf/robot.urdf.xacro'
-    xacro_file = os.path.join(get_package_share_directory(pkg_name),model_file_path)
+    xacro_file = os.path.join(pkg_path,model_file_path)
     
     # compile model
     bot_description_compiled = xacro.process_file(xacro_file).toxml()
-    
+    if bot_description_compiled is None:
+        raise InvalidLaunchFileError("Error while compile robot description")
     # define start script for robot state publisher to publish the compiled robto description
-    
-    gazebo = GroupAction(
-        [
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            output='screen',
-            parameters=[{'robot_description': bot_description_compiled,
-            'use_sim_time': True}] # add other parameters here if required
-        ),
-        TimerAction(period=0.5,actions=[
-            IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [os.path.join(get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']
-                )
-            ),
-            Node(package='gazebo_ros', executable='spawn_entity.py',
-                    arguments=['-topic', 'robot_description',
-                                '-entity', 'mecanum-bot'],
-                    output='screen'),
-        ]),
-        TimerAction(period=10.0,actions=[
-            Node(package='rviz2',
-            executable='rviz2',
-            arguments=['-d', os.path.join(pkg_path,'rviz','model.rviz')],
-            output='screen')
-        ])
+    node_robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        parameters=[{'robot_description': bot_description_compiled,
+        'use_sim_time': True}] # add other parameters here if required
+    )
+    ld = LaunchDescription([
+        node_robot_state_publisher,
     ])
-    # define start script for gazebo ui
-
-    # retuns the defined launch scripts
-    ld = LaunchDescription([])
-    ld.add_action(gazebo)
     return ld

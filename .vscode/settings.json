@@ -3,10 +3,35 @@
     "ros.distro": "iron",
     "python.autoComplete.extraPaths": [
         "/opt/ros/iron/lib/python3.10/site-packages",
-        "/opt/ros/iron/local/lib/python3.10/dist-packages"
+        "/opt/ros/iron/local/lib/python3.10/dist-packages",
     ],
     "python.analysis.extraPaths": [
         "/opt/ros/iron/lib/python3.10/site-packages",
-        "/opt/ros/iron/local/lib/python3.10/dist-packages"
+        "/opt/ros/iron/local/lib/python3.10/dist-packages",
+        "${workspaceFolder}/src"
     ],
+    "python.defaultInterpreterPath": "/usr/local/bin/python",
+    "python.languageServer": "Pylance",
+    "python.missingPackage.severity": "Information",
+    "pythonIndent.trimLinesWithOnlyWhitespace": true,
+    "python.linting.pylintArgs": [
+        "--load-plugins=pylint_django"
+    ],
+    "pylint.lintOnChange": false,
+    "python.analysis.autoImportCompletions": false,
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.inlayHints.pytestParameters": true,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.analysis.inlayHints.callArgumentNames": "partial",
+    "python.analysis.inlayHints.variableTypes": true,
+    "xml.fileAssociations": [
+        {
+            "systemId": "https://raw.githubusercontent.com/ros/urdfdom/master/xsd/urdf.xsd",
+            "pattern": "{*.urdf,*.urdf.xacro}"
+        },
+        {
+            "systemId": "http://sdformat.org/schemas/root.xsd",
+            "pattern": "{*.sdf,*.sdf.xacro}"
+        }
+    ]
 }

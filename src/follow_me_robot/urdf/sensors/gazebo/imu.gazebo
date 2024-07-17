@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <robot name="sensor" xmlns:xacro="http://wiki.ros.org/xacro">
+<xacro:include filename="./macros.xacro"/>
+
 <xacro:macro name="gazeboimu" params="imu_name">
   <gazebo reference="${imu_name}_imu_link">
     <sensor name="${imu_name}_imu_sensor" type="imu">
@@ -9,19 +11,41 @@
       <visualize>true</visualize>
       <imu>
         <orientation_reference_frame>
-          <localization>GRAV_UP</localization>
+          <localization>CUSTOM</localization>
+          <custom_rpy parent_frame="base_footprint">0 0 0</custom_rpy>
+          <grav_dir_x parent_frame="base_footprint">1 0 0</grav_dir_x>
           <!-- <localization>GRAV_DOWN</localization> -->
-
-        </orientation_reference_frame> 
+        </orientation_reference_frame>
+        <angular_velocity>
+          <x>
+            <xacro:sensor_noise/>
+          </x>
+          <y>
+            <xacro:sensor_noise/>
+          </y>
+          <z>
+            <xacro:sensor_noise/>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <xacro:sensor_noise/>
+          </x>
+          <y>
+            <xacro:sensor_noise/>
+          </y>
+          <z>
+            <xacro:sensor_noise/>
+          </z>
+        </linear_acceleration>
         <enable_orientation>true</enable_orientation>
       </imu>
-      <!-- <topic>/rrbot/imu/${imu_name}/data</topic> -->
       <plugin name="${imu_name}_imu_plugin" filename="libgazebo_ros_imu_sensor.so">
         <ros>
             <namespace>/rrbot/imu/${imu_name}</namespace>
             <remapping>~/out:=data</remapping>
         </ros>
-        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+        <initial_orientation_as_reference>true</initial_orientation_as_reference>
       </plugin>
     </sensor>
   </gazebo>
