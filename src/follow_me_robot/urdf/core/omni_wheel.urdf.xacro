@@ -4,13 +4,6 @@
   <xacro:include filename="inertial.urdf.xacro"/>
   <!-- Wheels -->
 
-  <xacro:macro name="omni_wheel_geometry" params="parent *origin wheel_img side position wheel_height wheel_radius update_rate:=20">
-    <xacro:solid_sphere name="${position}_${side}_wheel" mass="6.5" visual="omni_wheel_${wheel_img}.dae" xyz_axis="0 1 0">
-      <xacro:insert_block name="origin" />
-      <geometry></geometry>
-    </xacro:solid_sphere>
-  </xacro:macro>
-
   <xacro:macro name="wheel_motor" params="parent *origin wheel_img reflect side position wheel_height wheel_radius update_rate:=20">
     <xacro:property name="prefix" value="${position}_${side}_wheel" />
     <xacro:property name="motor_mass" value="0.1" />
@@ -42,7 +35,7 @@
       </inertial>
     </link>
     <xacro:omni_wheel parent="${prefix}_motor_link" wheel_img="${wheel_img}" side="${side}" position="${position}" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" update_rate="${update_rate}">
-      <origin xyz="0 ${motor_offset+(wheel_height+0.01)*reflect} 0" />
+      <origin xyz="0 ${motor_offset+(wheel_height+0.01)*reflect} 0" rpy="${pi/2} ${pi/2} 0"/>
     </xacro:omni_wheel>
   </xacro:macro>
 
@@ -61,8 +54,8 @@
 
     <link name="${prefix}_link">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0" />
-        <!-- <origin xyz="0 0 0" rpy="${pi/2} 0 0" /> -->
+        <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
         <geometry>
           <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${wheel_img}.dae" />
           <!-- <cylinder length="${wheel_height}" radius="${wheel_radius}" /> -->
@@ -70,7 +63,7 @@
       </visual>
 
       <collision>
-        <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <!-- <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${reflect}.dae" /> -->
           <cylinder length="${wheel_height}" radius="${wheel_radius}" />

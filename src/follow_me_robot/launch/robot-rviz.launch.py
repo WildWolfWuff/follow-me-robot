@@ -13,12 +13,14 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(
             pkg_path, 'launch','robot-gazebo.launch.py')
         )),
-        TimerAction(period=20.0,actions=[Node(
+        # TimerAction(period=20.0,actions=[
+            Node(
             package='rviz2',
             executable='rviz2',
             arguments=["-d", os.path.join(pkg_path,"rviz","model.rviz")],
             output='screen'
-    )])
+    )
+            # ])
     ])
 
     return  LaunchDescription([

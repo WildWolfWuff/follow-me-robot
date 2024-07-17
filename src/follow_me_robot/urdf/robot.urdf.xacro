@@ -35,7 +35,7 @@
 	<xacro:robot_body wheel_radius="${wheel_radius}" body_length="${body_length}" body_with="${body_with}" body_heigth="${body_heigth}" />
 
 	<xacro:wheel_motor parent="robot_body_link" position="front" side="right" reflect="-1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" >
-		<origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0.0 0.0 0.0"/>
+		<origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0.0"/>
 	</xacro:wheel_motor>
 	<xacro:wheel_motor parent="robot_body_link" position="front" side="left" reflect="1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
 		<origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />

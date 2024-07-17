@@ -15,7 +15,9 @@
     <inertial>
       <mass value="125.0" />
       <origin xyz="0 0 0" />
-      <xacro:solid_cuboid_inertia m="125.0" h="${body_heigth}" d="${body_length}" w="${body_with}" />
+      <!-- <xacro:solid_cuboid_inertia m="125.0" h="${body_heigth}" d="${body_length}" w="${body_with}" /> -->
+      <!-- <xacro:solid_cuboid_inertia m="125.0" h="${body_length}" d="${body_with}" w="${body_heigth}" /> -->
+      <xacro:solid_cuboid_inertia m="125.0" h="${body_with}" d="${body_heigth}" w="${body_length}" />
     </inertial>
 
     <visual>
