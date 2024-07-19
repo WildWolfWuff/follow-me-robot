@@ -1,0 +1,25 @@
+used_shell=${SHELL##*/}
+. ./func/func.${used_shell}
+
+distro=iron
+
+while getopts ":hd:s:p:" opt; do
+    case $opt in
+        d) 
+           distro="${OPTARG}"
+           printInfo "use distro $distro"
+        ;;
+        ?|h)
+            printText "Usage: $(basename $0) [-d ros distro] [-h]"
+            exit 1
+        ;;
+    esac
+done
+
+curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+sudo apt-get update
+sudo apt-get install gz-harmonic
+
+./ros_install_packages -d ${ROS_DISTRO} \
+  -p ros-g

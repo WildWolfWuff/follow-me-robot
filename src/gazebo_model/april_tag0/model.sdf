@@ -1,0 +1,23 @@
+<?xml version='1.0'?>
+<sdf version="1.6" >
+  <model name="tag_0">
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <scale>0.05 0.05 0.05</scale>
+            <uri>model://april_tag0/meshes/apriltag0.obj</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <scale>0.05 0.05 0.05</scale>
+            <uri>model://april_tag0/meshes/apriltag0.obj</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

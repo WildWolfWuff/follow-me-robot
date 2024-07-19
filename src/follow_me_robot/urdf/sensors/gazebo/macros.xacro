@@ -8,4 +8,7 @@
             <stddev>${stddev}</stddev>
         </noise>
     </xacro:macro>
+    <xacro:macro name="sensor_topic_ns" params="type name">
+        <namespace>/sensor/${type}/${name}</namespace>
+    </xacro:macro>
 </robot>

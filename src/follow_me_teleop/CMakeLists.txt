@@ -59,9 +59,12 @@ endif()
 install(DIRECTORY config launch
   DESTINATION share/${PROJECT_NAME}
 )
+
 install(TARGETS
   followme_teleop
   DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()
+
+# ros2 pkg create --build-type ament_cmake --license Apache-2.0 --node-name camera_publisher follow_me_camera_pub --dependencies rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV

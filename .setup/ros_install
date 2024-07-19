@@ -80,7 +80,7 @@ if [ $? -gt 0 ]; then
 fi
 
 printStep "Install ros base"
-sudo apt update && sudo  apt install -y ros-${distro}-ros-base
+sudo apt update && sudo apt install -y ros-${distro}-ros-base
 if [ $? -gt 0 ]; then
     exit 1;
 fi
