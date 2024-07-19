@@ -2,9 +2,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/joystick.h>
-#include "followme_teleop/mecanum_joystick.hpp"
+#include "follow_me_joystick/mecanum_joystick.hpp"
 
-using namespace followme::mecanum::teleop;
+using namespace follow_me::mecanum::teleop;
 
 #define MECANUM_JOYSTICK_UNSCALED_MAX    32767.0
 

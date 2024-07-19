@@ -28,16 +28,25 @@ def generate_launch_description():
                     arguments=['-topic', 'robot_description',
                                 '-entity', 'mecanum-bot'],
                     output='screen')
-    april_tag = Node(package='apriltag_ros', executable='apriltag_node', arguments=[
-        '-r image_rect:=/rrbot/cam/front/image_raw',
-        '-r camera_info:=/rrbot/cam/front/camera_info',
-        '--params-file', os.path.join(pkg_path, 'config', 'apriltag.yaml')
-        
-    ])
+    # ros2 run apriltag_ros apriltag_node --ros_args -remap image_rect:=/rrbot/cam/front -remap camera_info:=/rrbot/cam/front/camera_info --params-file /home/dev/follow-me-robot/install/follow_me_robot/share/follow_me_robot/config/apriltag.yaml
+    # ros2 run apriltag_ros apriltag_node --ros-args -remap image_rect:=/rrbot/cam/front/image_raw -remap camera_info:=/rrbot/cam/front/camera_info --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/apritag.yaml
+    april_tag_config = os.path.join(pkg_path, 'config', 'apriltag.yaml')
+    april_tag = Node(package='apriltag_ros',
+                     executable='apriltag_node',
+                     output='screen',
+                     parameters=[
+                         april_tag_config
+                         ],
+                     remappings=[
+                        ('image_rect', '/rrbot/cam/front/image_raw'),
+                        ('camera_info', '/rrbot/cam/front/camera_info'),
+                        ('tf', '/tag/tf')]
+                     )
+
     # retuns the defined launch scripts
     return  LaunchDescription([
         node_robot_state_publisher,
         gazebo,
         node_spawn_entity,
-        april_tag,
+        # april_tag,
     ])

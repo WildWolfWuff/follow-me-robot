@@ -29,7 +29,13 @@ def generate_launch_description():
         parameters=[{'robot_description': bot_description_compiled,
         'use_sim_time': True}] # add other parameters here if required
     )
+    node_teleopt = Node(
+        package='follow_me_teleop',
+        executable='follow_me_teleop',
+        parameters=[os.path.join(get_package_share_directory('follow_me_teleop'), 'config', 'teleop_config.yaml')],
+    )
     ld = LaunchDescription([
         node_robot_state_publisher,
+        node_teleopt
     ])
     return ld

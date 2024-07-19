@@ -1,8 +1,8 @@
 
 #include <memory>
-#include "followme_teleop/mecanum_teleop.hpp"
+#include "follow_me_teleop/mecanum_teleop.hpp"
 
-using namespace followme::mecanum::teleop;
+using namespace follow_me::mecanum::teleop;
 
 MecanumTeleop::MecanumTeleop(const std::string & name)
     : rclcpp::Node(name, rclcpp::NodeOptions().use_intra_process_comms(true))
@@ -68,6 +68,7 @@ MecanumTeleop::MecanumTeleop(const std::string & name)
     // Setup the joystick message subscriber
     std::string joy_topic = get_parameter("joy_topic").as_string();
     joy_subscriber_ = create_subscription<sensor_msgs::msg::Joy>(joy_topic, 10, std::bind(&MecanumTeleop::on_joy_message, this, std::placeholders::_1));
+    RCLCPP_INFO(get_logger(), "Mecanum teleop node started");
 }
 
 void MecanumTeleop::on_joy_message(std::unique_ptr<sensor_msgs::msg::Joy> msg)

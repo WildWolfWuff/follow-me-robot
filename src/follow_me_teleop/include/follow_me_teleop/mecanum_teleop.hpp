@@ -6,7 +6,7 @@
 #include <sensor_msgs/msg/joy.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 
-namespace followme
+namespace follow_me
 {
     namespace mecanum
     {

@@ -5,7 +5,7 @@
 #include <sensor_msgs/msg/joy.hpp>
 #include <vector>
 
-namespace followme
+namespace follow_me
 {
     namespace mecanum
     {

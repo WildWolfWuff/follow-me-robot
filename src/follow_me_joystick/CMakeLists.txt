@@ -1,15 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(follow_me_teleop)
-
-# Default to C99
-if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 99)
-endif()
-
-# Default to C++14
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
-endif()
+project(follow_me_joystick)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -24,23 +14,32 @@ find_package(geometry_msgs REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(follow_me_teleop
+add_executable(follow_me_joystick
   src/node_main.cpp
-  src/mecanum_teleop.cpp
+  src/mecanum_joystick.cpp
 )
 
 target_include_directories(
-  follow_me_teleop
+  follow_me_joystick
   PRIVATE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
 ament_target_dependencies(
-  follow_me_teleop
+  follow_me_joystick
   rclcpp
   sensor_msgs
   geometry_msgs
+)
+
+install(DIRECTORY config launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
+install(TARGETS
+  follow_me_joystick
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
@@ -55,15 +54,4 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(DIRECTORY config launch
-  DESTINATION share/${PROJECT_NAME}
-)
-
-install(TARGETS
-  follow_me_teleop
-  DESTINATION lib/${PROJECT_NAME}
-)
-
 ament_package()
-
-# ros2 pkg create --build-type ament_cmake --license Apache-2.0 --node-name camera_publisher follow_me_camera_pub --dependencies rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV

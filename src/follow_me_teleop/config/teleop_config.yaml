@@ -21,18 +21,14 @@ teleop:
         deadzone: 0.0
     turn:
       left:
-        axis: 3
-        scalse: 0.5
+        axis: 2
+        scalse: 1.0
         deadzone: 0.0
         # offset: 1.0
       right:
-        axis: 3
-        scale: 0.5
+        axis: 2
+        scale: 1.0
         deadzone: 0.0
         # offset: 1.0
 
-joystick:
-  ros__parameters:
-    joy_topic: /joy
-    dev: /dev/input/js1
-    deadzone: 0.2
+
