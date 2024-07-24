@@ -9,5 +9,5 @@ apriltag:
       blur: 0.0           # sigma of Gaussian blur for quad detection
       refine: 1           # snap to strong gradients
       sharpening: 0.25    # sharpening of decoded images
-      debug: 1            # write additional debugging images to current working directory
+      debug: 0            # write additional debugging images to current working directory
 # `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/apritag.yaml

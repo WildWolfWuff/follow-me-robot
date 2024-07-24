@@ -1,6 +1,6 @@
 used_shell=${SHELL##*/}
 . ./func/func.$used_shell
-distro=iron
+distro=$ROS_DISTRO
 packages=""
 while getopts ":hd:s:p:" opt; do
     case $opt in

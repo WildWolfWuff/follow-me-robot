@@ -1,14 +1,15 @@
 used_shell=${SHELL##*/}
 . ./func/func.${used_shell}
 
-distro=iron
+distro=${ROS_DISTRO:=iron}
 while getopts ":d" opt; do
     case $opt in
         d) 
-           distro="${OPTARG}"
+           distro="${OPTARG:=iron}"
         ;;
     esac
 done
+
 result=$(grep -c -x "source /opt/ros/${distro}/setup.${used_shell}" ~/.${used_shell}rc)
 if [ "$result" != 0 ]; then
     exit 0
@@ -19,4 +20,5 @@ writeText "source /opt/ros/${distro}/setup.${used_shell}\n" ~/.${used_shell}rc
 grep -x "source /opt/ros/${distro}/setup.${used_shell}" ~/.${used_shell}rc
 if [ $? -gt 0 ]; then
     printError "Missing source command"
+    exit 1
 fi

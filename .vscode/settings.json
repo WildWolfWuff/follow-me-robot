@@ -42,8 +42,9 @@
         }
     ],
     "files.associations": {
+        "**/pipelines/*.yml": "azure-pipelines",
         "*.ipp": "cpp",
         "*.tcc": "cpp",
-        "fstream": "cpp"
-    }
+        "*.hpp":"cpp",
+        "*.h":"cpp",}
 }

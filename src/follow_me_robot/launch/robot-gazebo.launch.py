@@ -24,7 +24,8 @@ def generate_launch_description():
         )
 
     # define start script to spawn the robot from the robot description and name it mecanum-bot
-    node_spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
+    node_spawn_entity = Node(package='gazebo_ros', 
+                             executable='spawn_entity.py',
                     arguments=['-topic', 'robot_description',
                                 '-entity', 'mecanum-bot'],
                     output='screen')
@@ -33,12 +34,11 @@ def generate_launch_description():
     april_node=Node(
       package='apriltag_ros',
       executable='apriltag_node',
-      # namespace='followme',
-      # name="apriltag_detection",
       remappings=[
-        ('image_rect','/rrbot/cam/front/image_raw'),
-        ('camera_info','/rrbot/cam/front/camera_info'),
-        ('/tf','/tf/tag')
+        ('image_rect','/sensor/cam/front/image_raw'),
+        ('camera_info','/sensor/cam/front/camera_info'),
+        ('/tf','/tag/tf'),
+        ('/detections','/tag/detections')
       ],
       parameters=[
         os.path.join(pkg_path,'config','apritag.yaml')

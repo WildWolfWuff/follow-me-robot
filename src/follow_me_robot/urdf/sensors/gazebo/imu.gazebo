@@ -42,7 +42,7 @@
       </imu>
       <plugin name="${imu_name}_imu_plugin" filename="libgazebo_ros_imu_sensor.so">
         <ros>
-            <namespace>/rrbot/imu/${imu_name}</namespace>
+          <xacro:sensor_topic_ns type="imu" name="${imu_name}"></xacro:sensor_topic_ns>
             <remapping>~/out:=data</remapping>
         </ros>
         <initial_orientation_as_reference>true</initial_orientation_as_reference>

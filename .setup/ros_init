@@ -1,6 +1,6 @@
 used_shell=${SHELL##*/}
 . ./func/func.$used_shell
-distro=iron
+distro=$ROS_DISTRO
 source=../src
 
 while getopts ":hd:s:p:" opt; do
@@ -21,7 +21,8 @@ while getopts ":hd:s:p:" opt; do
 done
 
 printStep "Init ros scripts"
-source /opt/ros/${distro}/setup.$used_shell
+printInfo "use /opt/ros/${ROS_DISTRO}/setup.$used_shell"
+source /opt/ros/${ROS_DISTRO}/setup.$used_shell
 if [ $? -gt 0 ]; then
     exit 1;
 fi
@@ -29,34 +30,20 @@ printStep "Init rosdep"
 if [ -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
     sudo rm -rf /etc/ros/rosdep/sources.list.d/20-default.list
 fi
-
 sudo rosdep init
 if [ $? -gt 0 ]; then
     exit 1;
 fi
 
-printStep "Update rosdep"
-rosdep update
-if [ $? -gt 0 ]; then
-    exit 1;
-fi
+sudo rosdep fix-permissions
 
+printStep "Update rosdep"
+rosdep updat
+if [ $? -gt 0 ]; then
+    exit 1;
+fi
+printStep "Install rosdep"
 rosdep install --from-paths $source --ignore-src --rosdistro ${ROS_DISTRO} -r -y
-if [ $? -gt 0 ]; then
-    exit 1;
-fi
-./ros_install_packages -d ${ROS_DISTRO} \
-    -p joint-state-publisher \
-    -p joint-state-publisher-gui \
-    -p xacro \
-    -p gazebo-ros-pkgs
-if [ $? -gt 0 ]; then
-    exit 1;
-fi
-# https://github.com/christianrauch/apriltag_ros
-./ros_install_packages -d ${ROS_DISTRO} \
-    -p apriltag-ros \
-    -p v4l2-camera \
 if [ $? -gt 0 ]; then
     exit 1;
 fi
