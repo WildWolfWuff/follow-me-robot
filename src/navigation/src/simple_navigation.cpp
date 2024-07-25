@@ -4,7 +4,7 @@
 class MyNode : public rclcpp::Node
 {
 public:
-    MyNode() : Node("my_node")
+    MyNode() : Node("simple_navigation")
     {
         publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
         timer_ = this->create_wall_timer(
