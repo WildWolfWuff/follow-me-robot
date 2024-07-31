@@ -56,4 +56,4 @@ CATKIN_IGNORE
 .vscode/
 debug_*.pnm
 debug_*.ps
-src/apriltag_ros
+src/Dataset-of-Gazebo-Worlds-Models-and-Maps

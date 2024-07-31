@@ -1,0 +1,34 @@
+teleop:
+  ros__parameters:
+    joy_topic: /joy
+    twist_topic: /cmd_vel
+    move:
+      forward:
+        axis: 1
+        scalse: 0.5
+        deadzone: 0.0
+      reverse:
+        axis: 1
+        scalse: 0.5
+        deadzone: 0.0
+      left:
+        axis: 0
+        scalse: 0.5
+        deadzone: 0.0
+      right:
+        axis: 0
+        scale: 1.5
+        deadzone: 0.0
+    turn:
+      left:
+        axis: 2
+        scalse: 1.0
+        deadzone: 0.0
+        # offset: 1.0
+      right:
+        axis: 2
+        scale: 1.0
+        deadzone: 0.0
+        # offset: 1.0
+
+

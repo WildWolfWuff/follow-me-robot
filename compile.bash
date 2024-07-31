@@ -6,3 +6,4 @@ echo "impport: $setup_path"
 . $setup_path
 # ros2 launch follow_me_robot robot-foxglove.launch.py
 ros2 launch follow_me_robot robot-gazebo.launch.py
+# ros2 launch follow_me_robot robot.launch.py

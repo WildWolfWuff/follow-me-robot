@@ -6,7 +6,7 @@
   <xacro:macro name="robot_body" params="wheel_radius body_length body_with body_heigth">
   <!-- Robot mechanical and motor parameters -->
   <joint name="robot_body_joint" type="fixed">
-		<parent link="base_footprint"/>
+		<parent link="base_link"/>
 		<child link="robot_body_link" />
 		<origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
 	</joint>
