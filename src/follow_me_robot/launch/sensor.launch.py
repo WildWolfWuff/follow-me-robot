@@ -5,9 +5,15 @@ from launch import LaunchDescription,InvalidLaunchFileError
 from launch_ros.actions import Node
 from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
     pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
+    use_sim_time=LaunchConfiguration('use_sim_time')
+    declare_use_sim_time_cmd=DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='false',
+        description='use sim time')
     # ros2 run follow_me_teleop follow_me_teleop --ros-args --params-file `ros2 pkg prefix follow_me_teleop`/share/follow_me_teleop/config/teleop_config.yaml
     node_teleopt = Node(
         package='follow_me_teleop',
