@@ -21,6 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'motor_controller = navigation.motor_controller:main',
+            'movement_simulator = navigation.movement_simulator:main',
+            'keyboard_teleop = navigation.keyboard_teleop:main',
         ],
     },
 )

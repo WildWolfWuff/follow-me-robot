@@ -4,11 +4,11 @@ import serial
 from typing import Optional
 import rclpy
 from rclpy.node import Node
-
+from geometry_msgs.msg import Vector3
 
 class MotorControllerNode(Node):
     def __init__(self):
-        super().__init__("motor_controller_node")
+        super().__init__("motor_controller")
         self.get_logger().info("Motor Controller Node has been started")
 
         try:
@@ -16,16 +16,21 @@ class MotorControllerNode(Node):
         except serial.SerialException as e:
             self.get_logger().error(f"Failed to open serial port: {e}")
 
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0.0
+        self.subscription = self.create_subscription(
+            Vector3, "movement_commands", self.listener_callback, 10
+        )
+        self.subscription  # prevent unused variable warning
 
-        self.send_command()
+    def listener_callback(self, msg):
+        x = msg.x
+        y = msg.y
+        z = msg.z
+        self.get_logger().info(f"Received: x={x}, y={y}, z={z}")
 
-    def send_command(self):
-        # Create a dictionary with the values
-        command = {"x": self.x, "y": self.y, "z": self.z}
+        self.send_command(msg)
 
+    def send_command(self, msg):
+        command = {"x": msg.x, "y": msg.y, "z": msg.z}
         command_json = json.dumps(command)
 
         self.serial_port.write(command_json.encode("utf-8"))
