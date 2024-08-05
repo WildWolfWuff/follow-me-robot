@@ -1,0 +1,5 @@
+joystick:
+  ros__parameters:
+    joy_topic: /joy
+    dev: /dev/input/js1
+    deadzone: 0.2

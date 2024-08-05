@@ -19,7 +19,7 @@
         </gps>
         <plugin name="gazebo_ros_gps_${gps_name}" filename="libgazebo_ros_gps_sensor.so">
           <ros>
-            <namespace>/rrbot/gps/${gps_name}</namespace>
+            <xacro:sensor_topic_ns type="gps" name="${gps_name}"></xacro:sensor_topic_ns>
             <remapping>~/out:=pos</remapping>
           </ros>
           <!-- <bodyName>${gps_name}_gps_link</bodyName>

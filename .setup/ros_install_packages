@@ -1,7 +1,7 @@
 used_shell=${SHELL##*/}
 . ./func/func.$used_shell
-distro=iron
-packages=""
+distro=$ROS_DISTRO
+packages=()
 while getopts ":hd:s:p:" opt; do
     case $opt in
         d) 
@@ -10,7 +10,8 @@ while getopts ":hd:s:p:" opt; do
         ;;
         p)
             p=${OPTARG}
-            packages="${packages} ${p}"
+            # append package to packages
+            packages+=( "$p" )
         ;;
         ?|h)
             printText "Usage: $(basename $0) [-d ros distro] [-p package_name] [-h]"
@@ -21,12 +22,11 @@ done
 if [ -n "$packages" ]; then
     installPackages=""
     printStep "install packages: ${packages}"
-    for package in $packages; do
-        echo $package
-        installPackages="$installPackages ros-$ROS_DISTRO-${package##' '}"
+    for package in ${packages[@]}; do
+        installPackages="$installPackages ros-$distro-${package##' '}"
     done
     printInfo "$installPackages"
-    sudo apt update && sudo apt install -y $installPackages
+    sudo apt update && sudo apt-get install -y ${installPackages##' '}
     if [ $? -gt 0 ]; then
         exit 1;
     fi

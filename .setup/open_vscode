@@ -2,7 +2,9 @@ used_shell=${SHELL##*/}
 . ./func/func.${used_shell}
 
 workspace=${PWD%/*}
-while getopts ":hw:" opt; do
+install_code=false
+echo $workspace
+while getopts ":hcw:" opt; do
     case $opt in
         w) 
            workspace="${OPTARG}"
@@ -15,19 +17,20 @@ while getopts ":hw:" opt; do
     esac
 done
 
-printStep "Install vs code extensions"
 
 code --help > /dev/null
 if [ $? -ne 0 ]; then
+    printStep "Install vs code"
 	sudo snap install --classic code
 fi
 jq -h > /dev/null
 if [ $? -ne 0 ]; then
+    printStep "Install jq"
 	sudo apt update && sudo sudo apt install -y jq
 fi
+printStep "Install vs code extensions"
 extensions=$(jq -r '.recommendations[]' $workspace/.vscode/extensions.json)
 for i in $extensions; do
-    code --install-extension $i --force &
+    code --install-extension $i --force
 done
-wait
 code $workspace

@@ -1,6 +1,6 @@
 used_shell=${SHELL##*/}
 . ./func/func.$used_shell
-distro=iron
+distro=$ROS_DISTRO
 source=../src
 
 while getopts ":hd:s:p:" opt; do
@@ -21,6 +21,7 @@ while getopts ":hd:s:p:" opt; do
 done
 
 printStep "Init ros scripts"
+printInfo "use /opt/ros/${distro}/setup.$used_shell"
 source /opt/ros/${distro}/setup.$used_shell
 if [ $? -gt 0 ]; then
     exit 1;
@@ -29,27 +30,20 @@ printStep "Init rosdep"
 if [ -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
     sudo rm -rf /etc/ros/rosdep/sources.list.d/20-default.list
 fi
-
 sudo rosdep init
 if [ $? -gt 0 ]; then
     exit 1;
 fi
+
+sudo rosdep fix-permissions
 
 printStep "Update rosdep"
 rosdep update
 if [ $? -gt 0 ]; then
     exit 1;
 fi
-
-rosdep install --from-paths $source --ignore-src --rosdistro ${ROS_DISTRO} -r -y
-if [ $? -gt 0 ]; then
-    exit 1;
-fi
-./ros_install_packages -d ${ROS_DISTRO} \
-    -p joint-state-publisher \
-    -p joint-state-publisher-gui \
-    -p xacro \
-    -p gazebo-ros-pkgs
+printStep "Install rosdep"
+rosdep install --from-paths $source --ignore-src --rosdistro ${distro} -r -y
 if [ $? -gt 0 ]; then
     exit 1;
 fi

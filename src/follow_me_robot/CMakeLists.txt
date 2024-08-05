@@ -29,7 +29,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
-  DIRECTORY launch rviz urdf
+  DIRECTORY launch rviz urdf config
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

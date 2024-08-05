@@ -21,3 +21,5 @@ Run `./compile.sh` inside the root directory.
   - [examle](https://github.com/turtlebot/turtlebot4_desktop/blob/humble/turtlebot4_viz/rviz/robot.rviz)
 
 - [ ] Add controller for driving robot, see: [example](https://github.com/DeborggraeveR/ros2-mecanum-bot)
+
+- [ ] Tag detection: https://github.com/christianrauch/apriltag_ros

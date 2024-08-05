@@ -1,4 +1,4 @@
-distro=iron
+distro=humble
 used_shell=${SHELL##*/}
 sudo apt update && sudo apt install curl gnupg2 lsb-release -y
 sudo add-apt-repository universe
@@ -15,5 +15,5 @@ sudo apt update && sudo  apt install -y ros-${distro}-desktop-full
 source /opt/ros/${distro}/setup.${used_shell}
 sudo rosdep init
 rosdep update
-rosdep install --from-paths src --ignore-src --rosdistro ${iron} -r -y
+rosdep install --from-paths src --ignore-src --rosdistro ${distro} -r -y
 sudo apt update && sudo apt install python3-colcon-common-extensions -y
