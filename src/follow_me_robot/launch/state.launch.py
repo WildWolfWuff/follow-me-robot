@@ -12,6 +12,11 @@ def generate_launch_description():
     # define package name
     pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
+    log_level=LaunchConfiguration('log_level')
+    declare_log_level_cmd=DeclareLaunchArgument(
+        'log_level',
+        default_value='info',
+        description='log level')
     # namespace = 'Follow-Me-Robot'
     use_sim_time=LaunchConfiguration('use_sim_time')
     declare_use_sim_time_cmd=DeclareLaunchArgument(
@@ -33,6 +38,7 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
+        arguments=["--ros-args", "--log-level", log_level],
         parameters=[
             {
                 'robot_description': bot_description_compiled,
@@ -41,6 +47,7 @@ def generate_launch_description():
         )
     
     return LaunchDescription([
+        declare_log_level_cmd,
         declare_use_sim_time_cmd,
         node_robot_state_publisher,
     ])

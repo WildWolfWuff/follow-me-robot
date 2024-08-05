@@ -27,6 +27,7 @@ find_package(geometry_msgs REQUIRED)
 add_executable(follow_me_teleop
   src/node_main.cpp
   src/mecanum_teleop.cpp
+  src/axis_configuration.cpp
 )
 
 target_include_directories(

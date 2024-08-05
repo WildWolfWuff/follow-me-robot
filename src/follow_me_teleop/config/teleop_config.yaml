@@ -6,29 +6,29 @@ teleop:
       forward:
         axis: 1
         scalse: 0.5
-        deadzone: 0.0
+        deadzone: 0.1
       reverse:
         axis: 1
         scalse: 0.5
-        deadzone: 0.0
+        deadzone: 0.1
       left:
         axis: 0
         scalse: 0.5
-        deadzone: 0.0
+        deadzone: 0.1
       right:
         axis: 0
         scale: 1.5
-        deadzone: 0.0
+        deadzone: 0.1
     turn:
       left:
-        axis: 2
+        axis: 6
         scalse: 1.0
-        deadzone: 0.0
+        deadzone: 0.1
         # offset: 1.0
       right:
-        axis: 2
+        axis: 7
         scale: 1.0
-        deadzone: 0.0
+        deadzone: 0.1
         # offset: 1.0
 
 

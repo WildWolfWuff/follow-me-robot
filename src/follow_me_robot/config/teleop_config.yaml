@@ -24,11 +24,11 @@ teleop:
         axis: 2
         scalse: 1.0
         deadzone: 0.0
-        # offset: 1.0
+        offset: 1.0
       right:
         axis: 2
         scale: 1.0
         deadzone: 0.0
-        # offset: 1.0
+        offset: 1.0
 
 

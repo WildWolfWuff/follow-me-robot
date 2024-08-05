@@ -17,19 +17,33 @@ def generate_launch_description():
     state_launch_file=os.path.join(pkg_path,'launch','state.launch.py')
     sensor_launch_file=os.path.join(pkg_path,'launch','sensor.launch.py')
     sim_launch_file=os.path.join(pkg_path,'launch','gazebo.launch.py')
-    
     # namespace = 'Follow-Me-Robot'
+    log_level=LaunchConfiguration('log_level')
     start_sim=LaunchConfiguration('start_sim')
     use_foxglove=LaunchConfiguration('use_foxglove')
+    world=LaunchConfiguration('world')
+    world_models=LaunchConfiguration('world_models')
     declare_start_sim_cmd=DeclareLaunchArgument('start_sim',default_value='false',description='use simulation')
     declare_use_foxglove_cmd=DeclareLaunchArgument('use_foxglove',default_value='false',description='use foxglove bridge')
+    declare_log_level_cmd=DeclareLaunchArgument(
+        'log_level',
+        default_value='info',
+        description='log level')
+    declare_world_cmd=DeclareLaunchArgument('world',default_value='',description='world file to load')
+    declare_world_models_cmd=DeclareLaunchArgument('world_models',default_value='',description='world file to load')
     # define start script for robot state publisher to publish the compiled robto description
     robot_state_publisher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(state_launch_file),
-        launch_arguments={"use_sim_time":start_sim}.items())
+        launch_arguments={
+            "log_level":log_level,
+            "use_sim_time":start_sim
+            }.items())
     robot_sensors= IncludeLaunchDescription(
         PythonLaunchDescriptionSource(sensor_launch_file),
-        launch_arguments={"use_sim_time":start_sim}.items())
+        launch_arguments={
+            "log_level":log_level,
+            "use_sim_time":start_sim
+            }.items())
 
     sim=GroupAction(
         condition=IfCondition(start_sim),
@@ -37,7 +51,10 @@ def generate_launch_description():
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(sim_launch_file),
                 # set the world file to load
-                # launch_arguments={"world":""}.items()
+                launch_arguments={
+                    "world":world,
+                    "world_models":world_models,
+                    }.items()
                 )
         ]
     )
@@ -51,8 +68,11 @@ def generate_launch_description():
         ]
     )
     ld=LaunchDescription()
+    ld.add_action(declare_log_level_cmd)
     ld.add_action(declare_start_sim_cmd)
     ld.add_action(declare_use_foxglove_cmd)
+    ld.add_action(declare_world_cmd)
+    ld.add_action(declare_world_models_cmd)
     ld.add_action(robot_state_publisher)
     ld.add_action(sim)
     ld.add_action(robot_sensors)

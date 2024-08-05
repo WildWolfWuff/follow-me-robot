@@ -1,5 +1,6 @@
 apriltag:
   ros__parameters:
+    use_sim_time: True
     image_transport: raw
     family: Standard41h12
     size: 0.16
