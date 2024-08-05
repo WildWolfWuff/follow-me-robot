@@ -11,6 +11,10 @@ public:
   void setSpeed(float speed) {
     AccelStepper::setSpeed(-speed);
   }
+
+    float speed() const {
+    return -AccelStepper::speed();
+  }
 };
 
 #endif // INVERTED_ACCEL_STEPPER_H
