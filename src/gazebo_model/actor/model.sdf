@@ -1,20 +1,20 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
   <actor name="actor">
-    <skin>
+    <!-- <skin>
       <filename>model://april_tag0/meshes/apriltag0.obj</filename>
       <scale>1.0</scale>
-    </skin>
-     <!-- <skin>
+    </skin> -->
+     <skin>
         <filename>model://actor/meshes/SKIN_man_green_shirt.dae</filename>
         <scale>1.0</scale>
-     </skin> -->
+     </skin>
      <pose>0 1 0 0 0 0</pose>
-     <!-- <animation name="walking">
+     <animation name="walking">
         <filename>model://actor/meshes/ANIMATION_walking.dae</filename>
         <scale>1.000000</scale>
         <interpolate_x>true</interpolate_x>
-     </animation> -->
+     </animation>
      <script>
         <loop>true</loop>
         <delay_start>10.000000</delay_start>
