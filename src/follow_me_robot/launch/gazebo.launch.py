@@ -26,12 +26,14 @@ def generate_launch_description():
     declare_bot_z_cmd=DeclareLaunchArgument('bot_z',default_value='0',description='bot z position')
     declare_bot_topic_cmd=DeclareLaunchArgument('bot_topic',default_value='robot_description',description='robot state publisher topic')
     declare_bot_name_cmd=DeclareLaunchArgument('bot_name',default_value='follow_me_bot',description='robot name')
-    gz_env_path=os.environ['GAZEBO_MODEL_PATH']
-    # define start script for gazebo ui
-    # world_path=os.path.join(gz_modles_path,str(world))
+    gz_env_path=os.environ.get('GAZEBO_MODEL_PATH')
     # export GAZEBO_MODEL_PATH=/home/dev/.gazebo/models/hospital/models
-    world_resources=AppendEnvironmentVariable(
-        'GAZEBO_MODEL_PATH',[gz_env_path,world_models],separator=':')
+    if gz_env_path is not None:
+        world_resources=AppendEnvironmentVariable(
+            'GAZEBO_MODEL_PATH',[gz_env_path,world_models],separator=':')
+    else:
+        world_resources=AppendEnvironmentVariable(
+            'GAZEBO_MODEL_PATH',world_models)
     # ros2 launch gazebo_ros gazebo.launch.py world:=/home/dev/.gazebo/models/hospital/hospital.world
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(

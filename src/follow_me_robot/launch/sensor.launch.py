@@ -3,9 +3,9 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription,InvalidLaunchFileError
 from launch_ros.actions import Node
-from launch.actions import IncludeLaunchDescription, TimerAction
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
+
 def generate_launch_description():
     pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
@@ -36,6 +36,7 @@ def generate_launch_description():
       ]
     )
     return LaunchDescription([
+        declare_use_sim_time_cmd,
         node_teleopt,
         april_node
     ])

@@ -18,7 +18,7 @@ while getopts ":d:sh" opt; do
         ;;
     esac
 done
-
+sudo echo "Start setup ros2 for $distro"
 cd .setup
 # setup git
 ${used_shell} ./git_config

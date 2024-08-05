@@ -21,8 +21,8 @@ while getopts ":hd:s:p:" opt; do
 done
 
 printStep "Init ros scripts"
-printInfo "use /opt/ros/${ROS_DISTRO}/setup.$used_shell"
-source /opt/ros/${ROS_DISTRO}/setup.$used_shell
+printInfo "use /opt/ros/${distro}/setup.$used_shell"
+source /opt/ros/${distro}/setup.$used_shell
 if [ $? -gt 0 ]; then
     exit 1;
 fi
@@ -38,12 +38,12 @@ fi
 sudo rosdep fix-permissions
 
 printStep "Update rosdep"
-rosdep updat
+rosdep update
 if [ $? -gt 0 ]; then
     exit 1;
 fi
 printStep "Install rosdep"
-rosdep install --from-paths $source --ignore-src --rosdistro ${ROS_DISTRO} -r -y
+rosdep install --from-paths $source --ignore-src --rosdistro ${distro} -r -y
 if [ $? -gt 0 ]; then
     exit 1;
 fi
