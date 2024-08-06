@@ -1,6 +1,6 @@
 {
     "files.eol": "\n",
-    "ros.distro": "iron",
+    "ros.distro": "humble",
     "[cpp]": {
         "editor.wordBasedSuggestions": "off",
         "editor.suggest.insertMode": "replace",
@@ -9,12 +9,12 @@
     },
     "editor.tabSize": 2,
     "python.autoComplete.extraPaths": [
-        "/opt/ros/iron/lib/python3.10/site-packages",
-        "/opt/ros/iron/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages",
     ],
     "python.analysis.extraPaths": [
-        "/opt/ros/iron/lib/python3.10/site-packages",
-        "/opt/ros/iron/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages",
         "${workspaceFolder}/src"
     ],
     "python.defaultInterpreterPath": "/usr/local/bin/python",
