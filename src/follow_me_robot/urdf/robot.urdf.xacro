@@ -3,8 +3,8 @@
 	xmlns:xacro="http://www.ros.org/wiki/xacro">
 	<!-- Robot Size -->
 	<xacro:property name="body_length" value="0.80" />
-	<xacro:property name="body_with" value="0.5"/>
-	<xacro:property name="body_heigth" value="0.20"/>
+	<xacro:property name="body_with" value="0.5" />
+	<xacro:property name="body_heigth" value="0.20" />
 	<xacro:property name="wheel_height" value="0.087" />
 
 	<!-- Wheel parameters -->
@@ -13,13 +13,13 @@
 	<xacro:property name="wheel_offset_y" value="${(body_with/2)+0.051}" />
 	<xacro:property name="wheel_offset_z" value="0.0" />
 	<xacro:property name="wheel_radius" value="0.127" />
-	<xacro:property name="update_rate" value="20" />
-	<link name="base_footprint"/>
+	<xacro:property name="update_rate" value="30" />
+	<link name="base_footprint" />
 	<joint name="odom_joint" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link" />
+		<parent link="base_footprint" />
+		<child link="base_link" />
 		<origin xyz="0 0 0.001" />
-  </joint>
+	</joint>
 
 	<!-- BASE FOOTPRINT -->
 	<link name="base_link"></link>
@@ -27,57 +27,67 @@
 	<xacro:materials />
 	<xacro:include filename="core/omni_wheel.urdf.xacro" />
 	<xacro:include filename="core/robot_body.urdf.xacro" />
-	<xacro:include filename="core/follow_me_robot.gazebo.xacro" />
-
 	<!-- Additional params -->
-	<xacro:robot_body wheel_radius="${wheel_radius}" body_length="${body_length}" body_with="${body_with}" body_heigth="${body_heigth}" />
+	<xacro:robot_body wheel_radius="${wheel_radius}" body_length="${body_length}"
+		body_with="${body_with}" body_heigth="${body_heigth}" />
 
-	<xacro:wheel_motor parent="robot_body_link" position="front" side="right" reflect="-1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" >
-		<origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0.0"/>
+	<xacro:wheel_motor parent="robot_body_link" position="front" side="right" reflect="-1"
+		wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+		<origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0.0" />
 	</xacro:wheel_motor>
-	<xacro:wheel_motor parent="robot_body_link" position="front" side="left" reflect="1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+	<xacro:wheel_motor parent="robot_body_link" position="front" side="left" reflect="1" wheel_img="2"
+		wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
 		<origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
-	</xacro:wheel_motor> 
-	<xacro:wheel_motor parent="robot_body_link" position="back" side="left" reflect="1"  wheel_img="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+	</xacro:wheel_motor>
+	<xacro:wheel_motor parent="robot_body_link" position="back" side="left" reflect="1" wheel_img="1"
+		wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
 		<origin xyz="-${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
 	</xacro:wheel_motor>
-	<xacro:wheel_motor parent="robot_body_link" position="back" side="right" reflect="-1" wheel_img="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+	<xacro:wheel_motor parent="robot_body_link" position="back" side="right" reflect="-1"
+		wheel_img="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
 		<origin xyz="-${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
 	</xacro:wheel_motor>
-	
-	<xacro:omni_steering />
 	<gazebo>
-		<!-- <plugin name="gazebo_ros_joint_pose_trajectory"
-			filename="libgazebo_ros_joint_pose_trajectory.so">
-			<update_rate>2</update_rate>
-		</plugin>	 -->
-		<plugin name="gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
-		<update_rate>100</update_rate>
-		<joint_name>front_right_wheel_joint</joint_name>
-		<joint_name>front_left_wheel_joint</joint_name>
-		<joint_name>back_left_wheel_joint</joint_name>
-		<joint_name>back_right_wheel_joint</joint_name>
+		<plugin name="psuedo_mecanum" filename="libgazebo_ros_planar_move.so">
+			<commandTopic>/cmd_vel</commandTopic>
+			<odometryTopic>odom</odometryTopic>
+			<odometryFrame>odom</odometryFrame>
+			<odometryRate>20.0</odometryRate>
+			<robotBaseFrame>base_link</robotBaseFrame>
+			<update_rate>${update_rate}</update_rate>
+			<publish_rate>${update_rate}</publish_rate>
+		</plugin>
+		<plugin name="gazebo_ros_joint_state_publisher"
+			filename="libgazebo_ros_joint_state_publisher.so">
+			<update_rate>${update_rate}</update_rate>
+			<joint_name>front_right_wheel_joint</joint_name>
+			<joint_name>front_left_wheel_joint</joint_name>
+			<joint_name>back_left_wheel_joint</joint_name>
+			<joint_name>back_right_wheel_joint</joint_name>
 		</plugin>
 	</gazebo>
 
 	<xacro:include filename="sensors/lidar.xacro" />
-	<xacro:lidar parent="robot_body_link" update="10">
+	<xacro:lidar parent="robot_body_link" update="${update_rate}">
 		<origin xyz="0 0 ${body_heigth/2+0.03}" rpy="0 0 0" />
 	</xacro:lidar>
 
-	<!-- <xacro:include filename="sensors/gps.xacro" />
-	<xacro:gps parent="robot_body_link">
-		<origin xyz="0 0 0.0"/>
-	</xacro:gps> -->
-
 	<xacro:include filename="sensors/imu.xacro" />
-	<xacro:imu parent="robot_body_link">
-		<origin xyz="0 0 0.0"/>
+	<xacro:imu parent="robot_body_link" update="${update_rate}">
+		<origin xyz="0 0 0" />
 	</xacro:imu>
 
 	<xacro:include filename="sensors/camera.xacro" />
-	<xacro:camera cam_name="front" parent="robot_body_link">
-		<origin xyz="${body_length/2} 0 0.0"/>
+	<xacro:camera cam_name="front" parent="robot_body_link" update="${update_rate}" visualize="true">
+		<origin xyz="${body_length/2} 0 0.1" rpy="0 -0.3 0" />
 	</xacro:camera>
 
+	<xacro:include filename="sensors/sonar.xacro" />
+	<xacro:sonar sonar_name="front_mid" parent="robot_body_link" update="${update_rate}">
+		<origin xyz="${body_length/2} 0 -0.05" rpy="0 0.2 0" />
+	</xacro:sonar>
+	<!-- <xacro:include filename="sensors/gps.xacro" />
+	<xacro:gps parent="robot_body_link" update="${update_rate}">
+		<origin xyz="0 0 0.0" />
+	</xacro:gps> -->
 </robot>

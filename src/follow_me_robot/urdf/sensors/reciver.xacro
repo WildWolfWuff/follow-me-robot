@@ -2,8 +2,9 @@
 <robot xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
     <!-- <xacro:include filename="$(find follow_me_robot)/urdf/material.xacro" /> -->
     <xacro:include filename="../core/inertial.urdf.xacro" />
-    <xacro:include filename="../core/material.xacro"/>
-    <xacro:macro name="reciver" params="reciver_name parent *origin recreciver_h=0.1 recreciver_w=0.1 recreciver_d=0.1 recreciver_m=0.1">
+    <xacro:include filename="../core/material.xacro" />
+    <xacro:macro name="reciver"
+        params="reciver_name parent *origin recreciver_h=0.1 recreciver_w=0.1 recreciver_d=0.1 recreciver_m=0.1 update:=30">
         <joint name="${reciver_name}_recover_joint">
             <parent link="${parent}" />
             <child link="${reciver_name}_reciver_link" />
@@ -11,25 +12,25 @@
         </joint>
         <link name="${reciver_name}_reciver_link">
             <inertial>
-                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-                <mass value="${recreciver_m}"/>
-                <xacro:solid_cuboid_inertia 
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+                <mass value="${recreciver_m}" />
+                <xacro:solid_cuboid_inertia
                     m="${recreciver_m}"
                     h="${recreciver_m}"
                     d="${recreciver_d}"
                     w="${recreciver_w}" />
             </inertial>
             <visual>
-                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
                 <geometry>
-                    <box size="${recreciver_w} ${recreciver_d} ${recreciver_h}"/>
+                    <box size="${recreciver_w} ${recreciver_d} ${recreciver_h}" />
                 </geometry>
-                <material name="black" />
+                <material name="red" />
             </visual>
             <collision>
-                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
                 <geometry>
-                    <box size="${recreciver_w} ${recreciver_d} ${recreciver_h}"/>
+                    <box size="${recreciver_w} ${recreciver_d} ${recreciver_h}" />
                 </geometry>
             </collision>
         </link>

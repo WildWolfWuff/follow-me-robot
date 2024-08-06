@@ -21,14 +21,12 @@ teleop:
         deadzone: 0.1
     turn:
       left:
-        axis: 6
+        axis: 2
         scalse: 1.0
         deadzone: 0.1
-        # offset: 1.0
       right:
-        axis: 7
+        axis: 2
         scale: 1.0
         deadzone: 0.1
-        # offset: 1.0
 
 

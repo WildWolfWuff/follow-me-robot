@@ -2,43 +2,74 @@
 
 <robot name="sensor"
   xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
-  <xacro:include filename="../core/material.xacro"/>
   <xacro:include filename="../core/inertial.urdf.xacro" />
-  <xacro:include filename="gazebo/gps.gazebo"/>
-  <xacro:macro name="gps" params="parent *origin gps_name:=sensor_0">
-    <xacro:property name="w" value="0.1"/>
-    <xacro:property name="h" value="0.1"/>
-    <xacro:property name="d" value="0.1"/>
-    
+  <xacro:include filename="./macros.xacro" />
+  <xacro:macro name="gps" params="parent *origin gps_name:=sensor_0 update:=30">
+    <xacro:property name="w" value="0.1" />
+    <xacro:property name="h" value="0.1" />
+    <xacro:property name="d" value="0.1" />
+
     <joint name="${gps_name}_gps_joint" type="fixed">
-      <parent link="${parent}"/>
-      <child link="${gps_name}_gps_link"/>
+      <parent link="${parent}" />
+      <child link="${gps_name}_gps_link" />
       <xacro:insert_block name="origin" />
     </joint>
 
     <link name="${gps_name}_gps_link">
       <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <box size="${w} ${d} ${h}"/>
+          <box size="${w} ${d} ${h}" />
         </geometry>
       </collision>
 
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <box size="${w} ${d} ${h}"/>
+          <box size="${w} ${d} ${h}" />
         </geometry>
-        <material name="orange"/>
+        <material name="red" />
       </visual>
 
       <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="1"/>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <mass value="1" />
         <xacro:solid_cuboid_inertia m="1" h="${h}" d="${d}" w="${w}" />
       </inertial>
     </link>
-    <xacro:gazebogps gps_name="${gps_name}">
-    </xacro:gazebogps>
+    <gazebo reference="${gps_name}_gps_link">
+      <sensor name="${gps_name}_gps" type="gps">
+        <always_on>true</always_on>
+        <update_rate>${update}</update_rate>
+        <gps>
+          <position_sensing>
+            <horizontal>
+              <xacro:sensor_noise />
+            </horizontal>
+            <vertical>
+              <xacro:sensor_noise />
+            </vertical>
+          </position_sensing>
+        </gps>
+        <plugin name="gazebo_ros_gps_${gps_name}" filename="libgazebo_ros_gps_sensor.so">
+          <ros>
+            <remapping>~/out:=gps</remapping>
+          </ros>
+          <!-- <bodyName>${gps_name}_gps_link</bodyName>
+      <frameId>${gps_name}_gps_link</frameId> -->
+          <!-- <topicName>/gps/fix/${gps_name}</topicName> -->
+          <!-- <velocityTopicName>/gps/fix_velocity</velocityTopicName>
+      <referenceLatitude>-30.06022459407145675</referenceLatitude>
+      <referenceLongitude>-51.173913575780311191</referenceLongitude>
+      <referenceHeading>90</referenceHeading>
+      <referenceAltitude>10</referenceAltitude>
+      <offset>0 0 0</offset>
+      <drift>0.001 0.001 0.001</drift>
+      <gaussianNoise>0.05 0.05 0.05</gaussianNoise>
+      <velocityDrift>0.001 0.001 0.001</velocityDrift>
+      <velocityGaussianNoise>0.5 0.5 0.5</velocityGaussianNoise> -->
+        </plugin>
+      </sensor>
+    </gazebo>
   </xacro:macro>
 </robot>
