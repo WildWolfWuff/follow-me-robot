@@ -30,6 +30,7 @@ printStep "Init rosdep"
 if [ -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
     sudo rm -rf /etc/ros/rosdep/sources.list.d/20-default.list
 fi
+
 sudo rosdep init
 if [ $? -gt 0 ]; then
     exit 1;
@@ -43,6 +44,7 @@ if [ $? -gt 0 ]; then
     exit 1;
 fi
 printStep "Install rosdep"
+# rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -r -y
 rosdep install --from-paths $source --ignore-src --rosdistro ${distro} -r -y
 if [ $? -gt 0 ]; then
     exit 1;

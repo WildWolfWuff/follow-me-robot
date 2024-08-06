@@ -1,11 +1,11 @@
 used_shell=${SHELL##*/}
 . ./func/func.${used_shell}
 
-distro=${ROS_DISTRO:=iron}
+distro=${ROS_DISTRO:=humble}
 while getopts ":d" opt; do
     case $opt in
         d) 
-           distro="${OPTARG:=iron}"
+           distro="${OPTARG}"
         ;;
     esac
 done

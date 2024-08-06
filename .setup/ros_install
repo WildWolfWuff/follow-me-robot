@@ -1,7 +1,7 @@
 used_shell=${SHELL##*/}
 . ./func/func.${used_shell}
 
-distro="${ROS_DISTRO:=iron}"
+distro="${ROS_DISTRO:=humble}"
 install_tools=false
 install_full=false
 while getopts ":hd:tf" opt; do
@@ -83,7 +83,7 @@ fi
 
 printStep "Install ros base"
 sudo apt update && sudo apt install -y ros-${distro}-ros-base
-# sudo apt update && sudo apt install -y ros-iron-ros-base
+# sudo apt update && sudo apt install -y ros-humble-ros-base
 if [ $? -gt 0 ]; then
     exit 1;
 fi
@@ -91,7 +91,7 @@ fi
 if [ "$install_full" = "true" ]; then
     printStep "Install ros ${distor} Desktop"
     sudo apt update && sudo  apt install -y ros-${distro}-desktop-full
-    # sudo apt update && sudo  apt install -y ros-iron-desktop-full
+    # sudo apt update && sudo  apt install -y ros-humble-desktop-full
     if [ $? -gt 0 ]; then
         exit 1;
     fi

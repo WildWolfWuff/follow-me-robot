@@ -2,7 +2,7 @@ used_shell=${SHELL##*/}
 echo "Use shell: ${used_shell}"
 . ./.setup/func/func.${used_shell}
 
-distro=iron
+distro=humble
 while getopts ":d:sh" opt; do
     case $opt in
         d) 
