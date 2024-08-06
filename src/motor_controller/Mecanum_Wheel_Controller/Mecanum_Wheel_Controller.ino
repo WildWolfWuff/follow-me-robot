@@ -1,5 +1,4 @@
 #include "InvertedAccelStepper.h"
-#include <ArduinoJson.h>
 
 #define MAX_SPEED 30000  // 30000 steps per second
 #define WHEEL_RADIUS 7.5 // who cares
@@ -15,6 +14,11 @@ AccelStepper RightRearWheel(1, 10, 9); // Stepper3 (x,step, dir) (1, 44, 45)
 float x = 0.0;
 float y = 0.0;
 float z = 0.0;
+
+float old_x = x;
+float old_y = y;
+float old_z = z;
+
 const float tolerance = 0.0001;
 
 float left_front_wheel_speed;
@@ -60,6 +64,42 @@ void move()
   RightRearWheel.runSpeed();
 }
 
+void readSerial()
+{
+  old_x = x;
+  old_y = y;
+  old_z = z;
+
+  const int bufferSize = 50;
+  char buffer[bufferSize];
+  int bytesRead = Serial.readBytesUntil('\n', buffer, bufferSize - 1);
+  buffer[bytesRead] = '\0'; // Null-terminate the string
+
+  float values[3] = {0.0, 0.0, 0.0};
+  char *token = strtok(buffer, ";");
+  int index = 0;
+
+  while (token != NULL && index < 3)
+  {
+    values[index] = atof(token);
+    token = strtok(NULL, ";");
+    index++;
+  }
+
+  // Use the values as needed
+  x = values[0];
+  y = values[1];
+  z = values[2];
+
+  // Example usage: print the values
+  Serial.print("Value 1: ");
+  Serial.println(x);
+  Serial.print("Value 2: ");
+  Serial.println(y);
+  Serial.print("Value 3: ");
+  Serial.println(z);
+}
+
 void setup()
 {
   // Max Speed for Stepper Motors
@@ -80,30 +120,11 @@ void loop()
 {
   if (Serial.available() > 0)
   {
-    String json = Serial.readStringUntil('\n');
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, json);
+    readSerial();
 
-    if (!error)
-    {
-      float old_x = x;
-      float old_y = y;
-      float old_z = z;
-      float x = doc["x"];
-      float y = doc["y"];
-      float z = doc["z"];
-      if (old_x - x > tolerance || old_y - y > tolerance || old_z - z > tolerance)
-        Serial.println("x: " + String(x) + " y: " + String(y) + " z: " + String(z));
-      setWheelSpeedValues(x, y, z);
-    }
-    else
-    {
-      Serial.println("Failed to parse JSON");
-      if (json == "stop")
-      {
-        setWheelSpeedValues(0, 0, 0);
-      }
-    }
+    if (old_x - x > tolerance || old_y - y > tolerance || old_z - z > tolerance)
+      Serial.println("x: " + String(x) + " y: " + String(y) + " z: " + String(z));
+    setWheelSpeedValues(x, y, z);
   }
   move();
 }

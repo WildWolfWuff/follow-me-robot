@@ -10,14 +10,18 @@ class MotorControllerNode(Node):
     def __init__(self):
         super().__init__("motor_controller")
         self.get_logger().info("Motor Controller Node has been started")
-
+        serialPort = self.declare_parameter("serial.port", "/dev/ttyACM0")
+        baudRate = self.declare_parameter("serial.baudrate", 9600)
+        timeout = self.declare_parameter("serial.timeout", 1)
         try:
-            self.serial_port = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
+            self.serial_port = serial.Serial(serialPort, baudRate, timeout)
         except serial.SerialException as e:
             self.get_logger().error(f"Failed to open serial port: {e}")
 
+        topic_name = self.declare_parameter("topic.name", "movement_commands")
+        
         self.subscription = self.create_subscription(
-            Vector3, "movement_commands", self.listener_callback, 10
+            Vector3, topic_name, self.listener_callback, 10
         )
         self.subscription  # prevent unused variable warning
 
@@ -30,11 +34,9 @@ class MotorControllerNode(Node):
         self.send_command(msg)
 
     def send_command(self, msg):
-        command = {"x": msg.x, "y": msg.y, "z": msg.z}
-        command_json = json.dumps(command)
-
-        self.serial_port.write(command_json.encode("utf-8"))
-        self.get_logger().info(f"Sent command: {command_json}")
+        command = str(msg.x) + ";" + str(msg.y) + ";" + str(msg.z) + "\n"
+        self.serial_port.write(command.encode("utf-8"))
+        self.get_logger().info(f"Sent command: {command}")        
 
     def destroy_node(self):
         zero_command = {"x": 0.0, "y": 0.0, "z": 0.0}
