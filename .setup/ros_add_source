@@ -2,7 +2,7 @@ used_shell=${SHELL##*/}
 . ./func/func.${used_shell}
 
 distro=${ROS_DISTRO:=humble}
-while getopts ":d" opt; do
+while getopts ":d:" opt; do
     case $opt in
         d) 
            distro="${OPTARG}"
