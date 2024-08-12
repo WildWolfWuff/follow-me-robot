@@ -1,20 +1,20 @@
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Vector3
+from geometry_msgs.msg import Twist
 
 class MovementSimulatorNode(Node):
     def __init__(self):
         super().__init__("movement_simulator")
         self.subscription = self.create_subscription(
-            Vector3, "movement_commands", self.listener_callback, 10
+            Twist, "movement_commands", self.listener_callback, 10
         )
         self.subscription  # prevent unused variable warning
         self.get_logger().info("Movement Simulator Node has been started")
 
     def listener_callback(self, msg):
-        x = msg.x
-        y = msg.y
-        z = msg.z
+        x = msg.linear.x
+        y = msg.linear.y
+        z = msg.angular.z
         self.get_logger().info(f"Received: x={x}, y={y}, z={z}")
 
 
