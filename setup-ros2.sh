@@ -40,6 +40,7 @@ ${used_shell} ./ros_init -d $distro
 if [ $? -gt 0 ]; then
     exit 1;
 fi
+
 models=$(ls src/gazebo_model/acto)
 for model in $models; do
     echo "Model: $model"
