@@ -111,10 +111,10 @@ def generate_launch_description():
                 output='screen')
             ]))
     
-    # ld.add_action(IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(nav_launch_file),
-    #     launch_arguments={
-    #         "use_sim_time":start_sim
-    #         }.items()
-    #     ))
+    ld.add_action(IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(nav_launch_file),
+        launch_arguments={
+            "use_sim_time":start_sim
+            }.items()
+        ))
     return ld
