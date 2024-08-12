@@ -1,5 +1,8 @@
 #!/bin/bash
 used_shell="bash" # ${SHELL##*/}
+
+rosdep install --from-paths ./src --ignore-src --rosdistro ${ROS_DISTRO} -r -y
+
 colcon build --symlink-install --event-handlers log_command+
 if [ $? -ne 0 ]; then
   echo "Build failed"
