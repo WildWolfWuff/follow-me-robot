@@ -40,22 +40,22 @@ void move()
   if (abs(left_front_wheel_speed * MAX_SPEED / 100 - LeftFrontWheel.speed()) > tolerance)
   {
     LeftFrontWheel.setSpeed(left_front_wheel_speed * MAX_SPEED / 100);
-    Serial.println("Left Front Wheel: " + String(left_front_wheel_speed) + "%");
+    // Serial.println("Left Front Wheel: " + String(left_front_wheel_speed) + "%");
   }
   if (abs(left_rear_wheel_speed * MAX_SPEED / 100 - LeftRearWheel.speed()) > tolerance)
   {
     LeftRearWheel.setSpeed(left_rear_wheel_speed * MAX_SPEED / 100);
-    Serial.println("Left Rear Wheel: " + String(left_rear_wheel_speed) + "%");
+    // Serial.println("Left Rear Wheel: " + String(left_rear_wheel_speed) + "%");
   }
   if (abs(right_front_wheel_speed * MAX_SPEED / 100 - RightFrontWheel.speed()) > tolerance)
   {
     RightFrontWheel.setSpeed(right_front_wheel_speed * MAX_SPEED / 100);
-    Serial.println("Right Front Wheel: " + String(right_front_wheel_speed) + "%");
+    // Serial.println("Right Front Wheel: " + String(right_front_wheel_speed) + "%");
   }
   if (abs(right_rear_wheel_speed * MAX_SPEED / 100 - RightRearWheel.speed()) > tolerance)
   {
     RightRearWheel.setSpeed(right_rear_wheel_speed * MAX_SPEED / 100);
-    Serial.println("Right Rear Wheel: " + String(right_rear_wheel_speed) + "%");
+    // Serial.println("Right Rear Wheel: " + String(right_rear_wheel_speed) + "%");
   }
 
   LeftFrontWheel.runSpeed();
@@ -73,7 +73,7 @@ void readSerial()
   const int bufferSize = 50;
   char buffer[bufferSize];
   int bytesRead = Serial.readBytesUntil('\n', buffer, bufferSize - 1);
-  buffer[bytesRead] = '\0'; // Null-terminate the string
+  buffer[bytesRead] = '\0';
 
   float values[3] = {0.0, 0.0, 0.0};
   char *token = strtok(buffer, ";");
@@ -86,18 +86,9 @@ void readSerial()
     index++;
   }
 
-  // Use the values as needed
   x = values[0];
   y = values[1];
   z = values[2];
-
-  // Example usage: print the values
-  Serial.print("Value 1: ");
-  Serial.println(x);
-  Serial.print("Value 2: ");
-  Serial.println(y);
-  Serial.print("Value 3: ");
-  Serial.println(z);
 }
 
 void setup()
@@ -123,7 +114,7 @@ void loop()
     readSerial();
 
     if (old_x - x > tolerance || old_y - y > tolerance || old_z - z > tolerance)
-      Serial.println("x: " + String(x) + " y: " + String(y) + " z: " + String(z));
+      // Serial.println("x: " + String(x) + " y: " + String(y) + " z: " + String(z));
     setWheelSpeedValues(x, y, z);
   }
   move();

@@ -1,19 +1,22 @@
+import threading
+import curses
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Vector3
-import curses
-import threading
+from geometry_msgs.msg import Twist
 
 
 class KeyboardTeleopNode(Node):
     def __init__(self):
         super().__init__("keyboard_teleop")
-        self.publisher_ = self.create_publisher(Vector3, "movement_commands", 10)
-        self.msg = Vector3()
-        self.prev_msg = Vector3()
-        self.msg.x = 0.0
-        self.msg.y = 0.0
-        self.msg.z = 0.0
+        self.publisher_ = self.create_publisher(Twist, "movement_commands", 10)
+        self.msg = Twist()
+        self.prev_msg = Twist()
+        self.msg.linear.x = 0.0
+        self.msg.linear.y = 0.0
+        self.msg.linear.z = 0.0
+        self.msg.angular.x = 0.0
+        self.msg.angular.y = 0.0
+        self.msg.angular.z = 0.0
         self.get_logger().info("Keyboard Teleop Node has been started")
 
         self.running = True
@@ -57,7 +60,7 @@ class KeyboardTeleopNode(Node):
             if not self.compare_messages(self.msg, self.prev_msg):
                 self.publisher_.publish(self.msg)
                 self.get_logger().info(
-                    f"Publishing: x={self.msg.x}, y={self.msg.y}, z={self.msg.z}"
+                    f"Publishing: x={self.msg.linear.x}, y={self.msg.linear.y}, z={self.msg.angular.z}"
                 )
                 self.prev_msg = self.copy_message(self.msg)
 
@@ -66,48 +69,48 @@ class KeyboardTeleopNode(Node):
     def update_message(self):
 
         if self.key_states["w"]:
-            self.msg.x += 0.1
+            self.msg.linear.x += 0.1
         elif self.key_states["s"]:
-            self.msg.x -= 0.1
+            self.msg.linear.x -= 0.1
 
         if self.key_states["d"]:
-            self.msg.y += 0.1
+            self.msg.linear.y += 0.1
         elif self.key_states["a"]:
-            self.msg.y -= 0.1
+            self.msg.linear.y -= 0.1
 
         if self.key_states["e"]:
-            self.msg.z += 0.1
+            self.msg.angular.z += 0.1
         elif self.key_states["q"]:
-            self.msg.z -= 0.1
+            self.msg.angular.z -= 0.1
 
         if self.key_states["x"]:
-            self.msg.x = 0.0
-            self.msg.y = 0.0
-            self.msg.z = 0.0
+            self.msg.linear.x = 0.0
+            self.msg.linear.y = 0.0
+            self.msg.angular.z = 0.0
 
-        if self.msg.x > 1.0:
-            self.msg.x = 1.0
-        elif self.msg.x < -1.0:
-            self.msg.x = -1.0
+        if self.msg.linear.x > 1.0:
+            self.msg.linear.x = 1.0
+        elif self.msg.linear.x < -1.0:
+            self.msg.linear.x = -1.0
 
-        if self.msg.y > 1.0:
-            self.msg.y = 1.0
-        elif self.msg.y < -1.0:
-            self.msg.y = -1.0
+        if self.msg.linear.y > 1.0:
+            self.msg.linear.y = 1.0
+        elif self.msg.linear.y < -1.0:
+            self.msg.linear.y = -1.0
 
-        if self.msg.z > 1.0:
-            self.msg.z = 1.0
-        elif self.msg.z < -1.0:
-            self.msg.z = -1.0
+        if self.msg.angular.z > 1.0:
+            self.msg.angular.z = 1.0
+        elif self.msg.angular.z < -1.0:
+            self.msg.angular.z = -1.0
 
     def compare_messages(self, msg1, msg2):
-        return msg1.x == msg2.x and msg1.y == msg2.y and msg1.z == msg2.z
+        return msg1.linear.x == msg2.linear.x and msg1.linear.y == msg2.linear.y and msg1.angular.z == msg2.angular.z
 
     def copy_message(self, msg):
-        new_msg = Vector3()
-        new_msg.x = msg.x
-        new_msg.y = msg.y
-        new_msg.z = msg.z
+        new_msg = Twist()
+        new_msg.linear.x = msg.linear.x
+        new_msg.linear.y = msg.linear.y
+        new_msg.angular.z = msg.angular.z
         return new_msg
 
     def destroy_node(self):
