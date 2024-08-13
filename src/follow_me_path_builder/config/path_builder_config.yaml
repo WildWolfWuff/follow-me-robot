@@ -1,0 +1,5 @@
+path_builder:
+  ros__parameters:
+    tag_topic: /tag/tf
+    goal_topic: /goal_pose
+    tag_id: 0
