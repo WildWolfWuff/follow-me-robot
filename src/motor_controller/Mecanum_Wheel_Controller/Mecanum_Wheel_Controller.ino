@@ -26,7 +26,7 @@ float left_rear_wheel_speed;
 float right_front_wheel_speed;
 float right_rear_wheel_speed;
 
-// Input Values in Percent, output should max out at 100 (%) per wheel
+// Input Values in Percent, output should max out at 1(00%) per wheel
 void setWheelSpeedValues(float speedX, float speedY, float speedZ)
 {
   left_front_wheel_speed = (speedX + speedY + speedZ) / 3;
@@ -37,25 +37,25 @@ void setWheelSpeedValues(float speedX, float speedY, float speedZ)
 
 void move()
 {
-  if (abs(left_front_wheel_speed * MAX_SPEED / 100 - LeftFrontWheel.speed()) > tolerance)
+  if (abs(left_front_wheel_speed * MAX_SPEED - LeftFrontWheel.speed()) > tolerance)
   {
-    LeftFrontWheel.setSpeed(left_front_wheel_speed * MAX_SPEED / 100);
-    // Serial.println("Left Front Wheel: " + String(left_front_wheel_speed) + "%");
+    LeftFrontWheel.setSpeed(left_front_wheel_speed * MAX_SPEED);
+    // Serial.println("Left Front Wheel: " + String(left_front_wheel_speed*100) + "%");
   }
-  if (abs(left_rear_wheel_speed * MAX_SPEED / 100 - LeftRearWheel.speed()) > tolerance)
+  if (abs(left_rear_wheel_speed * MAX_SPEED - LeftRearWheel.speed()) > tolerance)
   {
-    LeftRearWheel.setSpeed(left_rear_wheel_speed * MAX_SPEED / 100);
-    // Serial.println("Left Rear Wheel: " + String(left_rear_wheel_speed) + "%");
+    LeftRearWheel.setSpeed(left_rear_wheel_speed * MAX_SPEED);
+    // Serial.println("Left Rear Wheel: " + String(left_rear_wheel_speed*100) + "%");
   }
-  if (abs(right_front_wheel_speed * MAX_SPEED / 100 - RightFrontWheel.speed()) > tolerance)
+  if (abs(right_front_wheel_speed * MAX_SPEED - RightFrontWheel.speed()) > tolerance)
   {
-    RightFrontWheel.setSpeed(right_front_wheel_speed * MAX_SPEED / 100);
-    // Serial.println("Right Front Wheel: " + String(right_front_wheel_speed) + "%");
+    RightFrontWheel.setSpeed(right_front_wheel_speed * MAX_SPEED);
+    // Serial.println("Right Front Wheel: " + String(right_front_wheel_speed*100) + "%");
   }
-  if (abs(right_rear_wheel_speed * MAX_SPEED / 100 - RightRearWheel.speed()) > tolerance)
+  if (abs(right_rear_wheel_speed * MAX_SPEED - RightRearWheel.speed()) > tolerance)
   {
-    RightRearWheel.setSpeed(right_rear_wheel_speed * MAX_SPEED / 100);
-    // Serial.println("Right Rear Wheel: " + String(right_rear_wheel_speed) + "%");
+    RightRearWheel.setSpeed(right_rear_wheel_speed * MAX_SPEED);
+    // Serial.println("Right Rear Wheel: " + String(right_rear_wheel_speed*100) + "%");
   }
 
   LeftFrontWheel.runSpeed();
