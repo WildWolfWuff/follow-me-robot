@@ -34,22 +34,29 @@ def generate_launch_description():
             arguments=["--ros-args", "--log-level", log_level],
             parameters=[os.path.join(pkg_path, 'config', 'teleop_config.yaml')],
         ),
-        TimerAction(period=10.0,
-                    cancel_on_shutdown=True,
-                    actions=[
+        # Node(
+        #     package='robot_localization',
+        #     executable='ekf_node',
+        #     name='ekf_filter_node',
+        #     output='screen',
+        #     parameters=[os.path.join(pkg_path, 'config','ekf.yaml'), 
+        #                 {'use_sim_time': use_sim_time}]
+        # )
+        # TimerAction(period=10.0,
+        #             cancel_on_shutdown=True,
+        #             actions=[
             # ros2 run apriltag_ros apriltag_node --ros-args -r image_rect:=/cam/front/image_raw -r camera_info:=/cam/front/camera_info -r /tf:=/tag/tf -r /detections:=/tag/detections --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/apritag.yaml
-            Node(
-            package='apriltag_ros',
-            executable='apriltag_node',
-            remappings=[
-                ('image_rect','/cam/front/image_raw'),
-                ('camera_info','/cam/front/camera_info'),
-                ('/tf','/tag/tf'),
-                ('/detections','/tag/detections'),
-            ],
-            arguments=["--ros-args", "--log-level", log_level],
-            parameters=[tag_config_path]
-            )
-        ])
-
+            # Node(
+            # package='apriltag_ros',
+            # executable='apriltag_node',
+            # remappings=[
+            #     ('image_rect','/cam/front/image_raw'),
+            #     ('camera_info','/cam/front/camera_info'),
+            #     ('/tf','/tag/tf'),
+            #     ('/detections','/tag/detections'),
+            # ],
+            # arguments=["--ros-args", "--log-level", log_level],
+            # parameters=[tag_config_path]
+            # )
+        # ])
     ])

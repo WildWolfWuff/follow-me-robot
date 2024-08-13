@@ -32,20 +32,23 @@ def generate_launch_description():
         DeclareLaunchArgument('start_sim',default_value='false',description='use simulation'),
         DeclareLaunchArgument('use_foxglove',default_value=use_foxglove,description='use foxglove bridge'),
         DeclareLaunchArgument('use_rviz',default_value=use_rviz,description='use rviz2 for visualization'),
-        IncludeLaunchDescription(
+        
+        
+    ])
+    ld.add_action(IncludeLaunchDescription(
             PythonLaunchDescriptionSource(state_launch_file),
             launch_arguments={
                 "log_level":log_level,
                 "use_sim_time":start_sim
-                }.items()),
+                }.items()))
+    ld.add_action(
         IncludeLaunchDescription(
         PythonLaunchDescriptionSource(sensor_launch_file),
         launch_arguments={
             "log_level":log_level,
             "use_sim_time":start_sim
             }.items())
-    ])
-
+    )
     # Lauch gazebo simulation if start_sim is true
     verbose_output=LaunchConfiguration('verbose',default='false')
     world=LaunchConfiguration('world',default='')
@@ -93,7 +96,10 @@ def generate_launch_description():
                 XMLLaunchDescriptionSource(foxglove_launch_file),
                 launch_arguments={
                     "use_sim_time": start_sim,
-                    "port":"8765"
+                    "port":"8765",
+                    "send_buffer_limit": "40000000",
+                    "num_threads": "2",
+                    "max_qos_depth": "100",
                     }.items()
                 )]))
 

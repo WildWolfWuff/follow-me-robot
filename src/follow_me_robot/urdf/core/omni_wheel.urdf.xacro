@@ -62,12 +62,12 @@
         </geometry>
         <material name="black" />
       </visual>
-      <visual>
+      <!-- <visual>
         <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
         <geometry>
           <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${wheel_img}.dae" />
         </geometry>
-      </visual>
+      </visual> -->
 
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
@@ -96,18 +96,20 @@
       </actuator>
     </transmission>
 
-    <gazebo reference="${prefix}_link">
+    <!-- <gazebo reference="${prefix}_link">
       <mu1 value="1.0" />
       <mu2 value="1.0" />
       <kp value="10000000.0" />
       <kd value="1.0" />
       <fdir1 value="1 0 0" />
       <turnGravityOff>false</turnGravityOff>
-    </gazebo>
+    </gazebo> -->
     <!-- <gazebo>
-      <plugin name="${prefix}_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <plugin name="${prefix}_joint_state_publisher"
+        filename="libgazebo_ros_joint_state_publisher.so">
         <update_rate>2</update_rate>
         <joint_name>${prefix}_joint</joint_name>
+        <frame_name>${parent}</frame_name>
       </plugin>
     </gazebo> -->
   </xacro:macro>

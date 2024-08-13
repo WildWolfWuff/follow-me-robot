@@ -1,6 +1,6 @@
 #!/bin/bash
 used_shell="bash" # ${SHELL##*/}
-
+export ROS_LOG_DIR=./run_logs
 rosdep install --from-paths ./src --ignore-src --rosdistro ${ROS_DISTRO} -r -y
 
 colcon build --symlink-install --event-handlers log_command+

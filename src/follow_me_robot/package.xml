@@ -3,7 +3,8 @@
 <package format="3">
   <name>follow_me_robot</name>
   <version>0.0.0</version>
-  <description>The follow_me_robot package. See https://github.com/WildWolfWuff/follow-me-robot for more information.</description>
+  <description>The follow_me_robot package. See https://github.com/WildWolfWuff/follow-me-robot for
+    more information.</description>
   <maintainer email="dev@todo.todo">dev</maintainer>
   <license>TODO: License declaration</license>
   <author email="hummelm.tin21@student.dhbw-heidenheim.de">Marc Hummel</author>
@@ -22,13 +23,15 @@
   <exec_depend>foxglove_bridge</exec_depend>
   <depend>joint_state_publisher</depend>
   <depend>robot_state_publisher</depend>
+  <exec_depend>robot_localization</exec_depend>
   <depend>xacro</depend>
+  <depend>smac_planner</depend>
   <depend>cartographer_ros</depend>
   <exec_depend>v4l2_camera</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-  
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

@@ -1,6 +1,7 @@
 #!/bin/zsh
 used_shell="zsh" # ${SHELL##*/}
-
+export ROS_LOG_DIR=./run_logs
+rm -rf ./run_logs
 rosdep install --from-paths ./src --ignore-src --rosdistro ${ROS_DISTRO} -r -y
 
 colcon build --symlink-install --event-handlers log_command+
@@ -15,4 +16,4 @@ echo "impport: $setup_path"
 world_path=~/.gazebo/models/hospital/hospital.world
 world_models=~/.gazebo/models/hospital/models
 
-ros2 launch follow_me_robot robot.launch.py start_sim:=true use_foxglove:=true use_rviz:=false world:=$world_path world_models:=$world_models bot_x:=-1 bot_y:=1
+ros2 launch follow_me_robot robot.launch.py start_sim:=true use_foxglove:=true use_rviz:=false world:=$world_path world_models:=$world_models bot_x:=-1 bot_y:=2

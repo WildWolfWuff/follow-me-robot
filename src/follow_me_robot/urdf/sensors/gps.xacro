@@ -55,6 +55,7 @@
           <ros>
             <remapping>~/out:=gps</remapping>
           </ros>
+          <frame_name>${parent}</frame_name>
           <!-- <bodyName>${gps_name}_gps_link</bodyName>
       <frameId>${gps_name}_gps_link</frameId> -->
           <!-- <topicName>/gps/fix/${gps_name}</topicName> -->

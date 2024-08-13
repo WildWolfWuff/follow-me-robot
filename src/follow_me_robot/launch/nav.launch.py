@@ -17,6 +17,7 @@ def generate_launch_description():
                                                  default='follow_me_mapper_lds_2d.lua')
     resolution = LaunchConfiguration('resolution', default='0.05')
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
+    params_file = os.path.join(pkg_path, 'config', 'nav_params.yaml')
     # ros2 run follow_me_teleop follow_me_teleop --ros-args --params-file `ros2 pkg prefix follow_me_teleop`/share/follow_me_teleop/config/teleop_config.yaml
     return LaunchDescription([
         DeclareLaunchArgument(
@@ -62,5 +63,26 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=['-resolution', resolution, 
                        '-publish_period_sec', publish_period_sec,
-                       '--log-level warn'])
+                       '--log-level warn']),
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(
+                    get_package_share_directory('nav2_bringup'), 
+                    'launch',
+                    'navigation_launch.py')),
+                launch_arguments={
+                    "use_sim_time": use_sim_time,
+                    # "params_file": params_file
+                }.items()),
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(
+        #         os.path.join(
+        #             get_package_share_directory('slam_toolbox'), 
+        #             'launch',
+        #             'online_async_launch.py'
+        #     )),
+        #         launch_arguments={
+        #             "slam_params_file": os.path.join(pkg_path, 'config', 'slam_params.yaml'),
+        #             "use_sim_time": use_sim_time
+        #             }.items()),
     ])

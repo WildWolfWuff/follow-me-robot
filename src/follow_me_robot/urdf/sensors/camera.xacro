@@ -58,6 +58,7 @@
           <hack_baseline>0.07</hack_baseline>
           <min_depth>0.002</min_depth>
           <max_depth>300.0</max_depth>
+          <frame_name>${cam_name}_camera_link_optical</frame_name>
         </plugin>
       </sensor>
     </gazebo>
