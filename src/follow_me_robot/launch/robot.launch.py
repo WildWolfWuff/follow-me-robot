@@ -24,7 +24,8 @@ def generate_launch_description():
     start_sim=LaunchConfiguration('start_sim',default='false')
     use_foxglove=LaunchConfiguration('use_foxglove',default='false')
     use_rviz=LaunchConfiguration('use_rviz',default='false')
-
+    start_nav=LaunchConfiguration('start_nav',default='true')
+    sensor_config_path=LaunchConfiguration('config_path',default=os.path.join(pkg_path,'config','sensor_config.yaml'))
     # define start script for robot state publisher to publish the compiled robto description
 
     ld=LaunchDescription([
@@ -32,8 +33,8 @@ def generate_launch_description():
         DeclareLaunchArgument('start_sim',default_value='false',description='use simulation'),
         DeclareLaunchArgument('use_foxglove',default_value=use_foxglove,description='use foxglove bridge'),
         DeclareLaunchArgument('use_rviz',default_value=use_rviz,description='use rviz2 for visualization'),
-        
-        
+        DeclareLaunchArgument('start_nav',default_value=start_nav,description='start navigation stack'),
+        DeclareLaunchArgument('config_path',default_value=sensor_config_path,description='path to sensor config file'),
     ])
     ld.add_action(IncludeLaunchDescription(
             PythonLaunchDescriptionSource(state_launch_file),
@@ -46,7 +47,8 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(sensor_launch_file),
         launch_arguments={
             "log_level":log_level,
-            "use_sim_time":start_sim
+            "use_sim_time":start_sim,
+            "sensor_config_path":sensor_config_path
             }.items())
     )
     # Lauch gazebo simulation if start_sim is true
@@ -90,10 +92,9 @@ def generate_launch_description():
 
     # Launch foxglove bridge if use_foxglove is true
     foxglove_launch_file=os.path.join(get_package_share_directory("foxglove_bridge"),'launch',"foxglove_bridge_launch.xml")
-    ld.add_action(GroupAction(
-        condition=IfCondition(use_foxglove),
-        actions=[IncludeLaunchDescription(
+    ld.add_action(IncludeLaunchDescription(
                 XMLLaunchDescriptionSource(foxglove_launch_file),
+                condition=IfCondition(use_foxglove),
                 launch_arguments={
                     "use_sim_time": start_sim,
                     "port":"8765",
@@ -101,8 +102,7 @@ def generate_launch_description():
                     "num_threads": "2",
                     "max_qos_depth": "100",
                     }.items()
-                )]))
-
+                ))
     # Launch rviz2 if use_rviz is true
     # TODO: configure rviz2 for current sensors
     rviz_config_file=LaunchConfiguration('rviz_config_file',default=os.path.join(pkg_path,"rviz","model.rviz"))
@@ -116,11 +116,16 @@ def generate_launch_description():
                 arguments=["-d", rviz_config_file],
                 output='screen')
             ]))
-    
-    ld.add_action(IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(nav_launch_file),
-        launch_arguments={
-            "use_sim_time":start_sim
-            }.items()
-        ))
+
+    ld.add_action(GroupAction(
+        condition=IfCondition(start_nav),
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(nav_launch_file),
+                launch_arguments={
+                "use_sim_time":start_sim
+                }.items(),
+        )])
+    )
+        
     return ld

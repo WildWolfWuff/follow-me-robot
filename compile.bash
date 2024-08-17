@@ -3,6 +3,12 @@ used_shell="bash" # ${SHELL##*/}
 export ROS_LOG_DIR=./run_logs
 rosdep install --from-paths ./src --ignore-src --rosdistro ${ROS_DISTRO} -r -y
 
+cd src/follow_me_robot/urdf && xacro robot.urdf.xacro > /dev/null && cd ../../..
+if [ $? -ne 0 ]; then
+  echo "xacro failed"
+  return 1
+fi
+
 colcon build --symlink-install --event-handlers log_command+
 if [ $? -ne 0 ]; then
   echo "Build failed"

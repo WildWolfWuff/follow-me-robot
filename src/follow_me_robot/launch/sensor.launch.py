@@ -10,9 +10,7 @@ def generate_launch_description():
     pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
     log_level=LaunchConfiguration('log_level')
-    tel_config_path=LaunchConfiguration('tel_config_path',default=os.path.join(pkg_path,'config','teleop_config.yaml'))
-    # print(os.path.join(pkg_path,'config','apritag.yaml'))
-    tag_config_path=LaunchConfiguration('tag_config_path',default=os.path.join(pkg_path,'config','apritag.yaml'))
+    config_path=LaunchConfiguration('config_path',default=os.path.join(pkg_path,'config','sensor_config.yaml'))
     declare_log_level_cmd=DeclareLaunchArgument(
         'log_level',
         default_value='info',
@@ -25,28 +23,16 @@ def generate_launch_description():
     return LaunchDescription([
         declare_log_level_cmd,
         declare_use_sim_time_cmd,
-        DeclareLaunchArgument('tel_config_path',default_value=tel_config_path,description='path to teleop config file'),
-        DeclareLaunchArgument('tag_config_path',default_value=tag_config_path,description='path to apriltag config file'),
-        # ros2 run follow_me_teleop follow_me_teleop --ros-args --params-file `ros2 pkg prefix follow_me_teleop`/share/follow_me_teleop/config/teleop_config.yaml
+        DeclareLaunchArgument('config_path',default_value=config_path,description='path to sensor config file'),
+        # ros2 run follow_me_teleop follow_me_teleop --ros-args --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/sensor_config.yaml
         Node(
             package='follow_me_teleop',
             executable='follow_me_teleop',
             arguments=["--ros-args", "--log-level", log_level],
-            parameters=[os.path.join(pkg_path, 'config', 'teleop_config.yaml')],
+            parameters=[config_path],
         ),
-        # Node(
-        #     package='robot_localization',
-        #     executable='ekf_node',
-        #     name='ekf_filter_node',
-        #     output='screen',
-        #     parameters=[os.path.join(pkg_path, 'config','ekf.yaml'), 
-        #                 {'use_sim_time': use_sim_time}]
-        # )
-        # TimerAction(period=10.0,
-        #             cancel_on_shutdown=True,
-        #             actions=[
-            # ros2 run apriltag_ros apriltag_node --ros-args -r image_rect:=/cam/front/image_raw -r camera_info:=/cam/front/camera_info -r /tf:=/tag/tf -r /detections:=/tag/detections --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/apritag.yaml
-            Node(
+        # ros2 run apriltag_ros apriltag_node --ros-args -r image_rect:=/cam/front/image_raw -r camera_info:=/cam/front/camera_info -r /tf:=/tag/tf -r /detections:=/tag/detections --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/sensor_config.yaml
+        Node(
             package='apriltag_ros',
             executable='apriltag_node',
             remappings=[
@@ -56,7 +42,14 @@ def generate_launch_description():
                 ('/detections','/tag/detections'),
             ],
             arguments=["--ros-args", "--log-level", log_level],
-            parameters=[tag_config_path]
-            )
-        # ])
+            parameters=[config_path]
+        ),
+        # ros2 run follow_me_path_builder follow_me_path_builder --ros-args -r /tf:=/tag/tf --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/sensor_config.yaml
+        Node(
+            package='follow_me_path_builder',
+            executable='follow_me_path_builder',
+            parameters=[config_path],
+            arguments=['--log-level', 'debug'],
+            remappings=[('/tf', '/tag/tf')]
+        ),
     ])

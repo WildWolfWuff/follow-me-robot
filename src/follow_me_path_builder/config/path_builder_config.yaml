@@ -1,5 +1,7 @@
 path_builder:
   ros__parameters:
-    tag_topic: /tag/tf
+    parent_frame: front_camera_link_optical
     goal_topic: /goal_pose
-    tag_id: 0
+    tag:
+      family: Standard41h12
+      id: 0

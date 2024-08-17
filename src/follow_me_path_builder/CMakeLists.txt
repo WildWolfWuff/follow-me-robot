@@ -39,7 +39,7 @@ target_include_directories(
 ament_target_dependencies(
   follow_me_path_builder
   rclcpp
-  sensor_msgs
+  tf2_ros
   geometry_msgs
 )
 
