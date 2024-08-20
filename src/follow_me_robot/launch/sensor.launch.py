@@ -38,7 +38,7 @@ def generate_launch_description():
             remappings=[
                 ('image_rect','/cam/front/image_raw'),
                 ('camera_info','/cam/front/camera_info'),
-                ('/tf','/tag/tf'),
+                # ('/tf','/tag/tf'),
                 ('/detections','/tag/detections'),
             ],
             arguments=["--ros-args", "--log-level", log_level],
@@ -50,6 +50,6 @@ def generate_launch_description():
             executable='follow_me_path_builder',
             parameters=[config_path],
             arguments=['--log-level', 'debug'],
-            remappings=[('/tf', '/tag/tf')]
+            # remappings=[('/tf', '/tag/tf')]
         ),
     ])

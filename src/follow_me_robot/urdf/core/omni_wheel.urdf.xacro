@@ -95,15 +95,19 @@
         <hardwareInterface>EffortJointInterface</hardwareInterface>
       </actuator>
     </transmission>
-
-    <!-- <gazebo reference="${prefix}_link">
+    <plugin name="wheel_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <update_rate>${update_rate}</update_rate>
+      <joint_name>${prefix}_joint</joint_name>
+      <!-- <publish_selected_only>1</publish_selected_only> -->
+    </plugin>
+    <gazebo reference="${prefix}_link">
       <mu1 value="1.0" />
       <mu2 value="1.0" />
       <kp value="10000000.0" />
       <kd value="1.0" />
       <fdir1 value="1 0 0" />
-      <turnGravityOff>false</turnGravityOff>
-    </gazebo> -->
+      <turnGravityOff>true</turnGravityOff>
+    </gazebo>
     <!-- <gazebo>
       <plugin name="${prefix}_joint_state_publisher"
         filename="libgazebo_ros_joint_state_publisher.so">

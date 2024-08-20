@@ -22,8 +22,10 @@ def generate_launch_description():
     # namespace = 'Follow-Me-Robot'
     log_level=LaunchConfiguration('log_level',default='info')
     start_sim=LaunchConfiguration('start_sim',default='false')
+    use_gui=LaunchConfiguration('use_gui',default='false')
     use_foxglove=LaunchConfiguration('use_foxglove',default='false')
     use_rviz=LaunchConfiguration('use_rviz',default='false')
+    start_sensors=LaunchConfiguration('start_sensors',default='true')
     start_nav=LaunchConfiguration('start_nav',default='true')
     sensor_config_path=LaunchConfiguration('config_path',default=os.path.join(pkg_path,'config','sensor_config.yaml'))
     # define start script for robot state publisher to publish the compiled robto description
@@ -33,6 +35,7 @@ def generate_launch_description():
         DeclareLaunchArgument('start_sim',default_value='false',description='use simulation'),
         DeclareLaunchArgument('use_foxglove',default_value=use_foxglove,description='use foxglove bridge'),
         DeclareLaunchArgument('use_rviz',default_value=use_rviz,description='use rviz2 for visualization'),
+        DeclareLaunchArgument('start_sensors',default_value=start_sensors,description='start sensor nodes'),
         DeclareLaunchArgument('start_nav',default_value=start_nav,description='start navigation stack'),
         DeclareLaunchArgument('config_path',default_value=sensor_config_path,description='path to sensor config file'),
     ])
@@ -45,11 +48,12 @@ def generate_launch_description():
     ld.add_action(
         IncludeLaunchDescription(
         PythonLaunchDescriptionSource(sensor_launch_file),
+        condition=IfCondition(start_sensors),
         launch_arguments={
             "log_level":log_level,
             "use_sim_time":start_sim,
             "sensor_config_path":sensor_config_path
-            }.items())
+            }.items()),
     )
     # Lauch gazebo simulation if start_sim is true
     verbose_output=LaunchConfiguration('verbose',default='false')
@@ -60,7 +64,7 @@ def generate_launch_description():
     bot_z=LaunchConfiguration('bot_z',default='0')
     bot_topic=LaunchConfiguration('bot_topic',default='robot_description')
     bot_name=LaunchConfiguration('bot_name',default='follow_me_bot')
-    gazebo_launch_file=os.path.join(get_package_share_directory('gazebo_ros'),'launch','gazebo.launch.py')
+    gazebo_launch_dir=os.path.join(get_package_share_directory('gazebo_ros'),'launch')
     ld.add_action(GroupAction(
         condition=IfCondition(start_sim),
         actions=[
@@ -72,13 +76,17 @@ def generate_launch_description():
             DeclareLaunchArgument('bot_z',default_value=bot_z,description='bot z position'),
             DeclareLaunchArgument('bot_topic',default_value=bot_topic,description='robot state publisher topic'),
             DeclareLaunchArgument('bot_name',default_value=bot_name, description='robot name'),
+            DeclareLaunchArgument('use_gui',default_value=use_gui,description='use gui'),
             AppendEnvironmentVariable('GAZEBO_MODEL_PATH',world_models),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(gazebo_launch_file),
+                PythonLaunchDescriptionSource(os.path.join(gazebo_launch_dir,"gzserver.launch.py")),
                 launch_arguments={
                     'world': world,
                     'verbose': verbose_output
                 }.items()),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(os.path.join(gazebo_launch_dir,"gzclient.launch.py")),
+                condition=IfCondition(use_gui)),
             Node(package='gazebo_ros', 
                 executable='spawn_entity.py',
                 output='screen',

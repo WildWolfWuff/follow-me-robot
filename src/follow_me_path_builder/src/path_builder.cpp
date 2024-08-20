@@ -10,6 +10,8 @@ PathBuilder::PathBuilder(const std::string &name)
 {
     // https://docs.ros.org/en/humble/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Listener-Cpp.html
     // Setup the parameters
+    robot_base_frame_ = declare_parameter<std::string>("robot_base", "base_link");
+    odom_frame_ = declare_parameter<std::string>("doom", "odom");
     parent_frame_ = declare_parameter<std::string>("parent_frame", "base_link");
     tag_family_ = declare_parameter<std::string>("tag.family", "tag36h11");
     tag_id_ = declare_parameter<int>("tag.id", 0);
@@ -22,58 +24,94 @@ PathBuilder::PathBuilder(const std::string &name)
         declare_parameter<double>("offset.rotation.y", 0.0),
         declare_parameter<double>("offset.rotation.z", 0.0),
         declare_parameter<double>("offset.rotation.w", 1.0));
-    std::string goal_topic = declare_parameter<std::string>("goal_topic", "goal_pose");
+    std::string goal_topic = declare_parameter<std::string>("goal.topic", "goal_pose");
+    goal_frame_ = declare_parameter<std::string>("goal.frame_id", "map");
     // Setup the velocity command publisher
     // auto qos = get_node_options().parameter_event_qos();
     goal_publisher_ = create_publisher<geometry_msgs::msg::PoseStamped>(goal_topic, 9);
     tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
-    timer_ = create_wall_timer(0.3s, std::bind(&PathBuilder::on_timer, this));
+    tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
+
+    timer_ = create_wall_timer(1s, std::bind(&PathBuilder::on_timer, this));
     _tag_frame = "tag" + tag_family_ + ":" + std::to_string(tag_id_);
+
     RCLCPP_DEBUG(get_logger(), "parent_frame: %s", parent_frame_.c_str());
     RCLCPP_INFO(get_logger(), "path builder node started");
 }
+void PathBuilder::publish_debug(const std::string f_id, const std::string c_id, const tf2::Vector3 &translation, const tf2::Quaternion &rotation)
+{
+    geometry_msgs::msg::Vector3 v;
+    v.x = translation.x();
+    v.y = translation.y();
+    v.z = translation.z();
+    geometry_msgs::msg::Quaternion q;
+    q.x = rotation.x();
+    q.y = rotation.y();
+    q.z = rotation.z();
+    q.w = rotation.w();
+    geometry_msgs::msg::TransformStamped test;
+    test.header.frame_id = f_id;
+    test.child_frame_id = c_id;
 
+    RCLCPP_INFO(this->get_logger(), "Translation %s -> %s : x=%f, y=%f, z=%f",
+                f_id.c_str(),
+                c_id.c_str(),
+                v.x,
+                v.y,
+                v.z);
+    RCLCPP_INFO(this->get_logger(), "Rotation %s -> %s : x=%f, y=%f, z=%f, w=%f",
+                f_id.c_str(),
+                c_id.c_str(),
+                q.x,
+                q.y,
+                q.z,
+                q.w);
+
+    test.transform.set__translation(v);
+    test.transform.set__rotation(q);
+    tf_broadcaster_->sendTransform(test);
+}
 void PathBuilder::on_timer()
 {
     geometry_msgs::msg::TransformStamped t;
+    geometry_msgs::msg::TransformStamped robot_tf;
+
     try
     {
         t = tf_buffer_->lookupTransform(
-            parent_frame_, _tag_frame,
-            tf2::TimePointZero);
+            parent_frame_, _tag_frame, tf2::TimePointZero, tf2::durationFromSec(0.1));
     }
     catch (const tf2::TransformException &ex)
     {
-        RCLCPP_DEBUG(
-            this->get_logger(), "Could not transform %s to %s: %s",
-            parent_frame_.c_str(), _tag_frame.c_str(), ex.what());
+        RCLCPP_DEBUG(this->get_logger(), "Could not transform %s to %s: %s",
+                     parent_frame_.c_str(), _tag_frame.c_str(), ex.what());
+
         return;
     }
-    auto translation = tf2::Vector3(t.transform.translation.x, t.transform.translation.y, t.transform.translation.z);
-    auto rotation = tf2::Quaternion(t.transform.rotation.x, t.transform.rotation.y, t.transform.rotation.z, t.transform.rotation.w);
-    RCLCPP_DEBUG(
-        this->get_logger(), "Transform translation: %f %f %f",
-        translation.x(),
-        translation.y(),
-        translation.z());
-    RCLCPP_DEBUG(
-        this->get_logger(), "Transform rotation: %f %f %f %f",
-        rotation.x(),
-        rotation.y(),
-        rotation.z(),
-        rotation.w());
-    translation = translation + offset_translation_;
-    rotation = rotation * offset_rotation_;
-    geometry_msgs::msg::PoseStamped goal;
-    goal.header.frame_id = parent_frame_;
-    goal.header.stamp = this->now();
-    goal.pose.position.x = translation.x();
-    goal.pose.position.y = translation.y();
-    goal.pose.position.z = translation.z();
-    goal.pose.orientation.x = rotation.x();
-    goal.pose.orientation.y = rotation.y();
-    goal.pose.orientation.z = rotation.z();
-    goal.pose.orientation.w = rotation.w();
-    goal_publisher_->publish(goal);
+    try
+    {
+        robot_tf = tf_buffer_->lookupTransform(
+            odom_frame_, robot_base_frame_, tf2::TimePointZero);
+    }
+    catch (const tf2::TransformException &ex)
+    {
+        RCLCPP_WARN(this->get_logger(), "Could not transform %s to %s: %s",
+                    odom_frame_.c_str(), robot_base_frame_.c_str(), ex.what());
+        return;
+    }
+
+    auto bot_translation = tf2::Vector3(robot_tf.transform.translation.x, robot_tf.transform.translation.y, robot_tf.transform.translation.z);
+    auto bot_rotation = tf2::Quaternion(robot_tf.transform.rotation.x, robot_tf.transform.rotation.y, robot_tf.transform.rotation.z, robot_tf.transform.rotation.w);
+    auto tag_translation = tf2::Vector3(t.transform.translation.x, t.transform.translation.y, t.transform.translation.z) + bot_translation;
+    auto r = tf2::Quaternion(t.transform.rotation.x, 0, t.transform.rotation.y, t.transform.rotation.w);
+    publish_debug(goal_frame_, "bot", bot_translation, r);
+    publish_debug(goal_frame_, "test", tag_translation, r);
+    auto tag_length = tag_translation.length();
+
+    auto tag_angular = atan2(tag_translation.y(), tag_translation.x());
+
+    auto translation = tf2::Vector3(tag_length * -sin(tag_angular), tag_length * cos(tag_angular), 0);
+    // auto p = bot_translation + translation;
+    publish_debug(goal_frame_, "goal", translation, r);
 }

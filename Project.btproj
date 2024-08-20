@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="3" project_name="Project">
+    <include path="src/follow_me_robot/navigation_tree/follow_tree_nodes.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel>
+        <Action ID="ComputePathToPose" editable="true">
+            <input_port name="goal"/>
+            <input_port name="path"/>
+            <input_port name="planner_id"/>
+        </Action>
+        <Action ID="FollowPath" editable="true">
+            <input_port name="path"/>
+            <input_port name="controller_id"/>
+        </Action>
+        <Decorator ID="GoalUpdater" editable="true">
+            <input_port name="input_goal"/>
+            <output_port name="output_goal"/>
+        </Decorator>
+        <Control ID="PipelineSequence" editable="true"/>
+        <Decorator ID="RateController" editable="true">
+            <input_port name="hz"/>
+        </Decorator>
+        <Action ID="TruncatePath" editable="true">
+            <input_port name="distance"/>
+            <input_port name="input_path"/>
+            <output_port name="output_path"/>
+        </Action>
+    </TreeNodesModel>
+</root>

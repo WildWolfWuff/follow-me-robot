@@ -1,20 +1,30 @@
 # --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/sensor_config.yaml
 path_builder:
   ros__parameters:
+    relative_frame: front_camera_link
     parent_frame: front_camera_link_optical
-    goal_topic: /goal_pose
     tag:
       family: Standard41h12
       id: 0
     offset:
+      translation:
+        # (0.0,0.0,0) + (0.4,0,0.1) 
+        x: 0.4
+        y: 0.0
+        z: 0.0
       rotation:
-        y: 1.0
+        # (0,-0.14943813247359927,0, 0.9887710779360422) + (0,-0.14943813247359927,0, 0.9887710779360422) + (0.5, 0.4999999999999999,0.5,0.5000000000000001) = ()
+        x: 0.0
+        y: 0.0
+        z: 0.0
+        w: 0.0
+
 
 apriltag:
   ros__parameters:
     image_transport: raw
     family: Standard41h12
-    size: 0.095
+    size: 0.155
     detector:
       threads: 1       # number of threads
       decimate: 2.0    # decimate resolution for quad detection
