@@ -2,7 +2,7 @@
 path_builder:
   ros__parameters:
     relative_frame: front_camera_link
-    parent_frame: front_camera_link_optical
+    parent_frame: front_camera_link
     tag:
       family: Standard41h12
       id: 0
