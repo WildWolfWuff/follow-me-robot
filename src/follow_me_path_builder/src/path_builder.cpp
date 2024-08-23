@@ -15,15 +15,16 @@ PathBuilder::PathBuilder(const std::string &name)
     parent_frame_ = declare_parameter<std::string>("parent_frame", "base_link");
     tag_family_ = declare_parameter<std::string>("tag.family", "tag36h11");
     tag_id_ = declare_parameter<int>("tag.id", 0);
-    offset_translation_ = tf2::Vector3(
+    auto offset_translation = tf2::Vector3(
         declare_parameter<double>("offset.translation.x", 0.0),
         declare_parameter<double>("offset.translation.y", 0.0),
         declare_parameter<double>("offset.translation.z", 0.0));
-    offset_rotation_ = tf2::Quaternion(
+    auto offset_rotation = tf2::Quaternion(
         declare_parameter<double>("offset.rotation.x", 0.0),
         declare_parameter<double>("offset.rotation.y", 0.0),
         declare_parameter<double>("offset.rotation.z", 0.0),
         declare_parameter<double>("offset.rotation.w", 1.0));
+    offset_ = tf2::Transform(offset_rotation, offset_translation);
     std::string goal_topic = declare_parameter<std::string>("goal.topic", "goal_pose");
     goal_frame_ = declare_parameter<std::string>("goal.frame_id", "map");
     // Setup the velocity command publisher
@@ -100,7 +101,7 @@ void PathBuilder::on_timer()
                     odom_frame_.c_str(), robot_base_frame_.c_str(), ex.what());
         return;
     }
-
+    
     auto bot_translation = tf2::Vector3(robot_tf.transform.translation.x, robot_tf.transform.translation.y, robot_tf.transform.translation.z);
     auto bot_rotation = tf2::Quaternion(robot_tf.transform.rotation.x, robot_tf.transform.rotation.y, robot_tf.transform.rotation.z, robot_tf.transform.rotation.w);
     auto tag_translation = tf2::Vector3(t.transform.translation.x, t.transform.translation.y, t.transform.translation.z) + bot_translation;

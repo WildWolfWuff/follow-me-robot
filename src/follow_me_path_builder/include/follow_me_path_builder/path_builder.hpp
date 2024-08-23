@@ -42,8 +42,8 @@ namespace follow_me
         std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
         std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_{nullptr};
         std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
-        tf2::Vector3 offset_translation_;
-        tf2::Quaternion offset_rotation_;
+        tf2::Transform offset_;
+        // tf2::Quaternion offset_rotation_;
     };
 }
 #endif //__FOLLOWME_MECANUM_path_builder__FOLLOWME_MECANUM_path_builder_H__
