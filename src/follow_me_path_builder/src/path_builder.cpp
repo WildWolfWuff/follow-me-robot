@@ -12,7 +12,9 @@ PathBuilder::PathBuilder(const std::string &name)
     // Setup the parameters
     robot_base_frame_ = declare_parameter<std::string>("robot_base", "base_link");
     odom_frame_ = declare_parameter<std::string>("doom", "odom");
-    parent_frame_ = declare_parameter<std::string>("parent_frame", "base_link");
+    camera_lense_frame_ = declare_parameter<std::string>("camera_lense", "base_link");
+    camera_frame_ = declare_parameter<std::string>("camera", "base_link");
+
     tag_family_ = declare_parameter<std::string>("tag.family", "tag36h11");
     tag_id_ = declare_parameter<int>("tag.id", 0);
     auto offset_translation = tf2::Vector3(
@@ -37,82 +39,65 @@ PathBuilder::PathBuilder(const std::string &name)
     timer_ = create_wall_timer(1s, std::bind(&PathBuilder::on_timer, this));
     _tag_frame = "tag" + tag_family_ + ":" + std::to_string(tag_id_);
 
-    RCLCPP_DEBUG(get_logger(), "parent_frame: %s", parent_frame_.c_str());
+    RCLCPP_DEBUG(get_logger(), "parent_frame: %s", camera_lense_frame_.c_str());
     RCLCPP_INFO(get_logger(), "path builder node started");
 }
-void PathBuilder::publish_debug(const std::string f_id, const std::string c_id, const tf2::Vector3 &translation, const tf2::Quaternion &rotation)
+tf2::Transform PathBuilder::get_transform(const std::string &from_frame, const std::string &to_frame){
+    // auto tp= tf2::get_now();
+    auto t = tf_buffer_->lookupTransform(
+            from_frame, to_frame, tf2::timeFromSec(0.1), tf2::durationFromSec(0.01));
+    // if the transform is older than 100ms throw a tf2::TransformException
+    RCLCPP_INFO(this->get_logger(),"TIME %s -> %s : %f",from_frame.c_str(),to_frame.c_str(), t.header.stamp.sec);
+    return tf2::Transform(tf2::Quaternion(t.transform.rotation.x, t.transform.rotation.y, t.transform.rotation.z, t.transform.rotation.w),
+                               tf2::Vector3(t.transform.translation.x, t.transform.translation.y, t.transform.translation.z));
+}
+void PathBuilder::publish_debug(const std::string f_id, const std::string c_id, const tf2::Transform &tf)
 {
     geometry_msgs::msg::Vector3 v;
-    v.x = translation.x();
-    v.y = translation.y();
-    v.z = translation.z();
+    v.x = tf.getOrigin().x();
+    v.y = tf.getOrigin().y();
+    v.z = tf.getOrigin().z();
     geometry_msgs::msg::Quaternion q;
-    q.x = rotation.x();
-    q.y = rotation.y();
-    q.z = rotation.z();
-    q.w = rotation.w();
+    q.x = tf.getRotation().x();
+    q.y = tf.getRotation().y();
+    q.z = tf.getRotation().z();
+    q.w = tf.getRotation().w();
     geometry_msgs::msg::TransformStamped test;
     test.header.frame_id = f_id;
     test.child_frame_id = c_id;
-
-    RCLCPP_INFO(this->get_logger(), "Translation %s -> %s : x=%f, y=%f, z=%f",
-                f_id.c_str(),
-                c_id.c_str(),
-                v.x,
-                v.y,
-                v.z);
-    RCLCPP_INFO(this->get_logger(), "Rotation %s -> %s : x=%f, y=%f, z=%f, w=%f",
-                f_id.c_str(),
-                c_id.c_str(),
-                q.x,
-                q.y,
-                q.z,
-                q.w);
-
-    test.transform.set__translation(v);
-    test.transform.set__rotation(q);
+    test.transform.translation = v;
+    test.transform.rotation = q;
     tf_broadcaster_->sendTransform(test);
 }
 void PathBuilder::on_timer()
 {
-    geometry_msgs::msg::TransformStamped t;
-    geometry_msgs::msg::TransformStamped robot_tf;
-
+    tf2::Transform tag_tf;
     try
     {
-        t = tf_buffer_->lookupTransform(
-            parent_frame_, _tag_frame, tf2::TimePointZero, tf2::durationFromSec(0.1));
+        auto tag_to_cam_lense = get_transform(camera_lense_frame_, _tag_frame);
+        auto cam_lense_to_cam = get_transform(camera_frame_, camera_lense_frame_);
+        auto cam_to_robot = get_transform(robot_base_frame_, camera_frame_);
+        auto robot_tf = get_transform(odom_frame_, robot_base_frame_);
+        tag_tf = robot_tf * cam_to_robot * cam_lense_to_cam * tag_to_cam_lense;
+        // tag_tf.getOrigin().setZ(0);
     }
     catch (const tf2::TransformException &ex)
     {
         RCLCPP_DEBUG(this->get_logger(), "Could not transform %s to %s: %s",
-                     parent_frame_.c_str(), _tag_frame.c_str(), ex.what());
-
+                     camera_lense_frame_.c_str(), _tag_frame.c_str(), ex.what());
         return;
     }
-    try
-    {
-        robot_tf = tf_buffer_->lookupTransform(
-            odom_frame_, robot_base_frame_, tf2::TimePointZero);
-    }
-    catch (const tf2::TransformException &ex)
-    {
-        RCLCPP_WARN(this->get_logger(), "Could not transform %s to %s: %s",
-                    odom_frame_.c_str(), robot_base_frame_.c_str(), ex.what());
-        return;
-    }
-    
-    auto bot_translation = tf2::Vector3(robot_tf.transform.translation.x, robot_tf.transform.translation.y, robot_tf.transform.translation.z);
-    auto bot_rotation = tf2::Quaternion(robot_tf.transform.rotation.x, robot_tf.transform.rotation.y, robot_tf.transform.rotation.z, robot_tf.transform.rotation.w);
-    auto tag_translation = tf2::Vector3(t.transform.translation.x, t.transform.translation.y, t.transform.translation.z) + bot_translation;
-    auto r = tf2::Quaternion(t.transform.rotation.x, 0, t.transform.rotation.y, t.transform.rotation.w);
-    publish_debug(goal_frame_, "bot", bot_translation, r);
-    publish_debug(goal_frame_, "test", tag_translation, r);
-    auto tag_length = tag_translation.length();
 
-    auto tag_angular = atan2(tag_translation.y(), tag_translation.x());
-
-    auto translation = tf2::Vector3(tag_length * -sin(tag_angular), tag_length * cos(tag_angular), 0);
-    // auto p = bot_translation + translation;
-    publish_debug(goal_frame_, "goal", translation, r);
+    publish_debug(goal_frame_, "TAG_2D", tag_tf);
+    geometry_msgs::msg::PoseStamped goal;
+    goal.header.frame_id = goal_frame_;
+    goal.header.stamp = this-> now();
+    goal.pose.position.x = tag_tf.getOrigin().x();
+    goal.pose.position.y = tag_tf.getOrigin().y();
+    goal.pose.position.z = 0;
+    goal.pose.orientation.x = tag_tf.getRotation().x();
+    goal.pose.orientation.y=tag_tf.getRotation().y();
+    goal.pose.orientation.z=tag_tf.getRotation().z();
+    goal.pose.orientation.w = tag_tf.getRotation().w();
+    goal_publisher_->publish(goal);
 }

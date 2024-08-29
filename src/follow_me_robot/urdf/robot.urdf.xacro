@@ -56,15 +56,14 @@
 			<publish_imu>false</publish_imu>
 			<publish_rate>0</publish_rate>
 		</plugin>
-		<!-- <plugin name="gazebo_ros_joint_state_publisher"
+		<plugin name="gazebo_ros_joint_state_publisher"
 			filename="libgazebo_ros_joint_state_publisher.so">
 			<update_rate>${update_rate}</update_rate>
 			<joint_name>front_right_wheel_joint</joint_name>
 			<joint_name>front_left_wheel_joint</joint_name>
 			<joint_name>back_left_wheel_joint</joint_name>
 			<joint_name>back_right_wheel_joint</joint_name>
-			
-		</plugin> -->
+		</plugin>
 	</gazebo>
 
 	<xacro:include filename="sensors/lidar.xacro" />
@@ -82,6 +81,7 @@
 		visualize="true">
 		<!-- <origin xyz="${body_length/2} 0 0.1" rpy="${pi/2} 0 ${pi/2}" /> -->
 		<origin xyz="${body_length/2} 0 0.1" rpy="0 -0.3 0" />
+		<!-- <origin xyz="${body_length/2} 0 0.1" rpy="0 0 0" /> -->
 		<!-- <origin xyz="${body_length/2} 0 0.1" rpy="0 -0.3 ${pi/2}" /> -->
 	</xacro:camera>
 

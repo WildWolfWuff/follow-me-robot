@@ -1,8 +1,8 @@
 # --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/sensor_config.yaml
 path_builder:
   ros__parameters:
-    relative_frame: front_camera_link
-    parent_frame: front_camera_link
+    camera: front_camera_link
+    camera_lense: front_camera_link_optical
     tag:
       family: Standard41h12
       id: 0
@@ -17,7 +17,7 @@ path_builder:
         x: 0.0
         y: 0.0
         z: 0.0
-        w: 0.0
+        w: 1.0
 
 
 apriltag:

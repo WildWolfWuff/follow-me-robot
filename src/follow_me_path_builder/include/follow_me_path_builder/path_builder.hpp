@@ -26,13 +26,15 @@ namespace follow_me
 
     private:
         void on_timer();
-        void publish_debug(const std::string f_id, const std::string c_id, const tf2::Vector3 &translation, const tf2::Quaternion &rotation);
+        void publish_debug(const std::string f_id, const std::string c_id, const tf2::Transform &tf);
+        tf2::Transform get_transform(const std::string &from_frame, const std::string &to_frame);
         // void reset_goal_pose(geometry_msgs::msg::PoseStamped &goal);
 
     private:
-        std::string robot_base_frame_;
         std::string odom_frame_;
-        std::string parent_frame_;
+        std::string robot_base_frame_;
+        std::string camera_frame_;
+        std::string camera_lense_frame_;
         std::string tag_family_;
         std::string _tag_frame;
         std::string goal_frame_;
