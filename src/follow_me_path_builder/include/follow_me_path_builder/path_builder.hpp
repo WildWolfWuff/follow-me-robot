@@ -27,7 +27,7 @@ namespace follow_me
     private:
         void on_timer();
         void publish_debug(const std::string f_id, const std::string c_id, const tf2::Transform &tf);
-        tf2::Transform get_transform(const std::string &from_frame, const std::string &to_frame);
+        tf2::Transform get_transform(const std::string &from_frame, const std::string &to_frame,bool validate);
         // void reset_goal_pose(geometry_msgs::msg::PoseStamped &goal);
 
     private:
@@ -39,13 +39,17 @@ namespace follow_me
         std::string _tag_frame;
         std::string goal_frame_;
         int tag_id_;
+        bool debug_;
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_publisher_;
-        rclcpp::TimerBase::SharedPtr timer_{nullptr};
-        std::shared_ptr<tf2_ros::TransformListener> tf_listener_{nullptr};
-        std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_{nullptr};
-        std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
+        rclcpp::TimerBase::SharedPtr _timer{nullptr};
+        std::shared_ptr<tf2_ros::TransformListener> _tf_listener{nullptr};
+        std::shared_ptr<tf2_ros::TransformBroadcaster> _tf_broadcaster{nullptr};
+        std::unique_ptr<tf2_ros::Buffer> _tf_buffer;
         tf2::Transform offset_;
-        // tf2::Quaternion offset_rotation_;
+        int32_t _prev_sec;
+        uint32_t _prev_nsec;
+        
+        tf2::Quaternion _tag_offset_rotation=tf2::Quaternion();
     };
 }
 #endif //__FOLLOWME_MECANUM_path_builder__FOLLOWME_MECANUM_path_builder_H__

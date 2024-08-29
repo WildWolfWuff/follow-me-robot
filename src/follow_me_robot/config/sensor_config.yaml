@@ -6,6 +6,7 @@ path_builder:
     tag:
       family: Standard41h12
       id: 0
+    debug: false
     offset:
       translation:
         # (0.0,0.0,0) + (0.4,0,0.1) 

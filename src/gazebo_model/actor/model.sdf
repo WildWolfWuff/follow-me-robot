@@ -66,21 +66,20 @@
           <time>3</time>
           <pose>1.5 1 0 0 0 0</pose>
         </waypoint>
-
         <waypoint>
           <time>5</time>
           <pose>2.5 1 0 0 0 0</pose>
         </waypoint>
         <waypoint>
-          <time>6</time>
+          <time>7</time>
           <pose>3.5 1 0 0 0 -0.5</pose>
         </waypoint>
         <waypoint>
-          <time>8</time>
+          <time>9</time>
           <pose>5 -1 0 0 0 -1.57</pose>
         </waypoint>
         <waypoint>
-          <time>20</time>
+          <time>30</time>
           <pose>5 -15 0 0 0 -1.57</pose>
         </waypoint>
       </trajectory>
