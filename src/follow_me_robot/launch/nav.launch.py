@@ -1,15 +1,21 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 
-from launch import LaunchDescription,InvalidLaunchFileError
-from launch_ros.actions import Node, SetParameter
+from launch import LaunchDescription
+from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration,ThisLaunchFileDir
+from launch.conditions import IfCondition, UnlessCondition
+from launch.substitutions import LaunchConfiguration
+from launch_ros.descriptions import ParameterFile
+from nav2_common.launch import HasNodeParams, RewrittenYaml
 
 def generate_launch_description():
     pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
+    log_level=LaunchConfiguration('log_level',default='info')
+    namespace = LaunchConfiguration('namespace',default='')
+    # map_file=os.path.join(pkg_path, 'maps', 'map.yaml')
     use_sim_time=LaunchConfiguration('use_sim_time',default='false')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', 
                                                   default=os.path.join(pkg_path, 'config'))

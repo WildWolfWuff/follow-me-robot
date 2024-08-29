@@ -39,6 +39,7 @@
     </link>
     <gazebo reference="${gps_name}_gps_link">
       <sensor name="${gps_name}_gps" type="gps">
+        <parent link="${gps_name}_gps_link" />
         <always_on>true</always_on>
         <update_rate>${update}</update_rate>
         <gps>
