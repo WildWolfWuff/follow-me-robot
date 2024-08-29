@@ -27,28 +27,28 @@ namespace follow_me
     private:
         void on_timer();
         void publish_debug(const std::string f_id, const std::string c_id, const tf2::Transform &tf);
-        tf2::Transform get_transform(const std::string &from_frame, const std::string &to_frame,bool validate);
-        // void reset_goal_pose(geometry_msgs::msg::PoseStamped &goal);
+                tf2::Transform get_transform(const std::string &from_frame, const std::string &to_frame,bool validate);
+        void publish_goal(const tf2::Transform &tag_tf,const std::string &frame_name);
 
     private:
         std::string odom_frame_;
         std::string robot_base_frame_;
         std::string camera_frame_;
         std::string camera_lense_frame_;
-        std::string tag_family_;
+                std::string tag_family_;
         std::string _tag_frame;
         std::string goal_frame_;
-        int tag_id_;
+                int tag_id_;
         bool debug_;
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_publisher_;
-        rclcpp::TimerBase::SharedPtr _timer{nullptr};
+                rclcpp::TimerBase::SharedPtr _timer{nullptr};
         std::shared_ptr<tf2_ros::TransformListener> _tf_listener{nullptr};
         std::shared_ptr<tf2_ros::TransformBroadcaster> _tf_broadcaster{nullptr};
         std::unique_ptr<tf2_ros::Buffer> _tf_buffer;
-        tf2::Transform offset_;
+        tf2::Transform _buffer;
         int32_t _prev_sec;
         uint32_t _prev_nsec;
-        
+
         tf2::Quaternion _tag_offset_rotation=tf2::Quaternion();
     };
 }

@@ -72,6 +72,6 @@ def generate_launch_description():
                     'navigation_launch.py')),
                 launch_arguments={
                     "use_sim_time": use_sim_time,
-                    # "params_file": params_file
+                    "params_file": params_file
                 }.items())
     ])

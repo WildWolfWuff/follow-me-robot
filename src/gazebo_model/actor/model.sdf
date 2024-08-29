@@ -68,18 +68,22 @@
         </waypoint>
         <waypoint>
           <time>5</time>
-          <pose>2.5 1 0 0 0 0</pose>
+          <pose>2.5 1.2 0 0 0 0</pose>
         </waypoint>
         <waypoint>
           <time>7</time>
-          <pose>3.5 1 0 0 0 -0.5</pose>
+          <pose>3.5 1 0 0 0 -0.4</pose>
         </waypoint>
         <waypoint>
-          <time>9</time>
+          <time>10</time>
           <pose>5 -1 0 0 0 -1.57</pose>
         </waypoint>
         <waypoint>
-          <time>30</time>
+          <time>60</time>
+          <pose>5 -15 0 0 0 -1.57</pose>
+        </waypoint>
+        <waypoint>
+          <time>100</time>
           <pose>5 -15 0 0 0 -1.57</pose>
         </waypoint>
       </trajectory>

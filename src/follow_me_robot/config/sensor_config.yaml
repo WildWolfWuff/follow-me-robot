@@ -3,23 +3,13 @@ path_builder:
   ros__parameters:
     camera: front_camera_link
     camera_lense: front_camera_link_optical
+    # goal:
+    #   topic: /move_base_simple/goal
     tag:
       family: Standard41h12
       id: 0
     debug: false
-    offset:
-      translation:
-        # (0.0,0.0,0) + (0.4,0,0.1) 
-        x: 0.4
-        y: 0.0
-        z: 0.0
-      rotation:
-        # (0,-0.14943813247359927,0, 0.9887710779360422) + (0,-0.14943813247359927,0, 0.9887710779360422) + (0.5, 0.4999999999999999,0.5,0.5000000000000001) = ()
-        x: 0.0
-        y: 0.0
-        z: 0.0
-        w: 1.0
-
+    distance: 0.5
 
 apriltag:
   ros__parameters:
@@ -33,7 +23,8 @@ apriltag:
       refine: true     # snap to strong gradients
       sharpening: 0.25 # sharpening of decoded images
       debug: false     # write additional debugging images to current working directory
-
+    tags:
+      ids: [0]
 teleop:
   ros__parameters:
     joy_topic: /joy
