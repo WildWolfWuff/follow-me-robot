@@ -79,10 +79,7 @@
 	<xacro:include filename="sensors/camera.xacro" />
 	<xacro:camera cam_name="front" parent="base_link" update="15"
 		visualize="true">
-		<!-- <origin xyz="${body_length/2} 0 0.1" rpy="${pi/2} 0 ${pi/2}" /> -->
-		<origin xyz="${body_length/2} 0 0.1" rpy="0 -0.3 0" />
-		<!-- <origin xyz="${body_length/2} 0 0.1" rpy="0 0 0" /> -->
-		<!-- <origin xyz="${body_length/2} 0 0.1" rpy="0 -0.3 ${pi/2}" /> -->
+		<origin xyz="${body_length/2} 0 0.1" rpy="0 -0.35 0" />
 	</xacro:camera>
 
 	<xacro:include filename="sensors/sonar.xacro" />
@@ -90,8 +87,4 @@
 		update="${update_rate}">
 		<origin xyz="${body_length/2} 0 -0.05" rpy="0 0.2 0" />
 	</xacro:sonar>
-	<!-- <xacro:include filename="sensors/gps.xacro" /> -->
-	<!-- <xacro:gps parent="base_link" update="${update_rate}">
-		<origin xyz="0 0 0.0" />
-	</xacro:gps> -->
 </robot>

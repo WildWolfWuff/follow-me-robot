@@ -1,6 +1,7 @@
 #!/bin/zsh
 used_shell="zsh" # ${SHELL##*/}
 export ROS_LOG_DIR=./run_logs
+
 rm -rf ./run_logs log
 rosdep install --from-paths ./src --ignore-src --rosdistro ${ROS_DISTRO} -r -y
 

@@ -3,8 +3,9 @@ path_builder:
   ros__parameters:
     camera: front_camera_link
     camera_lense: front_camera_link_optical
-    # goal:
-    #   topic: /move_base_simple/goal
+    goal:
+      timneout_sec: 60.0 # after this time with no new tag position, the robot will drive to home
+    #   topic: /goal_pose_debug
     tag:
       family: Standard41h12
       id: 0

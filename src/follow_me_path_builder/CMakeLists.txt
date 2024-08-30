@@ -47,7 +47,7 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(DIRECTORY config launch
+install(DIRECTORY config
   DESTINATION share/${PROJECT_NAME}
 )
 
@@ -57,5 +57,3 @@ install(TARGETS
 )
 
 ament_package()
-
-# ros2 pkg create --build-type ament_cmake --license Apache-2.0 --node-name camera_publisher follow_me_camera_pub --dependencies rclcpp std_msgs sensor_msgs cv_bridge image_transport OpenCV

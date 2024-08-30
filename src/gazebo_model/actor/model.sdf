@@ -20,9 +20,12 @@
       <pose>0 0 0 0 0 0</pose>
       <collision name="collision">
         <geometry>
-          <mesh>
+          <box>
+            <size>0.5 2 0.5</size>
+          </box>
+          <!-- <mesh>
             <uri>model://actor/meshes/SKIN_man_green_shirt.dae</uri>
-          </mesh>
+          </mesh> -->
         </geometry>
       </collision>
     </link>
@@ -32,13 +35,6 @@
       <pose>0 0 0 0 0 0</pose>
     </joint>
     <link name="box_link">
-      <!-- <collision name="collision">
-        <geometry>
-          <box>
-            <size>0.5 0.5 0.5</size>
-          </box>
-        </geometry>
-      </collision> -->
       <visual name="visual">
         <geometry>
           <mesh>
@@ -51,7 +47,7 @@
     </link>
     <script>
       <loop>true</loop>
-      <delay_start>0.000000</delay_start>
+      <delay_start>0.0</delay_start>
       <auto_start>true</auto_start>
       <trajectory id="0" type="walking">
         <waypoint>
@@ -59,32 +55,69 @@
           <pose>0 1 0 0 0 0</pose>
         </waypoint>
         <waypoint>
-          <time>1</time>
-          <pose>1.5 1 0 0 0 0</pose>
-        </waypoint>
-        <waypoint>
-          <time>3</time>
-          <pose>1.5 1 0 0 0 0</pose>
-        </waypoint>
-        <waypoint>
+          <!-- edge in -->
           <time>5</time>
-          <pose>2.5 1.2 0 0 0 0</pose>
+          <pose>2.5 1 0 0 0 0</pose>
         </waypoint>
         <waypoint>
-          <time>7</time>
-          <pose>3.5 1 0 0 0 -0.4</pose>
-        </waypoint>
-        <waypoint>
+          <!-- edge 1 -->
           <time>10</time>
-          <pose>5 -1 0 0 0 -1.57</pose>
+          <pose>4 0.7 0 0 0 -0.7</pose>
         </waypoint>
         <waypoint>
-          <time>60</time>
-          <pose>5 -15 0 0 0 -1.57</pose>
+          <!-- edge out -->
+          <time>15</time>
+          <pose>5 -3 0 0 0 -1.57</pose>
         </waypoint>
         <waypoint>
-          <time>100</time>
-          <pose>5 -15 0 0 0 -1.57</pose>
+          <time>45</time>
+          <!-- edge in -->
+          <pose>5 -11.5 0 0 0 -1.57</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge 2 -->
+          <time>50</time>
+          <pose>4 -13.7 0 0 0 -2.45</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge out -->
+          <time>55</time>
+          <pose>2 -14.5 0 0 0 -3.14</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge in -->
+          <time>70</time>
+          <pose>-2 -14.5 0 0 0 -3.14</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge 3 -->
+          <time>75</time>
+          <pose>-4 -13.7 0 0 0 -3.74</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge out -->
+          <time>80</time>
+          <pose>-5 -11 0 0 0 -4.7</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge in -->
+          <time>105</time>
+          <pose>-5 -1.5 0 0 0 -4.7</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge 4 -->
+          <time>110</time>
+          <pose>-4 0.6 0 0 0 -5.35</pose>
+        </waypoint>
+        <waypoint>
+          <!-- edge out -->
+          <time>115</time>
+          <pose>-2 1 0 0 0 -6.28</pose>
+        </waypoint>
+        <waypoint>
+          <!-- end -->
+          <time>120</time>
+          <pose>0 1 0 0 0 -6.28</pose>
         </waypoint>
       </trajectory>
     </script>
