@@ -20,7 +20,7 @@ def generate_launch_description():
     
     
     # namespace = 'Follow-Me-Robot'
-    log_level=LaunchConfiguration('log_level',default='info')
+    log_level=LaunchConfiguration('log_level',default='warn')
     start_sim=LaunchConfiguration('start_sim',default='false')
     use_gui=LaunchConfiguration('use_gui',default='false')
     use_foxglove=LaunchConfiguration('use_foxglove',default='false')

@@ -49,7 +49,6 @@ def generate_launch_description():
             package='follow_me_path_builder',
             executable='follow_me_path_builder',
             parameters=[config_path],
-            arguments=['--log-level', 'debug'],
-            # remappings=[('/tf', '/tag/tf')]
+            arguments=["--ros-args", '--log-level', log_level],
         ),
     ])

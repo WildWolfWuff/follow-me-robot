@@ -56,7 +56,8 @@ def generate_launch_description():
             arguments=[
                 '-configuration_directory', cartographer_config_dir,
                        '-configuration_basename', configuration_basename,
-                       '--log-level warn']),
+                       '--ros-args',
+                       '--log-level',log_level]),
                 DeclareLaunchArgument(
             'resolution',
             default_value=resolution,
@@ -69,7 +70,8 @@ def generate_launch_description():
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=['-resolution', resolution, 
                        '-publish_period_sec', publish_period_sec,
-                       '--log-level warn']),
+                       '--ros-args',
+                       '--log-level',log_level]),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(
