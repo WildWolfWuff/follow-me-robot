@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'navigation'
+package_name = 'follow_me_motor_control'
 
 setup(
     name=package_name,
@@ -20,8 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'motor_controller = navigation.motor_controller:main',
-            'keyboard_teleop = navigation.keyboard_teleop:main',
+            'motor_controller = follow_me_motor_control.motor_controller:main'
         ],
     },
 )
