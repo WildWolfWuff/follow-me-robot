@@ -41,6 +41,15 @@ if [ $? -gt 0 ]; then
     exit 1;
 fi
 
+mkdir -p ~/.gazebo/models
+if [ ! -d "~/.gazebo/models/hospital" ]; then
+    ln -s $PWD/src/worlds/hospital ~/.gazebo/models/
+    ln -s $PWD/src/gazebo_model/april_tag0 ~/.gazebo/models/
+    ln -s $PWD/src/gazebo_model/april_tag1 ~/.gazebo/models/
+    ln -s $PWD/src/gazebo_model/april_tag2 ~/.gazebo/models/
+    ln -s $PWD/src/gazebo_model/april_tag3 ~/.gazebo/models/
+fi
+
 models=$(ls src/gazebo_model/acto)
 for model in $models; do
     echo "Model: $model"
