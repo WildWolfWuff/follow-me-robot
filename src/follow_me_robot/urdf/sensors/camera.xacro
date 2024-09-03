@@ -14,13 +14,6 @@
         </geometry>
         <material name="blue" />
       </visual>
-      <visual>
-        <origin xyz="0.005 0 0" rpy="0 ${pi/2} 0" />
-        <geometry>
-          <cylinder radius="0.01" length="0.01" />
-        </geometry>
-        <material name="red" />
-      </visual>
     </link>
     <joint name="${cam_name}_camera_link_optical_joint" type="fixed">
       <parent link="${cam_name}_camera_link" />
@@ -28,6 +21,13 @@
       <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}" />
     </joint>
     <link name="${cam_name}_camera_link_optical">
+      <visual>
+        <origin xyz="0.005 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="0.02" length="0.02" />
+          <material name="red" />
+        </geometry>
+      </visual>
     </link>
     <gazebo reference="${cam_name}_camera_link_optical">
       <material>Gazebo/Red</material>

@@ -4,6 +4,7 @@
   <xacro:include filename="../core/inertial.urdf.xacro" />
   <xacro:macro name="imu"
     params="parent frame *origin imu_name:=sensor_0 update:=30 visualize:=false">
+    <xacro:property name="box_size" value="0.01" />
     <joint name="${imu_name}_imu_joint" type="fixed">
       <parent link="${parent}" />
       <child link="${imu_name}_imu_link" />
@@ -12,22 +13,23 @@
     <link name="${imu_name}_imu_link">
       <visual>
         <geometry>
-          <box size="0.05 0.05 0.05" />
+          <box size="${box_size} ${box_size} ${box_size}" />
         </geometry>
         <material name="red" />
       </visual>
       <collision>
         <geometry>
-          <box size="0.05 0.05 0.05" />
+          <box size="${box_size} ${box_size} ${box_size}" />
         </geometry>
       </collision>
       <inertial>
         <mass value="1e-5" />
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <xacro:solid_cuboid_inertia w="0.05" h="0.05" d="0.5" m="1e-5" />
+        <xacro:solid_cuboid_inertia w="${box_size}" h="${box_size}" d="${box_size}" m="1e-5" />
       </inertial>
     </link>
     <gazebo reference="${imu_name}_imu_link">
+      <material>Gazebo/Red</material>
       <sensor name="${imu_name}_imu_sensor" type="imu">
         <parent link="${imu_name}_imu_link" />
         <gravity>true</gravity>

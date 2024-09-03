@@ -9,34 +9,40 @@
       <child link="base_link" />
       <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
     </joint>
-    <!-- BASE_LINK -->
+    <!-- BASE_LINK (used by movement) -->
     <link name="base_link">
-      <inertial>
-        <mass value="125.0" />
-        <origin xyz="0 0 0" />
-        <xacro:solid_cuboid_inertia m="125.0" h="${body_with}" d="${body_heigth}" w="${body_length}" />
-      </inertial>
-      <visual>
+      <!-- Simple visual (use in windows foxglove) -->
+      <!-- <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <material name="orange" />
         <geometry>
           <box size="${body_length} ${body_with} ${body_heigth}" />
         </geometry>
-      </visual>
-      <!-- <visual>
+      </visual> -->
+      
+      <!-- Complex visual -->
+      <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <material name="orange" />
         <geometry>
-          <mesh filename="file://$(find follow_me_robot)/urdf/meshes/EXAM_robot_2022_without_motor.STL" />
+          <mesh filename="file://$(find follow_me_robot)/urdf/meshes/EXAM_robot_2022.stl" />
         </geometry>
-      </visual> -->
-
+      </visual>
+      
+      <!-- Collision -->
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0 " />
         <geometry>
           <box size="${body_length} ${body_with} ${body_heigth}" />
         </geometry>
       </collision>
+
+      <!-- Inertial -->
+      <inertial>
+        <mass value="125.0" />
+        <origin xyz="0 0 0" />
+        <xacro:solid_cuboid_inertia m="125.0" h="${body_with}" d="${body_heigth}" w="${body_length}" />
+      </inertial>
     </link>
   </xacro:macro>
 </robot>

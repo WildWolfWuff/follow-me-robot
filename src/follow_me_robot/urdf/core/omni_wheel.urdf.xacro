@@ -1,21 +1,25 @@
 <?xml version="1.0"?>
 <robot name="wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:include filename="inertial.urdf.xacro" />
-  <!-- Motro -->
+  <!-- Motro Macro -->
   <xacro:macro name="wheel_motor"
     params="parent *origin wheel_img reflect side position wheel_height wheel_radius update_rate:=20">
     <xacro:property name="prefix" value="${position}_${side}_wheel" />
+    <!-- Motor parameters -->
     <xacro:property name="motor_mass" value="0.2" />
-    <xacro:property name="motor_h" value="0.04" />
+    <xacro:property name="motor_h" value="0.06" />
     <xacro:property name="motor_d" value="0.04" />
     <xacro:property name="motor_w" value="0.04" />
     <xacro:property name="motor_offset" value="${motor_w/1.08 * reflect * -1}" />
+    <!-- Motor to Parent Joint -->
     <joint name="${prefix}_motor_joint" type="fixed">
       <parent link="${parent}" />
       <child link="${prefix}_motor_link" />
       <xacro:insert_block name="origin" />
     </joint>
+    <!-- Motor Link (Visual, Collision, Inertial) -->
     <link name="${prefix}_motor_link">
+      <!-- Visual -->
       <visual>
         <origin xyz="0 ${motor_offset} 0" rpy="0 0 0" />
         <geometry>
@@ -23,29 +27,35 @@
         </geometry>
         <material name="darkgrey" />
       </visual>
+      
+      <!-- Collision -->
       <collision>
         <origin xyz="0 ${motor_offset} 0" rpy="0 0 0" />
         <geometry>
           <box size="${motor_d} ${motor_w} ${motor_h}" />
         </geometry>
       </collision>
+      <!-- Inertial -->
       <inertial>
         <mass value="${motor_mass}" />
         <xacro:solid_cuboid_inertia m="${motor_mass}" d="${motor_d}" w="${motor_w}" h="${motor_h}" />
       </inertial>
     </link>
+    <!-- Motor to Wheel -->
     <xacro:omni_wheel parent="${prefix}_motor_link" wheel_img="${wheel_img}" side="${side}"
       position="${position}" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}"
       update_rate="${update_rate}">
       <origin xyz="0 ${motor_offset+(wheel_height+0.01)*reflect} 0" rpy="${pi/2} ${pi/2} 0" />
     </xacro:omni_wheel>
   </xacro:macro>
-  <!-- Wheel -->
+  
+  <!-- Wheel Macro -->
   <xacro:macro name="omni_wheel"
     params="parent *origin wheel_img side position wheel_height wheel_radius update_rate:=20">
     <!-- in kg-->
     <xacro:property name="wheel_mass" value="6.5" />
     <xacro:property name="prefix" value="${position}_${side}_wheel" />
+    <!-- Wheek to Parent Joint -->
     <joint name="${prefix}_joint" type="continuous">
       <parent link="${parent}" />
       <child link="${prefix}_link" />
@@ -53,8 +63,9 @@
       <axis xyz="0 0 1" />
       <joint_properties damping="0.0" friction="1.0" />
     </joint>
-
+    <!-- Wheel Link (Visual, Collision, Inertial) -->
     <link name="${prefix}_link">
+      <!-- Simple visual (use in windows foxglove) -->
       <!-- <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
@@ -62,6 +73,8 @@
         </geometry>
         <material name="blue" />
       </visual> -->
+      
+      <!-- Complex visual -->
       <visual>
         <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
         <geometry>
@@ -69,26 +82,28 @@
         </geometry>
       </visual>
 
+      <!-- Collision -->
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
           <cylinder length="${wheel_height}" radius="${wheel_radius}" />
         </geometry>
       </collision>
-
+      
+      <!-- Inertial -->
       <inertial>
         <mass value="${wheel_mass}" />
         <xacro:solid_cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
       </inertial>
     </link>
 
-    <!-- Transmission is important to link the joints and the controller (see
-    robot_control/config/robot_control.yaml)-->
+    <!-- Transmission is important to link the joints and the controller (see robot_control/config/robot_control.yaml) -->
     <transmission name="${prefix}_joint_trans" type="transmission_interface/SimpleTransmission">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${prefix}_joint">
-        <!-- <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface> -->
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <!-- <hardwareInterface>VelocityJointInterface</hardwareInterface> -->
+        <!-- <hardwareInterface>EffortJointInterface</hardwareInterface> -->
       </joint>
       <actuator name="${prefix}_motor">
         <mechanicalReduction>1</mechanicalReduction>
