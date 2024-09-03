@@ -26,7 +26,18 @@ float left_rear_wheel_speed;
 float right_front_wheel_speed;
 float right_rear_wheel_speed;
 
-// Input Values in Percent, output should max out at 1(00%) per wheel
+/**
+ * @brief Sets the speed values for the mecanum wheels.
+ * 
+ * This function takes in three input values representing the desired speed in the X, Y, and Z directions.
+ * The input values are in percent, where 100% represents the maximum speed for each wheel.
+ * The function calculates the speed values for each wheel based on the input values and sets the corresponding variables.
+ * 
+ * @param speedX The desired speed in the X direction.
+ * @param speedY The desired speed in the Y direction.
+ * @param speedZ The desired speed in the Z direction.
+ *  @note Input Values in Percent, output should max out at 1(00%) per wheel
+ */
 void setWheelSpeedValues(float speedX, float speedY, float speedZ)
 {
   left_front_wheel_speed = (speedX + speedY + speedZ) / 3;
@@ -35,6 +46,21 @@ void setWheelSpeedValues(float speedX, float speedY, float speedZ)
   right_rear_wheel_speed = (speedX + speedY - speedZ) / 3;
 }
 
+/**
+ * @brief Moves the mecanum wheels based on the specified speeds.
+ * 
+ * This function adjusts the speed of each wheel based on the specified speeds for the left front, left rear, right front, and right rear wheels.
+ * If the difference between the desired speed and the current speed of a wheel is greater than the tolerance value, the speed of that wheel is adjusted.
+ * The adjusted speed is calculated by multiplying the desired speed by the maximum speed.
+ * 
+ * @note This function assumes that the `LeftFrontWheel`, `LeftRearWheel`, `RightFrontWheel`, and `RightRearWheel` objects have been properly initialized.
+ * 
+ * @note The desired speeds for each wheel should be in the range of -1.0 to 1.0, where -1.0 represents full reverse, 0.0 represents stop, and 1.0 represents full forward.
+ * 
+ * @note The tolerance value determines the maximum allowable difference between the desired speed and the current speed of a wheel.
+ * 
+ * @note After adjusting the speeds of all the wheels, the `runSpeed()` function is called for each wheel to apply the adjusted speeds.
+ */
 void move()
 {
   if (abs(left_front_wheel_speed * MAX_SPEED - LeftFrontWheel.speed()) > tolerance)
@@ -64,6 +90,18 @@ void move()
   RightRearWheel.runSpeed();
 }
 
+/**
+ * @brief Reads serial input and updates the values of x, y, and z.
+ * 
+ * This function reads a line of serial input and parses it into three float values.
+ * The values are separated by semicolons (;) and are expected to be in the format: x;y;z.
+ * The parsed values are then assigned to the variables x, y, and z respectively.
+ * 
+ * Note: The function assumes that the serial input is terminated with a newline character ('\n').
+ * 
+ * @param None
+ * @return None
+ */
 void readSerial()
 {
   old_x = x;
@@ -91,6 +129,12 @@ void readSerial()
   z = values[2];
 }
 
+/**
+ * @brief Initializes the motor controller and sets up the necessary configurations.
+ * 
+ * This function sets the maximum speed for the stepper motors and initializes the serial communication.
+ * It also sets the initial wheel speed values to zero and prints a message to indicate that the motor controller is ready.
+ */
 void setup()
 {
   // Max Speed for Stepper Motors
@@ -107,6 +151,13 @@ void setup()
   Serial.println("ready");
 }
 
+/**
+ * @brief The main loop of the program.
+ * 
+ * This function is called repeatedly in the program. It checks if there is any data available
+ * from the serial port and reads it. If the values of x, y, or z have changed beyond the tolerance
+ * level, it sets the wheel speed values accordingly. Finally, it moves the robot.
+ */
 void loop()
 {
   if (Serial.available() > 0)

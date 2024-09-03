@@ -13,9 +13,9 @@ from nav2_common.launch import HasNodeParams, RewrittenYaml
 def generate_launch_description():
     pkg_name = 'follow_me_robot'
     pkg_path = get_package_share_directory(pkg_name)
+    # Define the launch configuration variables
     log_level=LaunchConfiguration('log_level',default='info')
     namespace = LaunchConfiguration('namespace',default='')
-    # map_file=os.path.join(pkg_path, 'maps', 'map.yaml')
     use_sim_time=LaunchConfiguration('use_sim_time',default='false')
     cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', 
                                                   default=os.path.join(pkg_path, 'config'))
@@ -25,7 +25,9 @@ def generate_launch_description():
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
     params_file = os.path.join(pkg_path, 'config', 'nav_params.yaml')
     # ros2 run follow_me_teleop follow_me_teleop --ros-args --params-file `ros2 pkg prefix follow_me_teleop`/share/follow_me_teleop/config/teleop_config.yaml
+    # Define the launch description
     return LaunchDescription([
+        # Declare the launch arguments, with a default value and description
         DeclareLaunchArgument(
         'use_sim_time',
         default_value=use_sim_time,
@@ -47,6 +49,7 @@ def generate_launch_description():
             'use_sim_time',
             default_value='false',
             description='Use simulation (Gazebo) clock if true'),
+        # Cartographer Node for mapping
         Node(
             package='cartographer_ros',
             executable='cartographer_node',
@@ -62,6 +65,7 @@ def generate_launch_description():
             'resolution',
             default_value=resolution,
             description='Resolution of a grid cell in the published occupancy grid'),
+        # OccupancyGrid Node mapping
         Node(
             package='cartographer_ros',
             executable='cartographer_occupancy_grid_node',
@@ -72,6 +76,7 @@ def generate_launch_description():
                        '-publish_period_sec', publish_period_sec,
                        '--ros-args',
                        '--log-level',log_level]),
+        # Nav2 framework launch with navigation Nodes
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(

@@ -10,6 +10,7 @@ PathBuilder::PathBuilder(const std::string &name)
 {
     // https://docs.ros.org/en/humble/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Listener-Cpp.html
     // Setup the parameters
+    // define parameters for the node
     robot_base_frame_ = declare_parameter<std::string>("robot_frame", "base_link");
     odom_frame_ = declare_parameter<std::string>("doom_frame", "odom");
     map_frame_ = declare_parameter<std::string>("map_frame", "map");
@@ -19,34 +20,46 @@ PathBuilder::PathBuilder(const std::string &name)
     tag_family_ = declare_parameter<std::string>("tag.family", "tag36h11");
     tag_id_ = declare_parameter<int>("tag.id", 0);
     debug_ = declare_parameter<bool>("debug", false);
-
+    auto distance=declare_parameter<double>("distance", 0.0)
     std::string goal_topic = declare_parameter<std::string>("goal.topic", "goal_pose");
     goal_frame_ = declare_parameter<std::string>("goal.frame_id", "map");
     goal_timeout_sec_ = declare_parameter<double>("goal.timeout_sec", 60.0);
+    // create publisher and subscriber
     goal_publisher_ = create_publisher<geometry_msgs::msg::PoseStamped>(goal_topic, 9);
     _initial_pose_sub= create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>("/initialpose", 10, std::bind(&PathBuilder::on_inital_pose, this, std::placeholders::_1));
+    
+    // create the tf2 buffer, listener, and broadcaster for the transform system
     _tf_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
     _tf_listener = std::make_shared<tf2_ros::TransformListener>(*_tf_buffer);
     _tf_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
-    _buffer=tf2::Transform(tf2::Quaternion(0,0,0,1),tf2::Vector3(-declare_parameter<double>("distance", 0.0),0,0));
+    // create a timer to listne to the tf2 buffer
     _timer = create_wall_timer(50ms, std::bind(&PathBuilder::on_timer, this));
+
+    // define the offset for the tag's position
+    _distance_offset=tf2::Transform(tf2::Quaternion(0,0,0,1),tf2::Vector3(-distance,0,0));
+    _tag_offset_rotation.setRPY(0,M_PI_2,0);
+    
+    // create the tag frame name
     _tag_frame = "tag" + tag_family_ + ":" + std::to_string(tag_id_);
 
     RCLCPP_INFO(get_logger(), "path builder node started for tag: %s", _tag_frame.c_str());
-    
-    _tag_offset_rotation.setRPY(0,M_PI_2,0);
 }
+
 
 void PathBuilder::on_inital_pose(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg){
     RCLCPP_DEBUG(this->get_logger(), "Initial pose received");
+    // set the home position of the robot by using the initial pose message
     _home_tf=tf2::Transform(tf2::Quaternion(msg->pose.pose.orientation.x, msg->pose.pose.orientation.y, msg->pose.pose.orientation.z, msg->pose.pose.orientation.w),
                                tf2::Vector3(msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z));
 }
 
 tf2::Transform PathBuilder::get_transform(const std::string &from_frame, const std::string &to_frame,bool validate){
+    // extract the requested transform from the buffer
     auto t = _tf_buffer->lookupTransform(
             from_frame, to_frame, tf2::TimePointZero, tf2::durationFromSec(0.01));
+    
+    // throw an exception if no new transform is available in validate mode
     if(validate){
         auto sec=t.header.stamp.sec;
         auto nsec=t.header.stamp.nanosec;
@@ -64,24 +77,35 @@ tf2::Transform PathBuilder::get_transform(const std::string &from_frame, const s
 
 void PathBuilder::on_timer()
 {
-    tf2::Transform tag_tf;
+    // calculate the tag's position in the global frame
+    tf2::Transform global_goal_tf;
+    // get the current time for the travel home timeout
     auto time_now=tf2::get_now();
     try
     {
+        // gets the transform from the tag to the camer lense
         auto tag_to_cam_lense = get_transform(camera_lense_frame_, _tag_frame,true);
+        // gets the transform from the camera lense to the camera
         auto cam_lense_to_cam = get_transform(camera_frame_, camera_lense_frame_,false);
+        // gets the transform from the camera to the robot base
         auto cam_to_robot = get_transform(robot_base_frame_, camera_frame_,false);
+        // gets the transform from the robot base to the odom
         auto robot_tf = get_transform(odom_frame_, robot_base_frame_,false);
+        // gets the transform from the odom to the map
         auto map_tf = get_transform(map_frame_, odom_frame_,false);
+        // apply rotation offset to the tag tf to get the forward direction
         auto r= tag_to_cam_lense.getRotation();
         tag_to_cam_lense.setRotation(r*_tag_offset_rotation);
-        tag_to_cam_lense*=_buffer;
-        tag_tf = map_tf * robot_tf * cam_to_robot * cam_lense_to_cam * tag_to_cam_lense;
+        // apply a distance offset to the tag tf to move the goal backward from the tag
+        tag_to_cam_lense*=_distance_offset;
+        // combine all the transforms to the tag tf to create the goal for the world/global frame
+        global_goal_tf = map_tf * robot_tf * cam_to_robot * cam_lense_to_cam * tag_to_cam_lense;
     }
     catch (const tf2::TransformException &ex)
     {
         RCLCPP_DEBUG(this->get_logger(), "Could not transform %s to %s: %s",
                      camera_lense_frame_.c_str(), _tag_frame.c_str(), ex.what());
+        // if the tag is not found and the timeout has passed, travel back to the home position
         if(!_is_travel_home && time_now-last_publish>= std::chrono::duration<double>(goal_timeout_sec_)){
             _is_travel_home=true;
             publish_goal(_home_tf,goal_frame_);
@@ -90,9 +114,8 @@ void PathBuilder::on_timer()
     }
     _is_travel_home=false;
     last_publish = time_now;
-    // auto target_tf = tag_tf ;
-    publish_debug(goal_frame_, "TAG_GLOBAL", tag_tf);
-    publish_goal(tag_tf,goal_frame_);
+    publish_debug(goal_frame_, "TAG_GLOBAL", global_goal_tf);
+    publish_goal(global_goal_tf,goal_frame_);
 }
 
 void PathBuilder::publish_goal(const tf2::Transform &tf, const std::string &frame_name){
@@ -109,8 +132,7 @@ void PathBuilder::publish_goal(const tf2::Transform &tf, const std::string &fram
     goal_publisher_->publish(goal);
 }
 
-void PathBuilder::publish_debug(const std::string f_id, const std::string c_id, const tf2::Transform &tf)
-{
+void PathBuilder::publish_debug(const std::string f_id, const std::string c_id, const tf2::Transform &tf){
     
     geometry_msgs::msg::TransformStamped tf_msg;
     geometry_msgs::msg::Vector3 v;
@@ -124,7 +146,6 @@ void PathBuilder::publish_debug(const std::string f_id, const std::string c_id, 
     q.w = tf.getRotation().w();
     tf_msg.header.frame_id = f_id;
     tf_msg.child_frame_id = c_id;
-    // tf_msg.header.stamp = now();
     tf_msg.transform.translation = v;
     tf_msg.transform.rotation = q;
     if(debug_){

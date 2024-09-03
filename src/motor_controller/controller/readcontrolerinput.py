@@ -25,9 +25,6 @@ if __name__ == '__main__':
             values=joy.read()
             x=str(round(values[0][1],dec) * speed)
             y=str(-round(values[0][0],dec) * speed)
-            # l=round(values[0][4],dec)
-            # r=round(values[0][5]*-1,dec)
-            # z=str((l+r)*speed)
             z=str(round(values[0][2],dec) * speed)
             if(values[1][0]==1 or values[1][2] == 1):
                 if(not pressed):
@@ -36,17 +33,7 @@ if __name__ == '__main__':
                     print(pressed,speed)
             else:
                 pressed=False
-
-            # if( and not pressed and speed - 1 > 0):
-            #     # speed=speed-1
-            #     down=True
-            #     print(pressed,speed)
-            # elif( and not pressed):
-            #     # speed=speed+1
-            #     pressed=True
-            #     print(pressed,speed)
-            # else:
-
+            
             if( x != px or y != py or z != pz):
                 pl=x+";"+y+";"+z
                 print(pl)

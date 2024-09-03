@@ -23,3 +23,5 @@ Run `./compile.sh` inside the root directory.
 - [ ] Add controller for driving robot, see: [example](https://github.com/DeborggraeveR/ros2-mecanum-bot)
 
 - [ ] Tag detection: https://github.com/christianrauch/apriltag_ros
+
+https://lcamp.eu

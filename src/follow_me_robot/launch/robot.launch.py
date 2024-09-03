@@ -17,9 +17,7 @@ def generate_launch_description():
     state_launch_file=os.path.join(pkg_path,'launch','state.launch.py')
     sensor_launch_file=os.path.join(pkg_path,'launch','sensor.launch.py')
     nav_launch_file=os.path.join(pkg_path,'launch','nav.launch.py')
-    
-    
-    # namespace = 'Follow-Me-Robot'
+    # define launch configuration variables
     log_level=LaunchConfiguration('log_level',default='warn')
     start_sim=LaunchConfiguration('start_sim',default='false')
     use_gui=LaunchConfiguration('use_gui',default='false')
@@ -28,8 +26,8 @@ def generate_launch_description():
     start_sensors=LaunchConfiguration('start_sensors',default='true')
     start_nav=LaunchConfiguration('start_nav',default='true')
     sensor_config_path=LaunchConfiguration('config_path',default=os.path.join(pkg_path,'config','sensor_config.yaml'))
-    # define start script for robot state publisher to publish the compiled robto description
 
+    # Define the launch description
     ld=LaunchDescription([
         DeclareLaunchArgument('log_level',default_value=log_level,description='log level'),
         DeclareLaunchArgument('start_sim',default_value='false',description='use simulation'),
@@ -39,12 +37,15 @@ def generate_launch_description():
         DeclareLaunchArgument('start_nav',default_value=start_nav,description='start navigation stack'),
         DeclareLaunchArgument('config_path',default_value=sensor_config_path,description='path to sensor config file'),
     ])
+    # Include robot state publisher 
     ld.add_action(IncludeLaunchDescription(
             PythonLaunchDescriptionSource(state_launch_file),
             launch_arguments={
                 "log_level":log_level,
                 "use_sim_time":start_sim
                 }.items()))
+
+    # Include the sensor nodes from the sensor launch file
     ld.add_action(
         IncludeLaunchDescription(
         PythonLaunchDescriptionSource(sensor_launch_file),
@@ -55,6 +56,7 @@ def generate_launch_description():
             "sensor_config_path":sensor_config_path
             }.items()),
     )
+    
     # Lauch gazebo simulation if start_sim is true
     verbose_output=LaunchConfiguration('verbose',default='false')
     world=LaunchConfiguration('world',default='')
@@ -78,15 +80,18 @@ def generate_launch_description():
             DeclareLaunchArgument('bot_name',default_value=bot_name, description='robot name'),
             DeclareLaunchArgument('use_gui',default_value=use_gui,description='use gui'),
             AppendEnvironmentVariable('GAZEBO_MODEL_PATH',world_models),
+            # Start the gazebo simulation server
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(gazebo_launch_dir,"gzserver.launch.py")),
                 launch_arguments={
                     'world': world,
                     'verbose': verbose_output
                 }.items()),
+            # Start the gazebo client gui if use_gui is true
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(gazebo_launch_dir,"gzclient.launch.py")),
                 condition=IfCondition(use_gui)),
+            # Spawn the robot from the robot description in the gazebo simulation
             Node(package='gazebo_ros', 
                 executable='spawn_entity.py',
                 output='screen',
@@ -111,6 +116,7 @@ def generate_launch_description():
                     "max_qos_depth": "100",
                     }.items()
                 ))
+
     # Launch rviz2 if use_rviz is true
     # TODO: configure rviz2 for current sensors
     rviz_config_file=LaunchConfiguration('rviz_config_file',default=os.path.join(pkg_path,"rviz","model.rviz"))
@@ -125,6 +131,7 @@ def generate_launch_description():
                 output='screen')
             ]))
 
+    # Start the navigation stack if start_nav is true
     ld.add_action(GroupAction(
         condition=IfCondition(start_nav),
         actions=[
@@ -135,5 +142,4 @@ def generate_launch_description():
                 }.items(),
         )])
     )
-        
     return ld
