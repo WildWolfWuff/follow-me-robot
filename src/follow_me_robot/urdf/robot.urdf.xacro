@@ -2,17 +2,17 @@
 <robot xmlns="http://www.ros.org" name="robot"
 	xmlns:xacro="http://www.ros.org/wiki/xacro">
 	<!-- Robot Size -->
-	<xacro:property name="body_length" value="0.80" />
-	<xacro:property name="body_with" value="0.5" />
-	<xacro:property name="body_heigth" value="0.20" />
-	<xacro:property name="wheel_height" value="0.087" />
+	<xacro:property name="body_length" value="0.36" />
+	<xacro:property name="body_with" value="0.19" />
+	<xacro:property name="body_heigth" value="0.06" />
+	<xacro:property name="wheel_height" value="0.04" />
 
 	<!-- Wheel parameters -->
-	<xacro:property name="wheel_offset_x" value="0.25" />
+	<xacro:property name="wheel_offset_x" value="0.11" />
 	<!-- x,y,z in translation from base_link to the center of the wheel -->
-	<xacro:property name="wheel_offset_y" value="${(body_with/2)+0.051}" />
-	<xacro:property name="wheel_offset_z" value="0.0" />
-	<xacro:property name="wheel_radius" value="0.127" />
+	<xacro:property name="wheel_offset_y" value="${(body_with/2)}" />
+	<xacro:property name="wheel_offset_z" value="-0.01" />
+	<xacro:property name="wheel_radius" value="0.045" />
 	<xacro:property name="update_rate" value="30" />
 	<xacro:property name="publish_rate" value="30" />
 	<link name="base_footprint" />
@@ -67,8 +67,8 @@
 	</gazebo>
 
 	<xacro:include filename="sensors/lidar.xacro" />
-	<xacro:lidar parent="base_link" frame="base_link" update="${update_rate}">
-		<origin xyz="0 0 ${body_heigth/2+0.03}" rpy="0 0 0" />
+	<xacro:lidar parent="base_link" frame="base_link" update="${update_rate}" visualize="true">
+		<origin xyz="0 0 ${body_heigth/2+0.05}" rpy="0 0 0" />
 	</xacro:lidar>
 
 	<xacro:include filename="sensors/imu.xacro" />
@@ -78,13 +78,13 @@
 
 	<xacro:include filename="sensors/camera.xacro" />
 	<xacro:camera cam_name="front" parent="base_link" update="15"
-		visualize="true">
-		<origin xyz="${body_length/2} 0 0.1" rpy="0 -0.35 0" />
+		visualize="false">
+		<origin xyz="${body_length/2} 0 0.05" rpy="0 -0.35 0" />
 	</xacro:camera>
 
-	<xacro:include filename="sensors/sonar.xacro" />
+	<!-- <xacro:include filename="sensors/sonar.xacro" />
 	<xacro:sonar sonar_name="front_mid" frame="base_link" parent="base_link"
 		update="${update_rate}">
 		<origin xyz="${body_length/2} 0 -0.05" rpy="0 0.2 0" />
-	</xacro:sonar>
+	</xacro:sonar> -->
 </robot>

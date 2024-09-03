@@ -33,6 +33,7 @@ namespace follow_me
         void on_inital_pose(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg);
 
     private:
+        std::string map_frame_;
         std::string odom_frame_;
         std::string robot_base_frame_;
         std::string camera_frame_;

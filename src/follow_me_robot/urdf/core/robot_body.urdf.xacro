@@ -16,15 +16,20 @@
         <origin xyz="0 0 0" />
         <xacro:solid_cuboid_inertia m="125.0" h="${body_with}" d="${body_heigth}" w="${body_length}" />
       </inertial>
-
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <material name="orange" />
         <geometry>
           <box size="${body_length} ${body_with} ${body_heigth}" />
-          <!-- <box size="0.01 ${body_with} 0.01"/> -->
         </geometry>
       </visual>
+      <!-- <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <material name="orange" />
+        <geometry>
+          <mesh filename="file://$(find follow_me_robot)/urdf/meshes/EXAM_robot_2022_without_motor.STL" />
+        </geometry>
+      </visual> -->
 
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0 " />

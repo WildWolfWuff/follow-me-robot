@@ -38,7 +38,6 @@ def generate_launch_description():
             remappings=[
                 ('image_rect','/cam/front/image_raw'),
                 ('camera_info','/cam/front/camera_info'),
-                # ('/tf','/tag/tf'),
                 ('/detections','/tag/detections'),
             ],
             arguments=["--ros-args", "--log-level", log_level],

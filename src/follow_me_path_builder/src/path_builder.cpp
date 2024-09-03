@@ -10,8 +10,9 @@ PathBuilder::PathBuilder(const std::string &name)
 {
     // https://docs.ros.org/en/humble/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Listener-Cpp.html
     // Setup the parameters
-    robot_base_frame_ = declare_parameter<std::string>("robot_base", "base_link");
-    odom_frame_ = declare_parameter<std::string>("doom", "odom");
+    robot_base_frame_ = declare_parameter<std::string>("robot_frame", "base_link");
+    odom_frame_ = declare_parameter<std::string>("doom_frame", "odom");
+    map_frame_ = declare_parameter<std::string>("map_frame", "map");
     camera_lense_frame_ = declare_parameter<std::string>("camera_lense", "base_link");
     camera_frame_ = declare_parameter<std::string>("camera", "base_link");
 
@@ -71,10 +72,11 @@ void PathBuilder::on_timer()
         auto cam_lense_to_cam = get_transform(camera_frame_, camera_lense_frame_,false);
         auto cam_to_robot = get_transform(robot_base_frame_, camera_frame_,false);
         auto robot_tf = get_transform(odom_frame_, robot_base_frame_,false);
+        auto map_tf = get_transform(map_frame_, odom_frame_,false);
         auto r= tag_to_cam_lense.getRotation();
         tag_to_cam_lense.setRotation(r*_tag_offset_rotation);
         tag_to_cam_lense*=_buffer;
-        tag_tf = robot_tf * cam_to_robot * cam_lense_to_cam * tag_to_cam_lense;
+        tag_tf = map_tf * robot_tf * cam_to_robot * cam_lense_to_cam * tag_to_cam_lense;
     }
     catch (const tf2::TransformException &ex)
     {
