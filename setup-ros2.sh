@@ -50,12 +50,6 @@ if [ ! -d "~/.gazebo/models/hospital" ]; then
     ln -s $PWD/src/gazebo_model/april_tag3 ~/.gazebo/models/
 fi
 
-models=$(ls src/gazebo_model/acto)
-for model in $models; do
-    echo "Model: $model"
-    ln -s $model ~/.gazebo/models/
-    export GAZEBO_MODEL_PATH="$GAZEBO_MODEL_PATH:$PWD/src/gazebo_model/acto/$model"
-done
-${used_shell} ./ros_install_packages -d $distro -p imu-tools -p gps-tools
+${used_shell} ./ros_install_packages -d $distro -p imu-tools -p gps-tools 
 # configure visual studio code
 ${used_shell} ./open_vscode

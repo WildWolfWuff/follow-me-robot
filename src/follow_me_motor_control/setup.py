@@ -16,7 +16,7 @@ setup(
     maintainer='dev',
     maintainer_email='seiffertt.tin21@student.dhbw-heidenheim.de',
     description='TODO: Package description',
-    license='TODO: License declaration',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

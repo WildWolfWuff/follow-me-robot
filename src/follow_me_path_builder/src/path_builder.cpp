@@ -34,7 +34,7 @@ PathBuilder::PathBuilder(const std::string &name)
     _tf_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
     // create a timer to listne to the tf2 buffer
-    _timer = create_wall_timer(50ms, std::bind(&PathBuilder::on_timer, this));
+    _timer = create_wall_timer(1s, std::bind(&PathBuilder::on_timer, this));
 
     // define the offset for the tag's position
     _distance_offset=tf2::Transform(tf2::Quaternion(0,0,0,1),tf2::Vector3(-distance_,0,0));

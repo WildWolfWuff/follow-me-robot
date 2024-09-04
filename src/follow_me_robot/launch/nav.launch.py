@@ -25,6 +25,7 @@ def generate_launch_description():
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
     params_file = os.path.join(pkg_path, 'config', 'nav_params.yaml')
     # ros2 run follow_me_teleop follow_me_teleop --ros-args --params-file `ros2 pkg prefix follow_me_teleop`/share/follow_me_teleop/config/teleop_config.yaml
+
     # Define the launch description
     return LaunchDescription([
         # Declare the launch arguments, with a default value and description

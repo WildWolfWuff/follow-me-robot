@@ -20,8 +20,8 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
-
 add_executable(follow_me_path_builder
+
   src/node_main.cpp
   src/path_builder.cpp
 )

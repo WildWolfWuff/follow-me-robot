@@ -24,10 +24,10 @@ class MotorControllerNode(Node):
     def __init__(self, node_name):
         super().__init__(node_name)
         # Define node parameters
-        self.declare_parameter("serial.port", "/dev/ttyACM0", "The serial port for communication with the motor controller")
-        self.declare_parameter("serial.baudrate", 9600, "The baud rate for serial communication")
-        self.declare_parameter("serial.timeout", 1, "The timeout for serial communication")
-        self.declare_parameter("velocity_topic", "/cmd_vel", "The topic for receiving velocity commands")
+        self.declare_parameter("serial.port", "/dev/ttyACM0")#  The serial port for communication with the motor controller
+        self.declare_parameter("serial.baudrate", 9600) # The baud rate for serial communication
+        self.declare_parameter("serial.timeout", 1.0) # The timeout for serial communication
+        self.declare_parameter("velocity_topic", "/cmd_vel") # The topic for receiving velocity commands
 
         # Get node parameters
         serialPort = self.get_parameter("serial.port").value
@@ -36,9 +36,10 @@ class MotorControllerNode(Node):
         topic_name = self.get_parameter("velocity_topic").value
         
         try:
+            self.get_logger().info(f"Opening serial port: {serialPort} at {baudRate} baudrate")
             self.serial_port = serial.Serial(port=serialPort, baudrate=baudRate, timeout=timeout)
         except serial.SerialException as e:
-            self.get_logger().error(f"Failed to open serial port: {e}")
+            self.get_logger().error(f"Failed to open serial port: {e.errno}")
             raise e
         
         self.subscription = self.create_subscription(
