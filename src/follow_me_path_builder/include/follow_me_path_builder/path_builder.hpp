@@ -80,17 +80,83 @@ namespace follow_me
         void on_inital_pose(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg);
 
     private:
-        std::string map_frame_; // map tf frame name, default: map
-        std::string odom_frame_; // odom tf frame name, default: odom
-        std::string robot_base_frame_; // robot_base tf frame name, default: base_link
-        std::string camera_frame_; // camera_lense frame name, default: None
-        std::string camera_lense_frame_; // camera_lense frame name, default: camera_lense
-        std::string tag_family_; // tag family name, default: tag36h11
-        int tag_id_; // tag id, default: 0
-        std::string goal_frame_; // goal frame name, default: map
-        bool debug_; // debug flag, default: false
-        // goal timeout sec: timeout for refinding tag, after timeout robot will travel to initial pose, default: 60.0
-        double goal_timeout_sec_; // timeout for finding  in seconds, default: 0.5
+        /*
+        * @brief The name of the map tf frame.
+        * This frame is used as the global zero frame for the robot's navigation.
+        * @note config key: `frame.map`
+        * @note default: `map`
+        */
+        std::string map_frame_;
+        /*
+        * @brief The name of the odom tf frame.
+        * This frame is used as the robot's odometry frame.
+        * @note config key: `frame.odom`
+        * @note default: `odom`
+        */
+        std::string odom_frame_;
+        /*
+        * @brief The name of the robot base tf frame.
+        * This frame is used as the robot's base frame.
+        * @note config key: `frame.robot_base`
+        * @note default: `base_link`
+        */
+        std::string robot_base_frame_;
+        /*
+        * @brief The name of the camera tf frame.
+        * This frame describes the pose of the camera of the robot.
+        * @note config key: `frame.camera`
+        * @note default: -
+        */
+        std::string camera_frame_;
+        /*
+        * @brief The name of the camera lense tf frame.
+        * This frame describes the pose of the camera sensor.
+        * @note config key: `frame.camera_lense`
+        * @note default: -
+        */
+        std::string camera_lense_frame_;
+        /*
+        * @brief The name of the tag family.
+        * This is the name of the tag family used for the april tag.
+        * @note - config key: `tag.family`
+        * @note - default: `tag36h11`
+        */
+        std::string tag_family_;
+        /*
+        * @brief The ID of the tag.
+        * The tag id to follow.
+        * @note - config key: `tag.id`
+        * @note - default: `0`
+        */
+        int tag_id_;
+        /*
+        * @brief The debug flag.
+        * This flag is used to enable or disable debug messages.
+        * @note - config key: `debug`
+        * @note - default: `false`
+        */
+        bool debug_;
+        /*
+        * @brief The goal timeout in seconds.
+        * The timeout for refinding tag, before the robot retuns to inital pose.
+        * @note - config key: `goal_timeout_sec`
+        * @note - default: `60.0`
+        */
+        double goal_timeout_sec_;
+        /*
+        * @brief The topic where the goal pose is published.
+        * 
+        * @note - config key: `goal.topic`
+        * @note - default: `goal_pose`
+        */
+        std::string goal_topic_;
+        /*
+        * @brief The distance offset for the tag.
+        * The distance offset im meter for the tag to move the goal backward from the tag.
+        * @note - config key: `distance`
+        * @note - default: `0.0`
+        */
+        double distance_;
         std::string _tag_frame; // tha tag frame name
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_publisher_; // goal publisher
         rclcpp::TimerBase::SharedPtr _timer{nullptr}; // timer for reading tf buffer
@@ -101,7 +167,7 @@ namespace follow_me
         tf2::Transform _distance_offset; // distance offset for the tag
         tf2::Quaternion _tag_offset_rotation=tf2::Quaternion(); // rotation offset for the tag
         tf2::Transform _home_tf; // home position of the robot
-        tf2::TimePoint last_publish; // last publish time
+        tf2::TimePoint _last_publish; // last publish time
         int32_t _prev_sec; // previous second
         uint32_t _prev_nsec; // previous nanosecond
         bool _is_travel_home=false; // flag to indicate if the robot is traveling home

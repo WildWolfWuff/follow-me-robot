@@ -11,21 +11,21 @@ PathBuilder::PathBuilder(const std::string &name)
     // https://docs.ros.org/en/humble/Tutorials/Intermediate/Tf2/Writing-A-Tf2-Listener-Cpp.html
     // Setup the parameters
     // define parameters for the node
-    robot_base_frame_ = declare_parameter<std::string>("robot_frame", "base_link");
-    odom_frame_ = declare_parameter<std::string>("doom_frame", "odom");
-    map_frame_ = declare_parameter<std::string>("map_frame", "map");
-    camera_lense_frame_ = declare_parameter<std::string>("camera_lense", "base_link");
-    camera_frame_ = declare_parameter<std::string>("camera", "base_link");
+
+    map_frame_ = declare_parameter<std::string>("frame.map", "map");
+    robot_base_frame_ = declare_parameter<std::string>("frame.robot_base", "base_link");
+    odom_frame_ = declare_parameter<std::string>("frame.odom", "odom");
+    camera_frame_ = declare_parameter<std::string>("frame.camera");
+    camera_lense_frame_ = declare_parameter<std::string>("frame.camera_lense");
 
     tag_family_ = declare_parameter<std::string>("tag.family", "tag36h11");
     tag_id_ = declare_parameter<int>("tag.id", 0);
     debug_ = declare_parameter<bool>("debug", false);
-    auto distance=declare_parameter<double>("distance", 0.0)
-    std::string goal_topic = declare_parameter<std::string>("goal.topic", "goal_pose");
-    goal_frame_ = declare_parameter<std::string>("goal.frame_id", "map");
+    distance_=declare_parameter<double>("distance", 0.0);
+    goal_topic_ = declare_parameter<std::string>("goal.topic", "goal_pose");
     goal_timeout_sec_ = declare_parameter<double>("goal.timeout_sec", 60.0);
     // create publisher and subscriber
-    goal_publisher_ = create_publisher<geometry_msgs::msg::PoseStamped>(goal_topic, 9);
+    goal_publisher_ = create_publisher<geometry_msgs::msg::PoseStamped>(goal_topic_, 9);
     _initial_pose_sub= create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>("/initialpose", 10, std::bind(&PathBuilder::on_inital_pose, this, std::placeholders::_1));
     
     // create the tf2 buffer, listener, and broadcaster for the transform system
@@ -37,7 +37,7 @@ PathBuilder::PathBuilder(const std::string &name)
     _timer = create_wall_timer(50ms, std::bind(&PathBuilder::on_timer, this));
 
     // define the offset for the tag's position
-    _distance_offset=tf2::Transform(tf2::Quaternion(0,0,0,1),tf2::Vector3(-distance,0,0));
+    _distance_offset=tf2::Transform(tf2::Quaternion(0,0,0,1),tf2::Vector3(-distance_,0,0));
     _tag_offset_rotation.setRPY(0,M_PI_2,0);
     
     // create the tag frame name
@@ -106,16 +106,16 @@ void PathBuilder::on_timer()
         RCLCPP_DEBUG(this->get_logger(), "Could not transform %s to %s: %s",
                      camera_lense_frame_.c_str(), _tag_frame.c_str(), ex.what());
         // if the tag is not found and the timeout has passed, travel back to the home position
-        if(!_is_travel_home && time_now-last_publish>= std::chrono::duration<double>(goal_timeout_sec_)){
+        if(!_is_travel_home && time_now-_last_publish >= std::chrono::duration<double>(goal_timeout_sec_)){
             _is_travel_home=true;
-            publish_goal(_home_tf,goal_frame_);
+            publish_goal(_home_tf,map_frame_);
         }
         return;
     }
     _is_travel_home=false;
-    last_publish = time_now;
-    publish_debug(goal_frame_, "TAG_GLOBAL", global_goal_tf);
-    publish_goal(global_goal_tf,goal_frame_);
+    _last_publish = time_now;
+    publish_debug(map_frame_, "TAG_GLOBAL", global_goal_tf);
+    publish_goal(global_goal_tf,map_frame_);
 }
 
 void PathBuilder::publish_goal(const tf2::Transform &tf, const std::string &frame_name){

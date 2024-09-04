@@ -29,7 +29,7 @@ if [ -z $distro ]; then
 fi
 # see https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html for install tutorial
 printStep "Install basic"
-sudo apt update && sudo apt install -y curl gnupg2 lsb-release
+sudo apt update && sudo apt install -y curl gnupg2 lsb-release software-properties-common
 if [ $? -gt 0 ]; then
     exit 1;
 fi
@@ -46,10 +46,6 @@ if [ $(locale | grep LANG=en_US.UTF-8) -gt 0 ]; then
     exit 1;
 fi
 printStep "Setup repositories"
-sudo apt install software-properties-common -y
-if [ $? -gt 0 ]; then
-    exit 1;
-fi
 sudo add-apt-repository universe -y
 printStep "Add ros apt keys"
 

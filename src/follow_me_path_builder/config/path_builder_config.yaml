@@ -1,7 +1,15 @@
-path_builder:
+path_builder: # src/follow_me_path_builder/src/path_builder.cpp
   ros__parameters:
-    parent_frame: front_camera_link_optical
-    goal_topic: /goal_pose
+    frame:
+      map: map # the absolute world frame name
+      odom: odom # the odometry frame name
+      robot_base: base_link # the robot base frame name
+      camera: front_camera_link # the camera frame name
+      camera_lense: front_camera_link_optical # the camera lense/sensor frame name
+    goal:
+      timneout_sec: 60.0 # after this time with no new tag position, the robot will drive to home
     tag:
-      family: Standard41h12
-      id: 0
+      family: Standard41h12 # tag family
+      id: 0 # tag id to follow
+    debug: false # enable debug output
+    distance: 0.5 # buffer distance to tag in meters

@@ -1,23 +1,26 @@
 # --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/sensor_config.yaml
-path_builder:
+path_builder: # src/follow_me_path_builder/src/path_builder.cpp
   ros__parameters:
-    camera: front_camera_link
-    camera_lense: front_camera_link_optical
+    frame:
+      map: map # the absolute world frame name
+      odom: odom # the odometry frame name
+      robot_base: base_link # the robot base frame name
+      camera: front_camera_link # the camera frame name
+      camera_lense: front_camera_link_optical # the camera lense/sensor frame name
     goal:
       timneout_sec: 60.0 # after this time with no new tag position, the robot will drive to home
-    #   topic: /goal_pose_debug
     tag:
-      family: Standard41h12
-      id: 0
-    debug: false
-    distance: 0.5
+      family: Standard41h12 # tag family
+      id: 0 # tag id to follow
+    debug: false # enable debug output
+    distance: 0.5 # buffer distance to tag in meters
 
-apriltag:
+apriltag: # docs https://github.com/christianrauch/apriltag_ros
   ros__parameters:
-    image_transport: raw
-    family: Standard41h12
-    size: 0.155
-    detector:
+    image_transport: raw # image transport format
+    family: Standard41h12 # tag family
+    size: 0.155 # tag size in meters
+    detector: 
       threads: 1       # number of threads
       decimate: 2.0    # decimate resolution for quad detection
       blur: 0.0        # sigma of Gaussian blur for quad detection
@@ -25,8 +28,10 @@ apriltag:
       sharpening: 0.25 # sharpening of decoded images
       debug: false     # write additional debugging images to current working directory
     tags:
-      ids: [0]
-teleop:
+      ids: [0] # list of tag ids to detect
+
+
+teleop: # src/follow_me_teleop/src/teleop.cpp
   ros__parameters:
     joy_topic: /joy
     twist_topic: /cmd_vel
@@ -56,3 +61,10 @@ teleop:
         axis: 2
         scale: 1.0
         deadzone: 0.5
+motor_controller:
+  ros__parameters:
+    serial:
+      port: /dev/ttyACM0
+      baudrate: 9600
+      timeout: 1.0
+    velocity_topic: /cmd_vel

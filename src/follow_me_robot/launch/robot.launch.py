@@ -25,7 +25,8 @@ def generate_launch_description():
     use_rviz=LaunchConfiguration('use_rviz',default='false')
     start_sensors=LaunchConfiguration('start_sensors',default='true')
     start_nav=LaunchConfiguration('start_nav',default='true')
-    sensor_config_path=LaunchConfiguration('config_path',default=os.path.join(pkg_path,'config','sensor_config.yaml'))
+    start_motor_controller=LaunchConfiguration('start_motor',default='true')
+    sensor_config_path=LaunchConfiguration('sensor_config_path',default=os.path.join(pkg_path,'config','sensor_config.yaml'))
 
     # Define the launch description
     ld=LaunchDescription([
@@ -53,7 +54,7 @@ def generate_launch_description():
         launch_arguments={
             "log_level":log_level,
             "use_sim_time":start_sim,
-            "sensor_config_path":sensor_config_path
+            "config_path":sensor_config_path
             }.items()),
     )
     
@@ -142,4 +143,16 @@ def generate_launch_description():
                 }.items(),
         )])
     )
+    ld.add_action(GroupAction(
+        condition=IfCondition(start_motor_controller),
+        actions=[
+            Node(
+                package='follow_me_motor_control',
+                executable='motor_controller',
+                name='motor_controller',
+                output='screen',
+                parameters=[sensor_config_path]
+            )
+        ]
+    ))
     return ld
