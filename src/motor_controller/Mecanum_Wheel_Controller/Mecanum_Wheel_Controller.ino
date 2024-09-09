@@ -124,9 +124,9 @@ void readSerial()
     index++;
   }
 
-  x = values[0];
-  y = values[1];
-  z = values[2];
+  x = values[0]*100;
+  y = values[1]*100;
+  z = values[2]*100;
 }
 
 /**
