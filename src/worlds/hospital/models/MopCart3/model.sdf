@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <model name="MopCart3">
+    <allow_auto_disable>false</allow_auto_disable>
     <link name="link">
       <pose>0 0 0 0 0 0</pose>
 

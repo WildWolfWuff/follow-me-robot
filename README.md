@@ -42,6 +42,16 @@ After the build it launches the [follow-me-robot robot.launch.py](src/follow_me_
 
 The Node configuration are in the [config](src/follow_me_robot/config) directory. The configuration files are in yaml format.
 
+# Self controled Tag Robot
+
+If you want to run the self controled TagRobot, you can enable the spawn mock with `spawn_mock_bot:=true` in the compile file.
+To controll the mock robot, publish the teleopt twist message to the `/mock/cmd_vel` topic. This can be done with the following command:
+```bash
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args --remap cmd_vel:=/mock/cmd_vel
+```
+or in foxglove with the `Joystick Panel` plugin.
+Also you have to change the tag id configuration (`path_builder:ros__parameters:tag:id`) in the [sensor_config.yaml](src/follow_me_robot/config/sensor_config.yaml) configuration file.
+
 # Refs and links
 - 
 - [Completed worlds](https://github.com/mlherd/Dataset-of-Gazebo-Worlds-Models-and-Maps)

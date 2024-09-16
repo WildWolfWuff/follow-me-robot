@@ -1,0 +1,362 @@
+<?xml version="1.0"?>
+<robot xmlns="http://www.ros.org" name="robot"
+  xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <material name="white">
+    <color rgba="1 1 1 1" />
+  </material>
+  <material name="orange">
+    <color rgba="1 0.3 0.1 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.2 0.2 1 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="red">
+    <color rgba="1 0 0 1"/>
+  </material>
+  <material name="green">
+    <color rgba="0 1 0 1"/>
+  </material>
+  <material name="darkgrey">
+    <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+  <!-- TODO Solid sphere of radius r and mass m-->
+  <xacro:macro name="solid_sphere_inertia" params="m r">
+    <inertia ixx="${(2*r*r*m)/5}" ixy = "0" ixz = "0" iyy="${(2*r*r*m)/5}" iyz = "0" izz="${(2*r*r*m)/5}" />
+  </xacro:macro>
+
+  <!-- TODO Hollow sphere of radius r and mass m-->
+  <xacro:macro name="hollow_sphere_inertia" params="m r">
+    <inertia ixx="${(2*r*r*m)/3}" ixy = "0" ixz = "0" iyy="${(2*r*r*m)/3}" iyz = "0" izz="${(2*r*r*m)/3}" />
+  </xacro:macro>
+
+  <!-- TODO Solid ellipsoid of semi-axes a, b, c and mass m-->
+  <xacro:macro name="ellipsoid_semi_axes_inertia" params="a b c m r">
+    <inertia ixx="${(m*(b*b+c*c))/5}" ixy = "0" ixz = "0" iyy="${(m*(a*a+c*c))/5}" iyz = "0" izz="${(m*(a*a+b*b))/5}" />
+  </xacro:macro>
+
+  <!-- TODO Right circular cone with radius r, height h and mass m, about the apex -->
+  <xacro:macro name="right_circular_cone_inertia" params="m r h">
+    <inertia ixx="${((3*m*(h*h))/5)+((3*m*(r*r))/20)}" ixy = "0" ixz = "0" iyy="${((3*m*(h*h))/5)+((3*m*(r*r))/20)}" iyz = "0" izz="${(3*m*(r*r))/10}" />
+  </xacro:macro>
+
+  <!-- TODO Solid cuboid of width w, height h, depth d, and mass m -->
+  <!-- yes, axis in solid_cuboid_inertia are changed, w relates to X axis, d to Z axis, and h to Y axis -->
+  <!-- Keep this comment -->
+  <xacro:macro name="solid_cuboid_inertia" params="m h d w">
+    <inertia ixx="${(m*(h*h+d*d))/12}" ixy = "0" ixz = "0" iyy="${(m*(w*w+d*d))/12}" iyz = "0" izz="${(m*(w*w+h*h))/12}" />
+  </xacro:macro>
+
+  <!-- TODO Solid cylinder of radius r, height h and mass m -->
+  <xacro:macro name="solid_cylinder_inertia" params="m r h">
+    <inertia ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0" iyy="${m*(3*r*r+h*h)/12}" iyz = "0" izz="${m*r*r/2}" />
+  </xacro:macro>
+
+  <!-- TODO Thick-walled cylindrical tube with open ends, of inner radius r1, outer radius r2, length h and mass m -->
+  <xacro:macro name="thick_walled_cylinder_inertia" params="m r1 r2 h">
+    <inertia ixx="${m*((3*(r1*r1+r2*r2))+(h*h))/12}" ixy = "0" ixz = "0" iyy="${m*((3*(r1*r1+r2*r2))+(h*h))/12}" iyz = "0" izz="${m*(r1*r1+r2*r2)/2}" />
+  </xacro:macro>
+  <xacro:macro name="sensor_noise" params="mean:=0.0 stddev:=0.0">
+    <noise type="gaussian">
+      <type>gaussian</type>
+      <mean>${mean}</mean>
+      <stddev>${stddev}</stddev>
+    </noise>
+  </xacro:macro>
+
+  <xacro:macro name="wheel_motor" params="parent *origin wheel_img reflect side position wheel_height wheel_radius update_rate:=20">
+    <xacro:property name="prefix" value="mock_${position}_${side}_wheel" />
+    <!-- Motor parameters -->
+    <xacro:property name="motor_mass" value="0.2" />
+    <xacro:property name="motor_h" value="0.06" />
+    <xacro:property name="motor_d" value="0.04" />
+    <xacro:property name="motor_w" value="0.04" />
+    <xacro:property name="motor_offset" value="${motor_w/1.08 * reflect * -1}" />
+    <!-- Motor to Parent Joint -->
+    <joint name="${prefix}_motor_joint" type="fixed">
+      <parent link="${parent}" />
+      <child link="${prefix}_motor_link" />
+      <xacro:insert_block name="origin" />
+    </joint>
+    <!-- Motor Link (Visual, Collision, Inertial) -->
+    <link name="${prefix}_motor_link">
+      <!-- Visual -->
+      <visual>
+        <origin xyz="0 ${motor_offset} 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${motor_d} ${motor_w} ${motor_h}" />
+        </geometry>
+        <material name="darkgrey" />
+      </visual>
+
+      <!-- Collision -->
+      <collision>
+        <origin xyz="0 ${motor_offset} 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${motor_d} ${motor_w} ${motor_h}" />
+        </geometry>
+      </collision>
+      <!-- Inertial -->
+      <inertial>
+        <mass value="${motor_mass}" />
+        <xacro:solid_cuboid_inertia m="${motor_mass}" d="${motor_d}" w="${motor_w}" h="${motor_h}" />
+      </inertial>
+    </link>
+    <!-- Motor to Wheel -->
+    <xacro:omni_wheel parent="${prefix}_motor_link" wheel_img="${wheel_img}" side="${side}" position="${position}" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}" update_rate="${update_rate}">
+      <origin xyz="0 ${motor_offset+(wheel_height+0.01)*reflect} 0" rpy="${pi/2} ${pi/2} 0" />
+    </xacro:omni_wheel>
+  </xacro:macro>
+
+  <!-- Wheel Macro -->
+  <xacro:macro name="omni_wheel" params="parent *origin wheel_img side position wheel_height wheel_radius update_rate:=20">
+    <!-- in kg-->
+    <xacro:property name="wheel_mass" value="6.5" />
+    <xacro:property name="prefix" value="mock_${position}_${side}_wheel" />
+    <!-- Wheek to Parent Joint -->
+    <joint name="${prefix}_joint" type="continuous">
+      <parent link="${parent}" />
+      <child link="${prefix}_link" />
+      <xacro:insert_block name="origin" />
+      <axis xyz="0 0 1" />
+      <joint_properties damping="0.0" friction="1.0" />
+    </joint>
+    <!-- Wheel Link (Visual, Collision, Inertial) -->
+    <link name="${prefix}_link">
+      <!-- Simple visual (use in windows foxglove) -->
+      <!-- <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+        </geometry>
+        <material name="blue" />
+      </visual> -->
+
+      <!-- Complex visual -->
+      <visual>
+        <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
+        <geometry>
+          <mesh filename="file://$(find follow_me_robot)/urdf/meshes/omni_wheel_${wheel_img}.dae" scale="0.35 0.35 0.35" />
+        </geometry>
+      </visual>
+
+      <!-- Collision -->
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+        </geometry>
+      </collision>
+
+      <!-- Inertial -->
+      <inertial>
+        <mass value="${wheel_mass}" />
+        <xacro:solid_cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_height}" />
+      </inertial>
+    </link>
+
+    <!-- Transmission is important to link the joints and the controller (see robot_control/config/robot_control.yaml) -->
+    <transmission name="${prefix}_joint_trans" type="transmission_interface/SimpleTransmission">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </actuator>
+    </transmission>
+    <gazebo reference="${prefix}_link">
+      <mu1 value="1.0" />
+      <mu2 value="1.0" />
+      <kp value="10000000.0" />
+      <kd value="1.0" />
+      <fdir1 value="1 0 0" />
+      <turnGravityOff>true</turnGravityOff>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- Camera Macro -->
+  <xacro:macro name="camera" params="cam_name parent *origin update:=30 visualize:=false">
+    <joint name="${cam_name}_camera_joint" type="fixed">
+      <parent link="${parent}" />
+      <child link="${cam_name}_camera_link" />
+      <xacro:insert_block name="origin" />
+    </joint>
+    <link name="${cam_name}_camera_link"/>
+    <joint name="${cam_name}_camera_link_optical_joint" type="fixed">
+      <parent link="${cam_name}_camera_link" />
+      <child link="${cam_name}_camera_link_optical" />
+      <origin xyz="0 0 0" rpy="${pi/2} 0 ${pi/2}" />
+    </joint>
+    <link name="${cam_name}_camera_link_optical">
+      <visual>
+        <origin xyz="0.005 0 0" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="0.02" length="0.02" />
+          <material name="red" />
+        </geometry>
+      </visual>
+    </link>
+    <gazebo reference="${cam_name}_camera_link_optical">
+      <material>Gazebo/Red</material>
+      <sensor type="camera" name="${cam_name}_cam">
+        <always_on>true</always_on>
+        <update_rate>${update}</update_rate>
+        <visualize>${visualize}</visualize>
+        <camera name="${cam_name}_head">
+          <pose>0.0 0 0.0 ${pi/2} -${pi/2} 0</pose>
+          <horizontal_fov>${70 * pi/180.0}</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>B8G8R8</format>
+          </image>
+          <clip>
+            <near>0.002</near>
+            <far>300</far>
+          </clip>
+          <xacro:sensor_noise />
+        </camera>
+        <plugin name="camera_controller_${cam_name}" filename="libgazebo_ros_camera.so">
+          <ros>
+            <namespace>/mock/cam</namespace>
+            <remapping>~/image_raw:=/image_raw</remapping>
+            <remapping>~/camera_info:=/camera_info</remapping>
+          </ros>
+          <camera_name>${cam_name}</camera_name>
+          <min_depth>0.002</min_depth>
+          <max_depth>300.0</max_depth>
+          <frame_name>${cam_name}_camera_link_optical</frame_name>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- Robot Size -->
+  <xacro:property name="body_length" value="0.36" />
+  <xacro:property name="body_with" value="0.19" />
+  <xacro:property name="body_heigth" value="0.06" />
+  <xacro:property name="wheel_height" value="0.04" />
+
+  <!-- Wheel parameters -->
+  <xacro:property name="wheel_offset_x" value="0.095" />
+  <!-- x,y,z in translation from mock_base_link to the center of the wheel -->
+  <xacro:property name="wheel_offset_y" value="${(body_with/2)}" />
+  <xacro:property name="wheel_offset_z" value="-0.01" />
+  <xacro:property name="wheel_radius" value="0.045" />
+  <xacro:property name="update_rate" value="30" />
+  <xacro:property name="publish_rate" value="30" />
+
+  <!-- BASE FOOTPRINT -->
+  <link name="mock_base_footprint" />
+  <!-- Robot Body -->
+
+  <joint name="mock_base_link_joint" type="fixed">
+    <parent link="mock_base_footprint" />
+    <child link="mock_base_link" />
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
+  </joint>
+
+  <link name="mock_base_link">
+    <!-- Complex visual -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find follow_me_robot)/urdf/meshes/EXAM_robot_2022.stl" />
+      </geometry>
+    </visual>
+
+    <!-- Collision -->
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0 " />
+      <geometry>
+        <box size="${body_length} ${body_with} ${body_heigth}" />
+      </geometry>
+    </collision>
+
+    <!-- Inertial -->
+    <inertial>
+      <mass value="125.0" />
+      <origin xyz="0 0 0" />
+      <xacro:solid_cuboid_inertia m="125.0" h="${body_with}" d="${body_heigth}" w="${body_length}" />
+    </inertial>
+  </link>
+  
+  <joint name="mock_tag_box_joint" type="fixed">
+    <parent link="mock_base_link" />
+    <child link="mock_tag_box" />
+    <origin xyz="0 -0.15 0.25" rpy="0 0 0" />
+  </joint>
+
+  <!-- AprilTag: id = 0-->
+  <link name="mock_tag_box">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find follow_me_robot)/mock/meshes/apriltag.obj" scale="0.03 0.03 0.03"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <!-- Robot mechanical and motor parameters -->
+  <!-- Wheel Front Right -->
+  <xacro:wheel_motor parent="mock_base_link" position="front" side="right" reflect="-1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+    <origin xyz="${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0.0" />
+  </xacro:wheel_motor>
+  <!-- Wheel Front Left -->
+  <xacro:wheel_motor parent="mock_base_link" position="front" side="left" reflect="1" wheel_img="2" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+    <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
+  </xacro:wheel_motor>
+  <!-- Wheel Back Left -->
+  <xacro:wheel_motor parent="mock_base_link" position="back" side="left" reflect="1" wheel_img="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+    <origin xyz="-${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
+  </xacro:wheel_motor>
+  <!-- Wheel Back Right -->
+  <xacro:wheel_motor parent="mock_base_link" position="back" side="right" reflect="-1" wheel_img="1" wheel_height="${wheel_height}" wheel_radius="${wheel_radius}">
+    <origin xyz="-${wheel_offset_x} -${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0" />
+  </xacro:wheel_motor>
+
+  <!-- Camera Sensor -->
+  <xacro:camera cam_name="mock_front" parent="mock_base_link" update="15" visualize="false">
+    <origin xyz="${body_length/2} -0.0252 -0.005" rpy="0 -0.35 0" />
+  </xacro:camera>
+  
+  <!-- Gazebo Plugins -->
+  <gazebo>
+    <!-- Plugin for the robot's movement -->
+    <plugin name="mock_psuedo_mecanum" filename="libgazebo_ros_planar_move.so">
+      <command_topic>/mock/cmd_vel</command_topic>
+      <ros>
+        <namespace>mock</namespace>
+        <namespace>~/cmd_vel:=cmd_vel</namespace>
+      </ros>
+      <robot_namespace>mock</robot_namespace>
+      <!-- <odometry_topic>map</odometry_topic> -->
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>mock_base_link</robot_base_frame>
+      <ground_truth>false</ground_truth>
+      <control_mode>position</control_mode>
+      <publish_odometry>false</publish_odometry>
+      <publish_tf>false</publish_tf>
+      <publish_imu>false</publish_imu>
+      <publish_rate>0</publish_rate>
+      <update_rate>${update_rate}</update_rate>
+    </plugin>
+    <!-- Plugin for the robot's joint state -->
+    <plugin name="mock_gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <ros>
+        <namespace>mock</namespace>
+        <remapping>joint_states:=joint_states</remapping>
+      </ros>
+      <update_rate>${update_rate}</update_rate>
+      <joint_name>mock_front_right_wheel_joint</joint_name>
+      <joint_name>mock_front_left_wheel_joint</joint_name>
+      <joint_name>mock_back_left_wheel_joint</joint_name>
+      <joint_name>mock_back_right_wheel_joint</joint_name>
+    </plugin>
+  </gazebo>
+
+</robot>

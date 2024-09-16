@@ -8,10 +8,12 @@ path_builder: # src/follow_me_path_builder/src/path_builder.cpp
       camera: front_camera_link # the camera frame name
       camera_lense: front_camera_link_optical # the camera lense/sensor frame name
     goal:
+      topic: /goal_pose # the goal pose topic
       timneout_sec: 60.0 # after this time with no new tag position, the robot will drive to home
     tag:
       family: Standard41h12 # tag family
       id: 0 # tag id to follow
+      # id: 1 # tag id to follow
     debug: false # enable debug output
     distance: 0.5 # buffer distance to tag in meters
 
@@ -27,14 +29,12 @@ apriltag: # docs https://github.com/christianrauch/apriltag_ros
       refine: true     # snap to strong gradients
       sharpening: 0.25 # sharpening of decoded images
       debug: false     # write additional debugging images to current working directory
-    tags:
-      ids: [0] # list of tag ids to detect
 
 
 teleop: # src/follow_me_teleop/src/teleop.cpp
   ros__parameters:
     joy_topic: /joy
-    twist_topic: /cmd_vel
+    twist_topic: /mock/cmd_vel # uset /mock/cmd_vel for the mock robot and /cmd_vel for the main robot
     move:
       forward:
         axis: 1
@@ -61,6 +61,7 @@ teleop: # src/follow_me_teleop/src/teleop.cpp
         axis: 2
         scale: 1.0
         deadzone: 0.5
+
 motor_controller:
   ros__parameters:
     serial:

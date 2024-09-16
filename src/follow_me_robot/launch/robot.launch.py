@@ -26,6 +26,7 @@ def generate_launch_description():
     start_sensors=LaunchConfiguration('start_sensors',default='true')
     start_nav=LaunchConfiguration('start_nav',default='true')
     start_motor_controller=LaunchConfiguration('start_motor',default='true')
+    spawn_mock_bot=LaunchConfiguration('spawn_mock_bot',default='false')
     sensor_config_path=LaunchConfiguration('sensor_config_path',default=os.path.join(pkg_path,'config','sensor_config.yaml'))
 
     # Define the launch description
@@ -37,7 +38,9 @@ def generate_launch_description():
         DeclareLaunchArgument('start_sensors',default_value=start_sensors,description='start sensor nodes'),
         DeclareLaunchArgument('start_nav',default_value=start_nav,description='start navigation stack'),
         DeclareLaunchArgument('config_path',default_value=sensor_config_path,description='path to sensor config file'),
+        DeclareLaunchArgument('spawn_mock_bot',default_value=spawn_mock_bot,description='spawn mock bot in gazebo'),
     ])
+    
     # Include robot state publisher 
     ld.add_action(IncludeLaunchDescription(
             PythonLaunchDescriptionSource(state_launch_file),
@@ -68,6 +71,7 @@ def generate_launch_description():
     bot_topic=LaunchConfiguration('bot_topic',default='robot_description')
     bot_name=LaunchConfiguration('bot_name',default='follow_me_bot')
     gazebo_launch_dir=os.path.join(get_package_share_directory('gazebo_ros'),'launch')
+    
     ld.add_action(GroupAction(
         condition=IfCondition(start_sim),
         actions=[
@@ -101,7 +105,19 @@ def generate_launch_description():
                             '-x', bot_x,
                             '-y', bot_y,
                             '-z', bot_z,
-                            ])
+                            ]),
+            Node(package='gazebo_ros', 
+                executable='spawn_entity.py',
+                condition=IfCondition(spawn_mock_bot),
+                name="spawn_mock_bot",
+                output='screen',
+                namespace='mock',
+                arguments=['-topic', "robot_description",
+                            '-entity', "mock_bot",
+                            '-x', "0",
+                            '-y', "0",
+                            '-z', "0",
+                            ]),
             ]))
 
     # Launch foxglove bridge if use_foxglove is true

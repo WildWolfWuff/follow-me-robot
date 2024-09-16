@@ -23,7 +23,6 @@
       <!-- Complex visual -->
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
-        <material name="orange" />
         <geometry>
           <mesh filename="file://$(find follow_me_robot)/urdf/meshes/EXAM_robot_2022.stl" />
         </geometry>

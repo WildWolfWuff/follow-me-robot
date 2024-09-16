@@ -12,12 +12,12 @@ MecanumTeleop::AxisConfig MecanumTeleop::build_config(const std::string &name, c
     const std::string deadzone_param = type + "." + name + ".deadzone";
     AxisConfig config;
     config.axis = declare_parameter<int>(axis_param, 0);
-    RCLCPP_DEBUG(get_logger(), "%s: %d", axis_param.c_str(), config.axis);
     config.deadzone = declare_parameter<double>(deadzone_param, 0.0);
-    RCLCPP_DEBUG(get_logger(), "%s: %f", deadzone_param.c_str(), config.deadzone);
     config.scale = declare_parameter<double>(scale_param, 1.0);
-    RCLCPP_DEBUG(get_logger(), "%s: %f", scale_param.c_str(), config.scale);
     config.offset = declare_parameter<double>(offset_param, 0.0);
+    RCLCPP_DEBUG(get_logger(), "%s: %d", axis_param.c_str(), config.axis);
+    RCLCPP_DEBUG(get_logger(), "%s: %f", deadzone_param.c_str(), config.deadzone);
+    RCLCPP_DEBUG(get_logger(), "%s: %f", scale_param.c_str(), config.scale);
     RCLCPP_DEBUG(get_logger(), "%s: %f", offset_param.c_str(), config.offset);
     return config;
 }
@@ -41,7 +41,7 @@ MecanumTeleop::MecanumTeleop(const std::string &name)
     RCLCPP_DEBUG(get_logger(), "Create twist publisher for topic %s", twist_topic.c_str());
 
     // Setup the joystick message subscriber
-    joy_subscriber_ = create_subscription<sensor_msgs::msg::Joy>(joy_topic, rclcpp::SystemDefaultsQoS(), std::bind(&MecanumTeleop::on_joy_message, this, std::placeholders::_1));
+    joy_subscriber_ = create_subscription<sensor_msgs::msg::Joy>(joy_topic, 10, std::bind(&MecanumTeleop::on_joy_message, this, std::placeholders::_1));
     RCLCPP_DEBUG(get_logger(), "Create joy subscriber for topic %s", joy_topic.c_str());
     RCLCPP_INFO(get_logger(), "Mecanum teleop node started");
 }

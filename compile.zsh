@@ -22,7 +22,8 @@ if [ $? -ne 0 ]; then
   return 1
 fi
 
-world_path=~/.gazebo/models/hospital/hospital.world
+world_path=$(ls ~/follow-me-robot/src/worlds/simple/simple-qube.world) # use this for a simple world
+# world_path=~/.gazebo/models/hospital/hospital.world # use this for a hospital world
 world_models=~/.gazebo/models/hospital/models
 
-ros2 launch follow_me_robot robot.launch.py start_sim:=true use_rviz:=false use_foxglove:=true start_sensors:=true start_nav:=true verbose:=true use_gui:=true world:=$world_path world_models:=$world_models bot_x:=-1 bot_y:=2
+ros2 launch follow_me_robot robot.launch.py start_sim:=true use_rviz:=false use_foxglove:=true start_sensors:=true start_nav:=true spawn_mock_bot:=true verbose:=false use_gui:=true world:=$world_path world_models:=$world_models bot_x:=-1 bot_y:=2
