@@ -1,7 +1,6 @@
 #ifndef __FOLLOWME_MECANUM_TELEOP__FOLLOWME_MECANUM_TELEOP_H__
 #define __FOLLOWME_MECANUM_TELEOP__FOLLOWME_MECANUM_TELEOP_H__
 
-
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joy.hpp>
 #include <geometry_msgs/msg/twist.hpp>
@@ -29,7 +28,7 @@ namespace follow_me
 
             private:
                 AxisConfig build_config(const std::string &name, const std::string &type);
-                double get_axis_value(std::unique_ptr<sensor_msgs::msg::Joy> & msg, AxisConfig& config);
+                double get_axis_value(std::unique_ptr<sensor_msgs::msg::Joy> &msg, AxisConfig &config);
                 void on_joy_message(std::unique_ptr<sensor_msgs::msg::Joy> msg);
 
             private:

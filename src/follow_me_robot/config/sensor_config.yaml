@@ -65,7 +65,7 @@ teleop: # src/follow_me_teleop/src/teleop.cpp
 motor_controller:
   ros__parameters:
     serial:
-      port: "/dev/null"
+      port: "/dev/ttyACM0"
       baudrate: 9600
       timeout: 1.0
     velocity_topic: /cmd_vel

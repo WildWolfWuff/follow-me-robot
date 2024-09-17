@@ -18,7 +18,7 @@ def generate_launch_description():
     sensor_launch_file=os.path.join(pkg_path,'launch','sensor.launch.py')
     nav_launch_file=os.path.join(pkg_path,'launch','nav.launch.py')
     # define launch configuration variables
-    log_level=LaunchConfiguration('log_level',default='warn')
+    log_level=LaunchConfiguration('log_level',default='info')
     start_sim=LaunchConfiguration('start_sim',default='false')
     use_gui=LaunchConfiguration('use_gui',default='false')
     use_foxglove=LaunchConfiguration('use_foxglove',default='false')
@@ -167,6 +167,7 @@ def generate_launch_description():
                 executable='motor_controller',
                 name='motor_controller',
                 output='screen',
+                arguments=["--ros-args", "--log-level", log_level],
                 parameters=[sensor_config_path]
             )
         ]

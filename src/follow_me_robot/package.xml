@@ -27,6 +27,7 @@
   <depend>xacro</depend>
   <depend>smac_planner</depend>
   <depend>cartographer_ros</depend>
+  <exec_depend>nav2_bringup</exec_depend>
   <exec_depend>v4l2_camera</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
