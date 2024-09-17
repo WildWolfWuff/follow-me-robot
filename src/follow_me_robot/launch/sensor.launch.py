@@ -34,6 +34,12 @@ def generate_launch_description():
             arguments=["--ros-args", "--log-level", log_level],
             parameters=[config_path],
         ),
+        # Node( # use this to get hardware joystick input from the user
+        #     package='follow_me_joystick',
+        #     executable='follow_me_joystick',
+        #     arguments=["--ros-args", "--log-level", log_level],
+        #     parameters=[config_path],
+        # ),
         # Launch the apriltag node for detecting the apriltags with camera
         # ros2 run apriltag_ros apriltag_node --ros-args -r image_rect:=/cam/front/image_raw -r camera_info:=/cam/front/camera_info -r /tf:=/tag/tf -r /detections:=/tag/detections --params-file `ros2 pkg prefix follow_me_robot`/share/follow_me_robot/config/sensor_config.yaml
         Node(

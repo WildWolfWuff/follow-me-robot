@@ -62,6 +62,12 @@ teleop: # src/follow_me_teleop/src/teleop.cpp
         scale: 1.0
         deadzone: 0.5
 
+joystick: # src/follow_me_joystick/src/mecanum_joystick.cpp
+  ros__parameters:
+    joy_topic: /joy
+    dev: /dev/hidraw0
+    deadzone: 0.2
+
 motor_controller:
   ros__parameters:
     serial:
