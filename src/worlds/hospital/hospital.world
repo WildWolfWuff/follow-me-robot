@@ -750,5 +750,12 @@
                 <falloff>1</falloff>
             </spot>
         </light> -->
+        <gui fullscreen='0'>
+            <camera name='user_camera'>
+                <pose>2.22537 -5.72123 27.4345 0 1.5258 -3.11546</pose>
+                <view_controller>orbit</view_controller>
+                <projection_type>perspective</projection_type>
+            </camera>
+        </gui>
     </world>
 </sdf>

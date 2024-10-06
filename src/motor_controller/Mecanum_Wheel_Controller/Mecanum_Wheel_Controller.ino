@@ -1,6 +1,6 @@
 #include "InvertedAccelStepper.h"
 
-#define MAX_SPEED 30000  // 30000 steps per second
+#define MAX_SPEED 3000  // 30000 steps per second
 #define WHEEL_RADIUS 7.5 // who cares
 #define BAUD 9600
 
@@ -166,5 +166,5 @@ void loop()
     setWheelSpeedValues(x, y, z);
     // if (old_x - x > tolerance || old_y - y > tolerance || old_z - z > tolerance)
   }
-  move();
+  // move();
 }

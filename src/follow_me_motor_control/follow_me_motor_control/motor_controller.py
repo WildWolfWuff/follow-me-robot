@@ -31,7 +31,7 @@ class MotorControllerNode(Node):
         self.declare_parameter("serial.baudrate", 9600) # The baud rate for serial communication
         self.declare_parameter("serial.timeout", 1.0) # The timeout for serial communication
         self.declare_parameter("velocity_topic", "/cmd_vel") # The topic for receiving velocity commands
-        self.declare_parameter("velocity_tolerance", 0.05) # The tolerance for linear and angular velocities
+        self.declare_parameter("velocity_tolerance", 0.001) # The tolerance for linear and angular velocities
         # Get node parameters
         self.tollerance = self.get_parameter("velocity_tolerance").value
         serialPort = self.get_parameter("serial.port").value
